@@ -1,7 +1,12 @@
 # Path of the Priest — Fan Card Generator
 
 Generates print-ready card images for a fan re-theme of the solo microgame
-*The Path of the Priest*. See `CLAUDE.md` for the full project plan.
+*The Path of the Priest*.
+
+- **`NEXT-STEPS.md`** — open decisions, remaining work, and exactly which files
+  to create where once the setting and language are chosen. **Start here.**
+- **`CLAUDE.md`** — architecture, print geometry, and the reasoning behind past
+  decisions.
 
 Mechanics come verbatim from `RulesSummary.txt` and never change. Only naming,
 artwork, language and visual design are re-themed.

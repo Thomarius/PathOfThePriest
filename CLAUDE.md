@@ -322,5 +322,8 @@ effects are ever altered, which is currently out of scope.
 
 ## Open items
 
-- Theme/topic — blocks M0 and M6 only; M1–M5 proceed on a placeholder theme.
-- Whether the rules cards ship in German only or bilingually.
+See **`NEXT-STEPS.md`** for the full list of open decisions, the remaining work,
+the exact files a new theme and locale require, and the commands to check output.
+
+In short: the theme/topic blocks M6 and the card names; the German locale (M0) is
+*not* blocked by it, since card and faction names are tokens.
