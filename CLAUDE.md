@@ -207,15 +207,16 @@ Must fail loudly, before anything is sent to a printer:
   `config/print-profiles.json`, `locales/en.json`, `themes/placeholder/`,
   `src/tokens.js`, `src/model.js`, `src/validate.js`, `src/build.js`.
   `npm run validate` is green; `npm run model` dumps `out/model.json`.
-- **M2 — Card template & design system.** `styles.css` and the card face template.
-  **Build the layout against card 11 (Envy) first, then card 7 (Philosophy).**
-  Measured from the English model, total effect text per card:
-  Envy 167 chars over 2 effects, Philosophy 145 over 3, Discord 142 over 2 —
-  everything else is under 81. German adds ~20–30%, so the text box must survive
-  roughly 210 characters. Sizing for an average card and discovering this later
-  costs a redesign. Deliverable: reviewable `out/preview/index.html`.
-- **M3 — Icon language.** SVG glyph set for the movement verbs; the glossary rules
-  card is generated from the same glyphs, so the legend cannot drift from the cards.
+- **M2 — Card template & design system. DONE.** `src/template/{styles.css,card.js,page.js}`,
+  `npm run preview` → `out/preview/index.html`.
+  **The binding card is 7 (Philosophy), not 11 (Envy).** Character count was the
+  wrong proxy: Envy has more text (167 chars) but only 2 paragraphs and fills 40%,
+  while Philosophy's 3 effects plus 2 "or" dividers fill 73%. Structure costs more
+  height than length. Any future layout change must be checked against card 7.
+- **M3 — Icon language. DONE (glyphs).** The 8 SVG glyphs live in `src/icons/`,
+  are stroked in `currentColor` and sized in `em`, so they inherit the colour of
+  whatever text they sit in. Remaining: wire the same glyphs into the glossary
+  rules card in M7 so the legend cannot drift from the cards.
 - **M4 — Rendering pipeline.** Deterministic per-card PNGs with bleed, plus the
   combined PDF.
 - **M5 — Validation & QA.** Overflow, safe zone, completeness, attribution, and a
@@ -234,7 +235,16 @@ effects are ever altered, which is currently out of scope.
 - The True/Fake distinction must be unmistakable at a glance — the entire player
   turn is "choose any True Master".
 - German runs ~20–30% longer than the English source; size text boxes for the
-  worst case.
+  worst case. `npm run preview -- --stress 1.4` inflates every effect string by
+  the given factor to prove the layout survives translation before the German
+  wording exists. Measured tolerance: the current layout holds to **~2.4x**
+  English length; card 7 overflows at ~3.0x.
+- The preview reports a **fill percentage** per card (content height ÷ box
+  height). Keep the fullest card at or below ~75% in English — that is the
+  headroom German needs. M5 turns the same measurement into a hard failure.
+- Flex items must carry `flex: 0 0 auto` inside the text box. As shrinkable flex
+  items they compress to fit instead of overflowing, which would hide exactly the
+  defect the overflow check exists to catch.
 - Fonts must be OFL or similarly redistributable, since the deck is shared.
 - Art bleeds past trim; all text stays inside the safe zone.
 

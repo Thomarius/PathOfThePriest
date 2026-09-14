@@ -9,7 +9,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { parseSegments } from './tokens.js';
+import { parseSegments, toPlain } from './tokens.js';
 
 export const ROOT = path.resolve(import.meta.dirname, '..');
 
@@ -188,6 +188,40 @@ export function buildModel(overrides = {}) {
     errors,
     sources: { deck, cardData, theme, locale, themeName, localeName, profileName },
   };
+}
+
+/*
+ * German runs 20-30% longer than English and brings compound words that resist
+ * wrapping. Since the translation does not exist yet (M0), this inflates the
+ * current text so the layout can be proven against it in advance, instead of
+ * discovering the overflow after the wording is locked.
+ */
+const STRESS_FILLER = [
+  'Handlungsmöglichkeit',
+  'zurückzuziehen',
+  'Nachbarkarte',
+  'entsprechend',
+  'Bewegungsrichtung',
+  'ausgeführt',
+];
+
+export function applyStress(model, factor) {
+  for (const card of model.cards) {
+    for (const effect of card.effects) {
+      let deficit = Math.ceil(effect.plain.length * (factor - 1));
+      if (deficit <= 0) continue;
+      const words = [];
+      for (let i = 0; deficit > 0; i += 1) {
+        const word = STRESS_FILLER[i % STRESS_FILLER.length];
+        words.push(word);
+        deficit -= word.length + 1;
+      }
+      effect.segments.push({ t: 'text', v: ` ${words.join(' ')}` });
+      effect.plain = toPlain(effect.segments);
+    }
+  }
+  model.meta.stress = factor;
+  return model;
 }
 
 /** Normalizes the per-layout rules card shapes into a uniform block list. */

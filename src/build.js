@@ -4,16 +4,18 @@
  *
  *   node src/build.js validate [--theme x] [--locale de] [--profile mpc]
  *   node src/build.js model    [--out out/model.json]
+ *   node src/build.js preview  [--out out/preview/index.html]
  *
- * Rendering commands (build, preview) arrive with M2/M4.
+ * Rendering to PNG/PDF arrives with M4.
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { buildModel, ROOT } from './model.js';
+import { buildModel, applyStress, ROOT } from './model.js';
 import { validate } from './validate.js';
+import { renderPreview } from './template/page.js';
 
-const COMMANDS = ['validate', 'model'];
+const COMMANDS = ['validate', 'model', 'preview'];
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -81,6 +83,31 @@ function cmdModel(flags) {
   return 0;
 }
 
+function cmdPreview(flags) {
+  const { model, errors, sources } = buildModel(overridesFrom(flags));
+  if (errors.length) {
+    console.error(`${errors.length} error(s) — run "npm run validate" for details`);
+    return 1;
+  }
+
+  if (flags.stress) {
+    applyStress(model, Number(flags.stress) || 1.3);
+  }
+
+  const html = renderPreview(model, { themeName: sources.themeName });
+  const target = path.resolve(
+    ROOT,
+    typeof flags.out === 'string' ? flags.out : 'out/preview/index.html',
+  );
+  fs.mkdirSync(path.dirname(target), { recursive: true });
+  fs.writeFileSync(target, html, 'utf8');
+
+  console.log(`wrote ${path.relative(ROOT, target)} (${model.cards.length} cards)`);
+  return 0;
+}
+
+const COMMAND_FNS = { validate: cmdValidate, model: cmdModel, preview: cmdPreview };
+
 const { command, flags } = parseArgs(process.argv.slice(2));
 
 if (!COMMANDS.includes(command)) {
@@ -89,7 +116,7 @@ if (!COMMANDS.includes(command)) {
 }
 
 try {
-  process.exit(command === 'validate' ? cmdValidate(flags) : cmdModel(flags));
+  process.exit(COMMAND_FNS[command](flags));
 } catch (err) {
   console.error(`\n  FATAL  ${err.message}`);
   process.exit(1);

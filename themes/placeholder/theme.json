@@ -28,9 +28,9 @@
     "deity": { "ink": "#f6f2e8", "paper": "#1b2333", "accent": "#c9a227" }
   },
   "typography": {
-    "display": "Cormorant Garamond",
-    "body": "Alegreya Sans",
-    "$note": "Both are OFL. Font files are added to assets/fonts in M2; no font is loaded yet."
+    "display": "\"Cormorant Garamond\", \"Palatino Linotype\", Palatino, Georgia, serif",
+    "body": "\"Alegreya Sans\", \"Segoe UI\", Frutiger, system-ui, sans-serif",
+    "$note": "CSS font stacks. The named OFL faces are not vendored yet, so the preview falls back to a local face. Real font files must be placed in assets/fonts and loaded via @font-face before M4, or rendered output will differ between machines."
   },
   "cards": {
     "0": { "name": "Apprentice" },

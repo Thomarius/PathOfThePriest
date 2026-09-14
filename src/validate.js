@@ -8,6 +8,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { buildModel, ROOT } from './model.js';
+import { missingIconFiles } from './icons/index.js';
 
 const EXPECTED = {
   true: [5, 7, 8, 9, 10, 12, 13, 14],
@@ -83,6 +84,12 @@ export function validate(overrides = {}) {
     if (!usedKeys.has(key)) {
       warnings.push(`locale ${localeName}: effect "${key}" is never used by any card`);
     }
+  }
+
+  // --- icon glyphs ----------------------------------------------------------
+
+  for (const name of missingIconFiles()) {
+    errors.push(`icon "${name}" is a valid token but src/icons/${name}.svg does not exist`);
   }
 
   // --- card backs -----------------------------------------------------------
