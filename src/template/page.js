@@ -9,8 +9,22 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { renderCard, escapeHtml } from './card.js';
+import { fontFaceCss } from './fonts.js';
 
 const STYLES = fs.readFileSync(path.join(import.meta.dirname, 'styles.css'), 'utf8');
+
+/**
+ * Stylesheet shared by the preview and the renderer, so what is reviewed on
+ * screen is exactly what gets printed. Fonts are inlined here as data URIs.
+ */
+export function baseStyles(model) {
+  return `${fontFaceCss()}
+:root {
+  --font-display: ${model.typography.display ?? 'Georgia, serif'};
+  --font-body: ${model.typography.body ?? 'system-ui, sans-serif'};
+}
+${STYLES}`;
+}
 
 const PREVIEW_CHROME = `
   body {
@@ -71,12 +85,8 @@ export function renderPreview(model, { themeName }) {
 <meta charset="utf-8">
 <title>${escapeHtml(model.meta.title ?? 'Card preview')} — preview</title>
 <style>
-:root {
-  --font-display: ${model.typography.display ?? 'Georgia, serif'};
-  --font-body: ${model.typography.body ?? 'system-ui, sans-serif'};
-}
+${baseStyles(model)}
 ${PREVIEW_CHROME}
-${STYLES}
 </style>
 </head>
 <body>
@@ -139,14 +149,26 @@ ${STYLES}
       const box = figure.querySelector('.card__text');
       const inner = figure.querySelector('.card__text-inner');
       if (!box || !inner) continue;
-      const innerH = inner.getBoundingClientRect().height;
-      const boxH = box.getBoundingClientRect().height;
+      // offsetHeight, not getBoundingClientRect: the sheet is scaled with CSS
+      // zoom, which scales rect geometry but not computed lineHeight. Mixing
+      // the two halved every spare-line figure.
+      const innerH = inner.offsetHeight;
+      const boxH = box.offsetHeight;
       const fill = innerH / boxH;
       const percent = Math.round(fill * 100);
+
+      // Text height moves in whole lines, so a card can absorb a large amount
+      // of extra text with no height change at all until it tips into another
+      // line. Spare lines is the number that actually predicts a German
+      // overflow; a flat fill percentage under stress is expected, not a bug.
+      const effect = figure.querySelector('.effect');
+      const lineH = effect ? parseFloat(getComputedStyle(effect).lineHeight) : 0;
+      const spare = lineH ? Math.floor((boxH - innerH) / lineH) : 0;
+
       const caption = figure.querySelector('figcaption');
       caption.insertAdjacentHTML(
         'beforeend',
-        ' &middot; fill <b>' + percent + '%</b> (' + Math.round(innerH) + '/' + Math.round(boxH) + ')',
+        ' &middot; fill <b>' + percent + '%</b> &middot; spare <b>' + spare + '</b> line(s)',
       );
       if (fill > 1) caption.classList.add('is-overflow');
       else if (fill > 0.75) caption.classList.add('is-tight');

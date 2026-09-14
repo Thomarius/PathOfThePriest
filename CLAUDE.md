@@ -157,11 +157,12 @@ PathOfThePriest/
 │  │  ├─ rules-card.js
 │  │  ├─ back.js
 │  │  └─ styles.css          # single source of layout + print geometry
+│  │  └─ fonts.js            # vendored woff2 -> @font-face with data URIs
 │  ├─ icons/                 # SVG glyphs, one file per movement verb
 │  ├─ render.js              # Playwright -> PNG + PDF
-│  ├─ serve.js               # static server for deterministic asset loading
 │  └─ validate.js
-├─ assets/fonts/             # OFL-licensed only (redistributable)
+├─ scripts/fetch-fonts.mjs   # re-vendors the OFL files (npm run fonts)
+├─ assets/fonts/             # OFL woff2 + licences + fonts.json manifest
 └─ out/
    ├─ cards/                 # one PNG per card, bleed included
    ├─ preview/               # browser contact sheet for proofing
@@ -173,9 +174,28 @@ PathOfThePriest/
 1. `model.js` merges `cards.json` + theme + locale into a render model.
 2. Templates emit HTML; `styles.css` derives every dimension from the active
    print profile via CSS custom properties.
-3. `serve.js` serves `out/preview` over `http://localhost` — **do not use
-   `file://` URLs**; local fonts and images load unreliably there under Chromium.
-4. `render.js` screenshots each `.card` element to PNG, then emits the combined PDF.
+3. **Everything is inlined** — fonts and artwork become data URIs, so the page
+   has no external references at all. This replaced the planned static server:
+   with nothing to fetch, there is no asset-path or `file://` loading problem
+   left to work around.
+4. `render.js` screenshots each `.card` element to PNG, then renders the PDF
+   from a **second page sized in millimetres** (see below).
+
+### Units: px for PNG, mm for PDF
+
+`geometryVars()` in `card.js` emits the card geometry either in px or in mm, and
+because every size in `styles.css` derives from `--u` (card width / 816), one
+switch rescales the entire design.
+
+This is not cosmetic. A card is 816 CSS px wide; printed, that means 8.5 inches.
+The PDF must therefore be laid out at the card's true physical size (69.088 ×
+93.98 mm), which also emits the text as vectors at the correct size rather than
+a scaled bitmap.
+
+**Known tolerance:** Chromium quantizes PDF page size to 1/300 inch and rounds
+up, so pages come out 0.08–0.25 mm larger than requested. That lands well inside
+the 3 mm bleed and is trimmed away. PNGs are pixel-exact and are the print
+deliverable; the PDF is for proofing.
 
 Determinism requirements, on every run:
 
@@ -217,8 +237,11 @@ Must fail loudly, before anything is sent to a printer:
   are stroked in `currentColor` and sized in `em`, so they inherit the colour of
   whatever text they sit in. Remaining: wire the same glyphs into the glossary
   rules card in M7 so the legend cannot drift from the cards.
-- **M4 — Rendering pipeline.** Deterministic per-card PNGs with bleed, plus the
-  combined PDF.
+- **M4 — Rendering pipeline. DONE.** `npm run build` → 16 PNGs at 816×1110 in
+  `out/cards/` plus a 16-page PDF. Fonts are vendored (`npm run fonts`) and
+  inlined. Determinism is *verified, not assumed*: the renderer writes SHA-256
+  hashes to `out/cards/manifest.json`, and two consecutive runs produced
+  byte-identical output for all 16 cards.
 - **M5 — Validation & QA.** Overflow, safe zone, completeness, attribution, and a
   proofing contact sheet.
 - **M6 — Art integration.** Source public-domain images, set focal crops, fill
@@ -227,6 +250,22 @@ Must fail loudly, before anything is sent to a printer:
 
 Optional M8: a rules simulator to verify the deck stays winnable — only needed if
 effects are ever altered, which is currently out of scope.
+
+## Rules corrections and rejected features
+
+- **Card 5 (Exercise) reads "up to 2 spaces away".** The original rules summary
+  dropped the "up to", which is mechanically significant: per the clarifications,
+  effect numbers are exact *unless* preceded by "up to". Confirmed against the
+  published card art and corrected in both `RulesSummary.txt` and `locales/en.json`
+  on 2026-09-14. If other Masters are ever checked against card images, this is
+  the failure mode to look for.
+- **The Apprentice does not carry a True/Fake number track.** The published
+  Apprentice card prints `FM 1 2 3 4 6 11` / `TM 5 7 8 9 10 12 13 14` down its
+  edges as a player aid. Deliberately omitted: playtesting showed cards leave the
+  Path quickly, so a fixed list of numbers stops matching the board and stops
+  being useful. Do not re-add it without new playtest evidence.
+- **Rules go on cards, not a sheet.** The original ships a rulebook sheet; this
+  version prints the rules as cards so the whole product is one deck.
 
 ## Constraints & gotchas
 
@@ -245,7 +284,18 @@ effects are ever altered, which is currently out of scope.
 - Flex items must carry `flex: 0 0 auto` inside the text box. As shrinkable flex
   items they compress to fit instead of overflowing, which would hide exactly the
   defect the overflow check exists to catch.
-- Fonts must be OFL or similarly redistributable, since the deck is shared.
+- Fonts must be OFL or similarly redistributable, since the deck is shared. They
+  are committed under `assets/fonts`, and the validator **fails** if a theme names
+  a family that is not vendored — otherwise it would silently fall back to a
+  locally installed face and output would stop matching between machines.
+- **Numerals: use the body face, with `lining-nums`.** Cormorant Garamond's `1`
+  is a seriffed vertical, so the badge on card 11 rendered as "II". The corner
+  number is functional — three effects resolve targets by it — so it uses
+  Alegreya Sans with lining tabular figures. Check any font change against card
+  11 and card 1.
+- Layout must be measured with the **real vendored fonts**. Sized against the
+  fallback face, card 7 read as 73% full; with Alegreya Sans it was 47%, because
+  the fallback was considerably wider.
 - Art bleeds past trim; all text stays inside the safe zone.
 
 ## Open items

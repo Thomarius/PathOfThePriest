@@ -9,18 +9,26 @@ artwork, language and visual design are re-themed.
 ## Usage
 
 ```sh
-npm run validate                      # structural checks on the data layers
-npm run model -- --out out/model.json # dump the merged render model
+npm install                 # playwright
+npx playwright install chromium
+
+npm run validate            # structural checks on the data layers
+npm run preview             # out/preview/index.html — design review in a browser
+npm run build               # out/cards/*.png (816x1110) + print PDF
+npm run stress              # preview with text inflated, to test German fit
+npm run model               # dump the merged render model
+npm run fonts               # re-vendor the OFL font files
 ```
 
-Both accept `--theme <name>`, `--locale <code>` and `--profile <name>`:
+All commands accept `--theme <name>`, `--locale <code>` and `--profile <name>`:
 
 ```sh
-node src/build.js validate --profile drivethru --locale en
+node src/build.js build --profile drivethru --locale en
 ```
 
-No dependencies are required yet. Playwright is added in M4, when rendering
-starts.
+The preview page has a zoom control, a trim/safe-zone guide overlay, and reports
+how full each card's text box is in spare lines — the number that predicts
+whether German will still fit.
 
 ## How it fits together
 
@@ -41,7 +49,15 @@ cards — Discord and Envy both name Grudge.
 `themes/placeholder/` is a neutral stand-in so the pipeline can be built and
 reviewed before the real topic is chosen.
 
+Fonts are committed under `assets/fonts` and inlined into the page as data URIs,
+so rendering is identical on every machine. `out/cards/manifest.json` records a
+SHA-256 per card, so that claim can be checked rather than trusted.
+
 ## Status
 
-M1 (data & model) is complete. M2 (card template) is next; rendering to PNG/PDF
-arrives in M4.
+M1–M4 complete: data model, card template, icon glyphs, and rendering to PNG/PDF.
+
+Remaining: M5 validation (overflow and safe-zone checks promoted to hard
+failures), M6 artwork, M7 rules cards and card backs. The German locale and the
+theme's topic are still open — card and faction names are tokens, so the German
+effect text can be written before the topic is chosen.

@@ -80,7 +80,7 @@ Fake Master
 
 5 - EXERCISE
 True Master
-- Swap this card with a card that is 2 spaces away from this card.
+- Swap this card with a card that is up to 2 spaces away from this card.
 
 6 - DISCORD
 Fake Master

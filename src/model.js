@@ -206,20 +206,37 @@ const STRESS_FILLER = [
 ];
 
 export function applyStress(model, factor) {
+  let fillerIndex = 0;
+
   for (const card of model.cards) {
     for (const effect of card.effects) {
-      let deficit = Math.ceil(effect.plain.length * (factor - 1));
-      if (deficit <= 0) continue;
-      const words = [];
-      for (let i = 0; deficit > 0; i += 1) {
-        const word = STRESS_FILLER[i % STRESS_FILLER.length];
-        words.push(word);
-        deficit -= word.length + 1;
-      }
-      effect.segments.push({ t: 'text', v: ` ${words.join(' ')}` });
+      // Filler is woven through the sentence rather than appended in one blob.
+      // Appending pushed the whole increase onto the last line, so a short
+      // effect could absorb +40% without gaining a line and the measurement
+      // reported no change at all.
+      effect.segments = effect.segments.map((segment) => {
+        if (segment.t !== 'text') return segment;
+
+        let need = Math.round(segment.v.trim().length * (factor - 1));
+        if (need <= 0) return segment;
+
+        const parts = [];
+        for (const token of segment.v.split(/(\s+)/)) {
+          parts.push(token);
+          if (need > 0 && /\S/.test(token)) {
+            const filler = STRESS_FILLER[fillerIndex % STRESS_FILLER.length];
+            fillerIndex += 1;
+            parts.push(` ${filler}`);
+            need -= filler.length + 1;
+          }
+        }
+        return { ...segment, v: parts.join('') };
+      });
+
       effect.plain = toPlain(effect.segments);
     }
   }
+
   model.meta.stress = factor;
   return model;
 }

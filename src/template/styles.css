@@ -23,10 +23,14 @@
    * Art height is set by what the text box needs, not the other way round.
    * The binding constraint is card 7 (Philosophy): 3 effects separated by 2
    * "or" dividers, which costs far more height than card 11's longer but
-   * two-paragraph text. Sized so card 7 fills ~75% in English, leaving room
-   * for German to expand ~25% without overflowing.
+   * two-paragraph text.
+   *
+   * Sized by spare *lines*, not fill percentage. Text height moves in whole
+   * lines, so card 7 sits at 75% from 145 to ~240 characters without changing
+   * height at all. At 470 it keeps 2 spare lines, meaning two German effects
+   * could each gain a line and still fit.
    */
-  --art-h: calc(500 * var(--u));
+  --art-h: calc(470 * var(--u));
   --plate-h: calc(116 * var(--u));
   --badge: calc(104 * var(--u));
 
@@ -38,11 +42,14 @@
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
-  /* 31u at 300 dpi is ~7.5 pt and fits ~43 characters per line. Measured back
-     from the German worst case: at 34u, card 7 already filled its box in
-     English and would have overflowed once translated. */
-  font-size: calc(31 * var(--u));
+  /* ~8.4 pt at 300 dpi. Sized with the vendored Alegreya Sans, not a fallback:
+     the fallback face was noticeably wider and made the box look much tighter
+     than it is. Re-measure with `npm run preview` after any font change. */
+  font-size: calc(35 * var(--u));
   line-height: 1.34;
+  /* Effect text is full of counts ("2 spaces"); oldstyle figures that dip below
+     the baseline read as letters at this size. */
+  font-variant-numeric: lining-nums;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -108,11 +115,17 @@
   height: var(--badge);
   background: var(--ink);
   color: var(--paper);
-  font-family: var(--font-display);
-  font-size: calc(62 * var(--u));
+  /*
+   * Body face, not the display serif. Cormorant Garamond's "1" is a seriffed
+   * vertical that renders "11" as "II" — unacceptable for a number three
+   * effects resolve targets by. Lining tabular figures keep every numeral the
+   * same height and width, so 1 and 11 are unmistakable at a glance.
+   */
+  font-family: var(--font-body);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-size: calc(56 * var(--u));
   font-weight: 700;
   line-height: 1;
-  padding-bottom: calc(4 * var(--u));
   box-sizing: border-box;
 }
 
@@ -261,9 +274,11 @@
   color: var(--accent);
 }
 
+/* On the dark Fake/Deity cards the accent alone is too close to the background,
+   so the glyphs are lifted towards the (light) ink colour. */
 .card--fake .icon,
 .card--deity .icon {
-  color: color-mix(in srgb, var(--accent) 55%, var(--ink));
+  color: color-mix(in srgb, var(--accent) 32%, var(--ink));
 }
 
 /* --- cards without text --------------------------------------------------- */

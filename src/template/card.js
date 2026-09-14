@@ -78,18 +78,36 @@ function renderArt(card) {
  * @param {object} card  one entry from model.cards
  * @param {object} model the full render model (for ui strings and geometry)
  */
-export function renderCard(card, model) {
+/**
+ * Geometry as CSS custom properties.
+ *
+ * In `px` the card is its pixel canvas, which is what screenshots need. In `mm`
+ * it is its true physical size, which is what a PDF needs: 816 CSS px would
+ * otherwise mean 8.5 inches on paper. Because every size in styles.css derives
+ * from --u (card width / 816), switching the unit rescales the whole design and
+ * emits text as vectors at the correct physical size.
+ */
+export function geometryVars(g, unit = 'px') {
+  const toMm = (px) => `${((px / g.dpi) * 25.4).toFixed(4)}mm`;
+  const v = unit === 'mm' ? toMm : (px) => `${px}px`;
+
+  return [
+    `--card-w:${v(g.widthPx)}`,
+    `--card-h:${v(g.heightPx)}`,
+    `--bleed-x:${v(g.bleedXPx)}`,
+    `--bleed-y:${v(g.bleedYPx)}`,
+    `--safe-x:${v(g.safeInsetXPx)}`,
+    `--safe-y:${v(g.safeInsetYPx)}`,
+  ];
+}
+
+export function renderCard(card, model, options = {}) {
   const g = model.geometry;
   const palette = card.palette ?? {};
   const plain = card.effects.length === 0;
 
   const vars = [
-    `--card-w:${g.widthPx}px`,
-    `--card-h:${g.heightPx}px`,
-    `--bleed-x:${g.bleedXPx}px`,
-    `--bleed-y:${g.bleedYPx}px`,
-    `--safe-x:${g.safeInsetXPx}px`,
-    `--safe-y:${g.safeInsetYPx}px`,
+    ...geometryVars(g, options.unit),
     palette.ink ? `--ink:${palette.ink}` : '',
     palette.paper ? `--paper:${palette.paper}` : '',
     palette.accent ? `--accent:${palette.accent}` : '',

@@ -9,6 +9,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { buildModel, ROOT } from './model.js';
 import { missingIconFiles } from './icons/index.js';
+import { vendoredFamilies } from './template/fonts.js';
 
 const EXPECTED = {
   true: [5, 7, 8, 9, 10, 12, 13, 14],
@@ -90,6 +91,26 @@ export function validate(overrides = {}) {
 
   for (const name of missingIconFiles()) {
     errors.push(`icon "${name}" is a valid token but src/icons/${name}.svg does not exist`);
+  }
+
+  // --- fonts ----------------------------------------------------------------
+
+  // A theme naming a font we have not vendored would silently fall back to
+  // whatever is installed locally, and output would stop matching between
+  // machines — the whole reason the files are committed.
+  const families = vendoredFamilies();
+  if (families.length === 0) {
+    errors.push('no fonts vendored — run "npm run fonts"');
+  }
+  for (const [role, stack] of Object.entries(theme.typography ?? {})) {
+    if (role.startsWith('$') || typeof stack !== 'string') continue;
+    const first = stack.split(',')[0].trim().replace(/^["']|["']$/g, '');
+    if (!families.includes(first)) {
+      errors.push(
+        `theme ${themeName}: typography.${role} leads with "${first}", which is not vendored ` +
+          `(have: ${families.join(', ')}) — rendering would differ between machines`,
+      );
+    }
   }
 
   // --- card backs -----------------------------------------------------------

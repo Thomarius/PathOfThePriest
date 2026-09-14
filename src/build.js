@@ -5,8 +5,7 @@
  *   node src/build.js validate [--theme x] [--locale de] [--profile mpc]
  *   node src/build.js model    [--out out/model.json]
  *   node src/build.js preview  [--out out/preview/index.html]
- *
- * Rendering to PNG/PDF arrives with M4.
+ *   node src/build.js build    [--out out/cards] [--no-pdf]
  */
 
 import fs from 'node:fs';
@@ -15,7 +14,7 @@ import { buildModel, applyStress, ROOT } from './model.js';
 import { validate } from './validate.js';
 import { renderPreview } from './template/page.js';
 
-const COMMANDS = ['validate', 'model', 'preview'];
+const COMMANDS = ['validate', 'model', 'preview', 'build'];
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -106,7 +105,37 @@ function cmdPreview(flags) {
   return 0;
 }
 
-const COMMAND_FNS = { validate: cmdValidate, model: cmdModel, preview: cmdPreview };
+async function cmdBuild(flags) {
+  // Refuse to render a deck that does not validate — a printed error is
+  // expensive, a failed build is free.
+  const { errors, warnings, model } = validate(overridesFrom(flags));
+  if (errors.length) {
+    for (const e of errors) console.log(`  ERROR  ${e}`);
+    console.log(`\n  ${errors.length} error(s) — not rendering`);
+    return 1;
+  }
+  for (const w of warnings) console.log(`  warn   ${w}`);
+
+  const { sources } = buildModel(overridesFrom(flags));
+  const { renderAll } = await import('./render.js');
+
+  const result = await renderAll(model, {
+    themeName: sources.themeName,
+    outDir: typeof flags.out === 'string' ? flags.out : undefined,
+    pdf: !flags['no-pdf'],
+  });
+
+  console.log(`\n  ${result.written.length} cards -> ${path.relative(ROOT, result.outDir)}`);
+  if (result.pdfFile) console.log(`  pdf -> ${path.relative(ROOT, result.pdfFile)}`);
+  return 0;
+}
+
+const COMMAND_FNS = {
+  validate: cmdValidate,
+  model: cmdModel,
+  preview: cmdPreview,
+  build: cmdBuild,
+};
 
 const { command, flags } = parseArgs(process.argv.slice(2));
 
@@ -116,7 +145,7 @@ if (!COMMANDS.includes(command)) {
 }
 
 try {
-  process.exit(COMMAND_FNS[command](flags));
+  process.exit(await COMMAND_FNS[command](flags));
 } catch (err) {
   console.error(`\n  FATAL  ${err.message}`);
   process.exit(1);

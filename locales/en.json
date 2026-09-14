@@ -21,7 +21,7 @@
     "4.a": "{icon:moveBack} Move the {icon:lowest} lowest {icon:adjacent} adjacent card back 2 spaces.",
     "4.b": "{icon:advance} Advance this card 1 space.",
 
-    "5.a": "{icon:swap} Swap this card with a card 2 spaces away.",
+    "5.a": "{icon:swap} Swap this card with a card up to 2 spaces away.",
 
     "6.a": "{icon:send} Send the {icon:lowest} lowest {icon:adjacent} adjacent card to the space before {card:2}.",
     "6.b": "If it is {card:2}, {icon:move} move {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",

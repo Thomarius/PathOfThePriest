@@ -11,6 +11,11 @@
     "validate": "node src/build.js validate",
     "model": "node src/build.js model",
     "preview": "node src/build.js preview",
-    "stress": "node src/build.js preview --stress 1.4"
+    "stress": "node src/build.js preview --stress 1.4",
+    "build": "node src/build.js build",
+    "fonts": "node scripts/fetch-fonts.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.63.0"
   }
 }
