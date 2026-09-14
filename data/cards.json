@@ -1,0 +1,160 @@
+{
+  "$comment": "Theme-blind mechanical skeleton, taken verbatim from RulesSummary.txt. This file is NEVER edited for a re-theme. 'ref' is the original English name, kept only so this file stays readable for developers — it is never printed on a card.",
+  "effectKinds": {
+    "choice": "True Master: the player picks exactly one of these to resolve",
+    "primary": "Fake Master: resolved first, forced",
+    "fallback": "Alternative used only when the primary effect cannot be resolved",
+    "conditional": "Clause that applies only when its stated condition holds"
+  },
+  "cards": [
+    {
+      "id": "0",
+      "ref": "APPRENTICE",
+      "number": 0,
+      "faction": "apprentice",
+      "effects": []
+    },
+    {
+      "id": "1",
+      "ref": "DOUBT",
+      "number": 1,
+      "faction": "fake",
+      "effects": [
+        { "key": "1.a", "kind": "primary" },
+        { "key": "1.b", "kind": "fallback" }
+      ]
+    },
+    {
+      "id": "2",
+      "ref": "GRUDGE",
+      "number": 2,
+      "faction": "fake",
+      "effects": [
+        { "key": "2.a", "kind": "primary" }
+      ]
+    },
+    {
+      "id": "3",
+      "ref": "FEAR",
+      "number": 3,
+      "faction": "fake",
+      "effects": [
+        { "key": "3.a", "kind": "primary" }
+      ]
+    },
+    {
+      "id": "4",
+      "ref": "LAZINESS",
+      "number": 4,
+      "faction": "fake",
+      "effects": [
+        { "key": "4.a", "kind": "primary" },
+        { "key": "4.b", "kind": "fallback" }
+      ]
+    },
+    {
+      "id": "5",
+      "ref": "EXERCISE",
+      "number": 5,
+      "faction": "true",
+      "effects": [
+        { "key": "5.a", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "6",
+      "ref": "DISCORD",
+      "number": 6,
+      "faction": "fake",
+      "effects": [
+        { "key": "6.a", "kind": "primary" },
+        { "key": "6.b", "kind": "conditional" }
+      ]
+    },
+    {
+      "id": "7",
+      "ref": "PHILOSOPHY",
+      "number": 7,
+      "faction": "true",
+      "effects": [
+        { "key": "7.a", "kind": "choice" },
+        { "key": "7.b", "kind": "choice" },
+        { "key": "7.c", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "8",
+      "ref": "HERBALIST",
+      "number": 8,
+      "faction": "true",
+      "effects": [
+        { "key": "8.a", "kind": "choice" },
+        { "key": "8.b", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "9",
+      "ref": "MEDITATION",
+      "number": 9,
+      "faction": "true",
+      "effects": [
+        { "key": "9.a", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "10",
+      "ref": "PRAYER",
+      "number": 10,
+      "faction": "true",
+      "effects": [
+        { "key": "10.a", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "11",
+      "ref": "ENVY",
+      "number": 11,
+      "faction": "fake",
+      "effects": [
+        { "key": "11.a", "kind": "primary" },
+        { "key": "11.b", "kind": "conditional" }
+      ]
+    },
+    {
+      "id": "12",
+      "ref": "PILGRIM",
+      "number": 12,
+      "faction": "true",
+      "effects": [
+        { "key": "12.a", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "13",
+      "ref": "MAGIC",
+      "number": 13,
+      "faction": "true",
+      "effects": [
+        { "key": "13.a", "kind": "choice" },
+        { "key": "13.b", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "14",
+      "ref": "ASTRAL BODY",
+      "number": 14,
+      "faction": "true",
+      "effects": [
+        { "key": "14.a", "kind": "choice" }
+      ]
+    },
+    {
+      "id": "D",
+      "ref": "DEITY",
+      "number": null,
+      "numberLabel": "D",
+      "faction": "deity",
+      "effects": []
+    }
+  ]
+}

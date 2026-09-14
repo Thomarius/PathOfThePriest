@@ -1,0 +1,53 @@
+{
+  "$comment": "Neutral placeholder theme. It exists so the pipeline can be built and reviewed before the real topic is chosen. Card names here are the original English names; a real theme replaces every name, the faction labels, the palette and the art. Nothing outside this directory needs to change.",
+  "id": "placeholder",
+  "title": "The Path of the Priest",
+  "subtitle": "placeholder theme",
+  "factions": {
+    "true": {
+      "one": "True Master",
+      "other": "True Masters"
+    },
+    "fake": {
+      "one": "Fake Master",
+      "other": "Fake Masters"
+    },
+    "apprentice": {
+      "one": "Apprentice",
+      "other": "Apprentices"
+    },
+    "deity": {
+      "one": "Deity",
+      "other": "Deities"
+    }
+  },
+  "palette": {
+    "true": { "ink": "#1b2a36", "paper": "#f2ece0", "accent": "#3f6f52" },
+    "fake": { "ink": "#f0e9e4", "paper": "#2a2024", "accent": "#8c3b3b" },
+    "apprentice": { "ink": "#1b2a36", "paper": "#f6f2e8", "accent": "#c08a2e" },
+    "deity": { "ink": "#f6f2e8", "paper": "#1b2333", "accent": "#c9a227" }
+  },
+  "typography": {
+    "display": "Cormorant Garamond",
+    "body": "Alegreya Sans",
+    "$note": "Both are OFL. Font files are added to assets/fonts in M2; no font is loaded yet."
+  },
+  "cards": {
+    "0": { "name": "Apprentice" },
+    "1": { "name": "Doubt" },
+    "2": { "name": "Grudge" },
+    "3": { "name": "Fear" },
+    "4": { "name": "Laziness" },
+    "5": { "name": "Exercise" },
+    "6": { "name": "Discord" },
+    "7": { "name": "Philosophy" },
+    "8": { "name": "Herbalist" },
+    "9": { "name": "Meditation" },
+    "10": { "name": "Prayer" },
+    "11": { "name": "Envy" },
+    "12": { "name": "Pilgrim" },
+    "13": { "name": "Magic" },
+    "14": { "name": "Astral Body" },
+    "D": { "name": "Deity" }
+  }
+}

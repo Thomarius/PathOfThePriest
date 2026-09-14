@@ -1,0 +1,14 @@
+{
+  "name": "path-of-the-priest",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Print-ready card image generator for a fan re-theme of the solo microgame The Path of the Priest",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "validate": "node src/build.js validate",
+    "model": "node src/build.js model"
+  }
+}

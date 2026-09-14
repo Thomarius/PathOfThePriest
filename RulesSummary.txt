@@ -1,0 +1,128 @@
+Objective
+
+The Path of the Priest is a solo strategy game in which you must walk along a Path of 14 cards, made up of 8 True Masters and 6 Fake Masters. You must take the Apprentice (card 0) from the beginning of the Path to the end and connect with the Deity (end next to it).
+
+Setup
+
+1. Separate the Apprentice and Deity cards.
+2. Shuffle the 14 remaining cards and form the Path by placing them from left to right.
+3. Place the Apprentice card at the beginning of the Path (left).
+4. Place the Deity card at the end of the Path (right).
+
+How to play
+
+The game is played in rounds in the following order:
+
+Player Turn:
+
+Choose any True Master within the Path and activate by resolving 1 of its effects.
+
+Fake Masters Turn:
+
+After the player’s turn, each Fake Master within the Path is activated from lowest to highest (1, 2, 3, 4, 6, 11).
+
+Begin a new round with the player’s turn.
+
+
+End of the Game
+
+You win if, at the end of the Fake Masters’ turn, the Apprentice is next to the Deity. You have become a priest!
+You lose if the Apprentice is discarded from the game or if you cannot activate any True Master.
+
+
+Clarifications
+
+- You may activate the same True Master in consecutive rounds.
+- A few True Masters have multiple effects. When activating them, choose only one of its effects and resolve it.
+- If the movement from an effect cannot be carried out completely, you can’t resolve that effect.
+- If you cannot activate any True Master, you lose immediately.
+- When activating a Fake Master, resolve its top effect. If unable, the bottom effect offers an alternative. If neither effect can be resolved, ignore that Fake Master.
+- The numbers of the effects are exact, unless preceded by the words “up to”.
+Example: “Up to 2” means 1 or 2.
+- No card can move back beyond the first position of the Path.
+- No card can move beyond the Deity. You need to move the Apprentice exactly to the position on the left side of the Deity.
+- No effect can affect the Deity.
+
+Glossary
+
+Adjacent: Immediately to its left or right (1 space away).
+Advance: Move to the right.
+Destroy: Take out of the Path and, therefore, from the game.
+Swap: Exchange the indicated cards’ positions.
+Send: Move directly to the indicated position.
+Lowest: Card with the lowest number on its top left corner.
+Move: Move in any direction (left or right).
+Move back: Move to the left.
+
+
+Card List
+
+0 - APPRENTICE
+(no card text)
+
+1 - DOUBT
+Fake Master
+- Swap the 2 cards adjacent to this card.
+- If unable, move this card 1 space towards the center of the path.
+
+2 - GRUDGE
+Fake Master
+- Destroy the lowest adjacent card.
+
+3 - FEAR
+Fake Master
+- Send the lowest adjacent card to the beginning of the path.
+
+4 - LAZINESS
+Fake Master
+- Move back the lowest adjacent card 2 spaces.
+- If unable, advance this card 1 space.
+
+5 - EXERCISE
+True Master
+- Swap this card with a card that is 2 spaces away from this card.
+
+6 - DISCORD
+Fake Master
+- Send the lowest adjacent card to the space before GRUDGE
+- If it is GRUDGE, move GRUDGE 2 spaces towards the APPRENTICE, even if it moves beyond it.
+
+7 - PHILOSOPHY
+True Master
+- Choose a card that is 3 spaces away from this card and move it 1 space.
+- Choose a card that is 2 spaces away from this card and move it 2 space.
+- Choose a card that is 1 spaces away from this card and move it 3 space.
+
+8 - HERBALIST
+True Master
+- Move back any adjacent card 2 spaces.
+- Advance any adjacent card 1 space.
+
+9 - MEDITATION
+True Master
+- Swap this card with a card that is 3 spaces away from this card.
+
+10 - PRAYER
+True Master
+- Swap this card with any adjacent card.
+
+11 - ENVY
+Fake Master
+- Move the lowest adjacent card 2 spaces towards GRUDGE, even if it moves beyond it.
+- If it is GRUDGE, move GRUDGE 2 spaces towards the APPRENTICE, even if it moves beyond it.
+
+12 - PILGRIM
+True Master
+- Move any adjacent card 2 spaces.
+
+13 - MAGIC
+True Master
+- Move back any adjacent card 3 spaces.
+- Advance any adjacent card 2 spaces.
+
+14 - ASTRAL BODY
+True Master
+- Swap this card with a card that is 4 spaces away from this card.
+
+D - DIETY
+(no card text)

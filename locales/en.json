@@ -1,0 +1,112 @@
+{
+  "$comment": "Wording layer. Contains NO card names and NO faction names — those live in the theme and are injected via tokens, so re-theming can never break another card's text. Tokens: {icon:<name>} inline glyph; {card:<id>} card name from the theme; {faction:<id>.<form>} faction label from the theme, where <form> is any form the theme defines (one, other, and for German also case forms).",
+  "meta": {
+    "code": "en",
+    "label": "English",
+    "htmlLang": "en"
+  },
+  "ui": {
+    "fallbackLabel": "If unable:",
+    "choiceSeparator": "or",
+    "rulesCardTag": "Rules"
+  },
+  "effects": {
+    "1.a": "{icon:swap} Swap the 2 {icon:adjacent} adjacent cards.",
+    "1.b": "{icon:move} Move this card 1 space towards the center of the path.",
+
+    "2.a": "{icon:destroy} Destroy the {icon:lowest} lowest {icon:adjacent} adjacent card.",
+
+    "3.a": "{icon:send} Send the {icon:lowest} lowest {icon:adjacent} adjacent card to the beginning of the path.",
+
+    "4.a": "{icon:moveBack} Move the {icon:lowest} lowest {icon:adjacent} adjacent card back 2 spaces.",
+    "4.b": "{icon:advance} Advance this card 1 space.",
+
+    "5.a": "{icon:swap} Swap this card with a card 2 spaces away.",
+
+    "6.a": "{icon:send} Send the {icon:lowest} lowest {icon:adjacent} adjacent card to the space before {card:2}.",
+    "6.b": "If it is {card:2}, {icon:move} move {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
+
+    "7.a": "{icon:move} Choose a card 3 spaces away and move it 1 space.",
+    "7.b": "{icon:move} Choose a card 2 spaces away and move it 2 spaces.",
+    "7.c": "{icon:move} Choose a card 1 space away and move it 3 spaces.",
+
+    "8.a": "{icon:moveBack} Move any {icon:adjacent} adjacent card back 2 spaces.",
+    "8.b": "{icon:advance} Advance any {icon:adjacent} adjacent card 1 space.",
+
+    "9.a": "{icon:swap} Swap this card with a card 3 spaces away.",
+
+    "10.a": "{icon:swap} Swap this card with any {icon:adjacent} adjacent card.",
+
+    "11.a": "{icon:move} Move the {icon:lowest} lowest {icon:adjacent} adjacent card 2 spaces towards {card:2}, even if it moves beyond it.",
+    "11.b": "If it is {card:2}, {icon:move} move {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
+
+    "12.a": "{icon:move} Move any {icon:adjacent} adjacent card 2 spaces.",
+
+    "13.a": "{icon:moveBack} Move any {icon:adjacent} adjacent card back 3 spaces.",
+    "13.b": "{icon:advance} Advance any {icon:adjacent} adjacent card 2 spaces.",
+
+    "14.a": "{icon:swap} Swap this card with a card 4 spaces away."
+  },
+  "rules": {
+    "objective": {
+      "title": "Objective",
+      "body": [
+        "Walk along a Path of 14 cards, made up of 8 {faction:true.other} and 6 {faction:fake.other}.",
+        "Take {card:0} from the beginning of the Path to the end and connect with {card:D}."
+      ],
+      "sections": [
+        {
+          "heading": "End of the Game",
+          "items": [
+            "You win if, at the end of the {faction:fake.other} turn, {card:0} is next to {card:D}.",
+            "You lose if {card:0} is destroyed, or if you cannot activate any {faction:true.one}."
+          ]
+        }
+      ]
+    },
+    "setup": {
+      "title": "Setup",
+      "items": [
+        "Separate {card:0} and {card:D}.",
+        "Shuffle the 14 remaining cards and form the Path by placing them from left to right.",
+        "Place {card:0} at the beginning of the Path (left).",
+        "Place {card:D} at the end of the Path (right)."
+      ]
+    },
+    "turn": {
+      "title": "How to Play",
+      "items": [
+        "Player turn: choose any {faction:true.one} within the Path and activate it by resolving 1 of its effects.",
+        "{faction:fake.other} turn: each {faction:fake.one} within the Path is activated from lowest to highest (1, 2, 3, 4, 6, 11).",
+        "Begin a new round with the player turn."
+      ]
+    },
+    "glossary": {
+      "title": "Glossary",
+      "entries": [
+        { "term": "Adjacent", "icon": "adjacent", "text": "Immediately to its left or right (1 space away)." },
+        { "term": "Advance", "icon": "advance", "text": "Move to the right." },
+        { "term": "Move back", "icon": "moveBack", "text": "Move to the left." },
+        { "term": "Move", "icon": "move", "text": "Move in any direction (left or right)." },
+        { "term": "Swap", "icon": "swap", "text": "Exchange the indicated cards' positions." },
+        { "term": "Send", "icon": "send", "text": "Move directly to the indicated position." },
+        { "term": "Destroy", "icon": "destroy", "text": "Take out of the Path and therefore out of the game." },
+        { "term": "Lowest", "icon": "lowest", "text": "Card with the lowest number in its top left corner." }
+      ]
+    },
+    "clarifications": {
+      "title": "Clarifications",
+      "items": [
+        "You may activate the same {faction:true.one} in consecutive rounds.",
+        "A few {faction:true.other} have multiple effects. When activating them, choose only one effect and resolve it.",
+        "If the movement from an effect cannot be carried out completely, you can't resolve that effect.",
+        "If you cannot activate any {faction:true.one}, you lose immediately.",
+        "When activating a {faction:fake.one}, resolve its top effect. If unable, the bottom effect offers an alternative. If neither can be resolved, ignore that card.",
+        "The numbers of the effects are exact, unless preceded by \"up to\". Example: \"up to 2\" means 1 or 2.",
+        "No card can move back beyond the first position of the Path.",
+        "No card can move beyond {card:D}. You need to move {card:0} exactly to the position on the left side of {card:D}.",
+        "No effect can affect {card:D}."
+      ]
+    }
+  }
+}

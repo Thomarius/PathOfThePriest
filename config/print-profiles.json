@@ -1,0 +1,35 @@
+{
+  "$comment": "Print geometry per service. Never hardcode dimensions anywhere else. Pixel sizes are derived from millimetres; pxOverride is only for services that publish exact pixel specs that do not round-trip cleanly from mm.",
+  "default": "mpc",
+  "profiles": {
+    "mpc": {
+      "label": "MakePlayingCards — poker size, 3 mm bleed",
+      "trimMm": [63, 88],
+      "bleedMm": 3,
+      "safeMm": 3,
+      "dpi": 300,
+      "pxOverride": [816, 1110],
+      "notes": "MPC publishes 2.72 x 3.7 in at 300 dpi. Derived from 69 x 94 mm this would be 815 x 1110, so the width is pinned by pxOverride."
+    },
+    "drivethru": {
+      "label": "DriveThruCards — poker size, 0.125 in bleed",
+      "trimMm": [63, 88],
+      "bleedMm": 3.175,
+      "safeMm": 3.175,
+      "dpi": 300
+    },
+    "home-a4": {
+      "label": "Home printing — A4, 3x3 imposition, no bleed",
+      "trimMm": [63, 88],
+      "bleedMm": 0,
+      "safeMm": 4,
+      "dpi": 300,
+      "imposition": {
+        "sheetMm": [210, 297],
+        "cols": 3,
+        "rows": 3,
+        "cutMarks": true
+      }
+    }
+  }
+}
