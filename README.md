@@ -13,8 +13,9 @@ npm install                 # playwright
 npx playwright install chromium
 
 npm run validate            # structural checks on the data layers
+npm run validate -- --deep  # ...plus live layout checks (overflow, safe zone)
 npm run preview             # out/preview/index.html — design review in a browser
-npm run build               # out/cards/*.png (816x1110) + print PDF
+npm run build               # out/cards/*.png (816x1110) + print PDF + proof sheet
 npm run stress              # preview with text inflated, to test German fit
 npm run model               # dump the merged render model
 npm run fonts               # re-vendor the OFL font files
@@ -53,11 +54,15 @@ Fonts are committed under `assets/fonts` and inlined into the page as data URIs,
 so rendering is identical on every machine. `out/cards/manifest.json` records a
 SHA-256 per card, so that claim can be checked rather than trusted.
 
+`npm run build` audits the page it is about to print — text overflow, safe-zone
+violations, and remaining headroom for translation — and writes nothing if a
+card fails. `out/proof-sheet.png` shows the whole deck on one sheet for review.
+
 ## Status
 
-M1–M4 complete: data model, card template, icon glyphs, and rendering to PNG/PDF.
+M1–M5 complete: data model, card template, icon glyphs, rendering to PNG/PDF,
+and layout validation.
 
-Remaining: M5 validation (overflow and safe-zone checks promoted to hard
-failures), M6 artwork, M7 rules cards and card backs. The German locale and the
+Remaining: M6 artwork, M7 rules cards and card backs. The German locale and the
 theme's topic are still open — card and faction names are tokens, so the German
 effect text can be written before the topic is chosen.

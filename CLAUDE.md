@@ -204,18 +204,30 @@ Determinism requirements, on every run:
 - await `decode()` for every art image
 - no animations, no transitions, no `Date`/random in templates
 
-## Validation (`npm run validate`)
+## Validation
 
-Must fail loudly, before anything is sent to a printer:
+Two layers. Both must pass before anything is sent to a printer.
 
-- **Text overflow** — measure `scrollHeight > clientHeight` on every text box in
-  the live page. This is the main reason we chose HTML rendering; German text
-  overrunning its box is the most likely and most expensive defect.
-- **Safe zone** — no text element's bounding box crosses the safe-zone inset.
+**Structural** (`npm run validate`, no browser) — `src/validate.js`:
+
 - **Completeness** — every card has a name, every effect key resolves in the
   active locale, every referenced art file exists.
 - **Tokens** — no unresolved `{...}` survives expansion.
+- **Deck composition** — faction counts and card numbers match the rules.
+- **Card backs** — every card has exactly one, and the 14 Masters share exactly
+  one design (anything else makes a shuffled card identifiable).
+- **Fonts** — every family a theme names is vendored.
 - **Attribution** — every art file has an entry in `ATTRIBUTION.md`.
+
+**Layout** (`npm run validate -- --deep`, and always inside `npm run build`) —
+`src/audit.js`, measured in a live page:
+
+- **Overflow** — effect text taller than its box; it would be clipped.
+- **Safe zone** — any text element crossing the safe inset; it could be cut off.
+- **Headroom** — fewer than 1 spare line, meaning a longer translation will not fit.
+
+`build` audits the same loaded page it is about to print, so the audit cannot
+drift from the output, and it **writes nothing at all** when a card fails.
 
 ## Milestones
 
@@ -242,8 +254,12 @@ Must fail loudly, before anything is sent to a printer:
   inlined. Determinism is *verified, not assumed*: the renderer writes SHA-256
   hashes to `out/cards/manifest.json`, and two consecutive runs produced
   byte-identical output for all 16 cards.
-- **M5 — Validation & QA.** Overflow, safe zone, completeness, attribution, and a
-  proofing contact sheet.
+- **M5 — Validation & QA. DONE.** `src/audit.js` measures the live layout and
+  promotes the findings to hard failures. `npm run build` audits the exact page
+  it is about to print and **writes nothing if a card fails**; `npm run validate
+  -- --deep` runs the same checks standalone. `out/proof-sheet.png` is the
+  proofing contact sheet. Overflow, safe-zone and headroom checks were each
+  verified against deliberately broken input.
 - **M6 — Art integration.** Source public-domain images, set focal crops, fill
   `ATTRIBUTION.md`. *Long pole — manual per-card work the pipeline cannot shortcut.*
 - **M7 — Rules cards, 3 card backs, final print package.**
@@ -297,6 +313,12 @@ effects are ever altered, which is currently out of scope.
   fallback face, card 7 read as 73% full; with Alegreya Sans it was 47%, because
   the fallback was considerably wider.
 - Art bleeds past trim; all text stays inside the safe zone.
+- **Never use `transform: rotate()` for a badge or panel shape.** It keeps the
+  layout box but grows the *painted* bounding box by up to sqrt(2), which put
+  the Fake Master diamond 21.6px outside the safe zone on all six cards — inside
+  the trim line, so invisible on screen, but within the range a cut can drift.
+  Use `clip-path` instead: the painted shape stays inside the same box and the
+  numeral stays upright. The audit catches this class of error.
 
 ## Open items
 

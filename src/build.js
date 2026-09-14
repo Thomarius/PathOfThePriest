@@ -36,8 +36,18 @@ function overridesFrom(flags) {
   return out;
 }
 
-function cmdValidate(flags) {
+async function cmdValidate(flags) {
   const { errors, warnings, model } = validate(overridesFrom(flags));
+
+  // --deep adds the checks that need live layout: overflow and safe zone.
+  // `build` always runs them, against the page it is about to print.
+  if (flags.deep && model && errors.length === 0) {
+    const { sources } = buildModel(overridesFrom(flags));
+    const { auditModel } = await import('./audit.js');
+    const audit = await auditModel(model, { themeName: sources.themeName });
+    errors.push(...audit.errors);
+    warnings.push(...audit.warnings);
+  }
 
   for (const w of warnings) console.log(`  warn   ${w}`);
   for (const e of errors) console.log(`  ERROR  ${e}`);
@@ -123,10 +133,21 @@ async function cmdBuild(flags) {
     themeName: sources.themeName,
     outDir: typeof flags.out === 'string' ? flags.out : undefined,
     pdf: !flags['no-pdf'],
+    proof: !flags['no-proof'],
+    audit: !flags['no-audit'],
   });
 
+  for (const w of result.audit.warnings) console.log(`  warn   ${w}`);
+  for (const e of result.audit.errors) console.log(`  ERROR  ${e}`);
+
+  if (result.audit.errors.length) {
+    console.log(`\n  ${result.audit.errors.length} layout error(s) — nothing written`);
+    return 1;
+  }
+
   console.log(`\n  ${result.written.length} cards -> ${path.relative(ROOT, result.outDir)}`);
-  if (result.pdfFile) console.log(`  pdf -> ${path.relative(ROOT, result.pdfFile)}`);
+  if (result.pdfFile) console.log(`  pdf   -> ${path.relative(ROOT, result.pdfFile)}`);
+  if (result.proofFile) console.log(`  proof -> ${path.relative(ROOT, result.proofFile)}`);
   return 0;
 }
 

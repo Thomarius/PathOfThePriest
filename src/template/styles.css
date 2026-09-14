@@ -135,13 +135,16 @@
   border-radius: 50%;
 }
 
+/*
+ * Diamond by clip-path, not by rotation. `transform: rotate(45deg)` keeps the
+ * element's layout box but grows its painted bounding box by sqrt(2), which
+ * pushed the corners 21.6px outside the safe zone on every Fake Master — inside
+ * the trim line, but within the range a cut can drift. Clipping keeps the
+ * painted shape inside the same box and leaves the numeral upright.
+ */
 .card--fake .card__number {
-  border-radius: calc(10 * var(--u));
-  transform: rotate(45deg);
-}
-
-.card--fake .card__number > span {
-  transform: rotate(-45deg);
+  --badge: calc(124 * var(--u));
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
 }
 
 .card--apprentice .card__number,

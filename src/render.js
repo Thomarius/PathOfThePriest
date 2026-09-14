@@ -5,22 +5,18 @@
  * so nothing is fetched at render time. That removes asset-path failures and is
  * what makes the output byte-identical across machines — the renderer writes a
  * manifest of SHA-256 hashes so that can be verified rather than assumed.
+ *
+ * The layout audit runs against this same loaded page, before anything is
+ * written, so a card that overflows or breaks the safe zone never reaches disk.
  */
 
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { chromium } from 'playwright';
-import { renderCard, escapeHtml } from './template/card.js';
-import { baseStyles } from './template/page.js';
+import { buildCardsHtml, buildProofHtml, embedArt, settlePage } from './template/document.js';
+import { auditPage, classify } from './audit.js';
 import { ROOT } from './model.js';
-
-const MIME = {
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.jpeg': 'image/jpeg',
-  '.webp': 'image/webp',
-};
 
 export function slug(value) {
   return String(value)
@@ -37,71 +33,18 @@ export function cardFileName(card) {
   return `${key}-${slug(card.name ?? card.ref)}`;
 }
 
-/** Inlines artwork so the render page has no external references at all. */
-function embedArt(model, themeName) {
-  return model.cards.map((card) => {
-    if (!card.art) return card;
-    const file = path.join(ROOT, 'themes', themeName, 'art', card.art);
-    const mime = MIME[path.extname(card.art).toLowerCase()];
-    if (!mime || !fs.existsSync(file)) return card;
-    const data = fs.readFileSync(file).toString('base64');
-    return { ...card, artUrl: `data:${mime};base64,${data}` };
-  });
-}
-
-/**
- * @param {'px'|'mm'} unit  px for screenshots, mm for the PDF (see geometryVars)
- */
-function buildHtml(model, cards, unit) {
-  const g = model.geometry;
-  const widthMm = ((g.widthPx / g.dpi) * 25.4).toFixed(4);
-  const heightMm = ((g.heightPx / g.dpi) * 25.4).toFixed(4);
-
-  return `<!doctype html>
-<html lang="${escapeHtml(model.meta.htmlLang)}">
-<head>
-<meta charset="utf-8">
-<title>${escapeHtml(model.meta.title ?? 'cards')}</title>
-<style>
-${baseStyles(model)}
-html, body { margin: 0; padding: 0; background: #fff; }
-/* One card per page, at exactly the card's own physical size including bleed. */
-@page { size: ${widthMm}mm ${heightMm}mm; margin: 0; }
-.card { display: block; }
-.card:not(:last-child) { break-after: page; }
-</style>
-</head>
-<body>
-${cards.map((card) => renderCard(card, model, { unit })).join('\n')}
-</body>
-</html>
-`;
-}
-
 const sha256 = (file) => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 
 /**
- * @param {object} model   render model
- * @param {{themeName: string, outDir?: string, pdf?: boolean}} options
+ * @param {object} model render model
+ * @param {{themeName: string, outDir?: string, pdf?: boolean, proof?: boolean,
+ *          audit?: boolean}} options
  */
 export async function renderAll(model, options) {
   const { themeName } = options;
   const outDir = path.resolve(ROOT, options.outDir ?? 'out/cards');
-  fs.mkdirSync(outDir, { recursive: true });
-
   const cards = embedArt(model, themeName);
   const g = model.geometry;
-
-  /** Loads a page and waits for everything that silently changes layout. */
-  const settle = async (page, html) => {
-    await page.setContent(html, { waitUntil: 'load' });
-    // Screenshotting before fonts and images settle produces silently wrong
-    // output — fallback glyphs, or blank art windows.
-    await page.evaluate(() => document.fonts.ready);
-    await page.evaluate(() =>
-      Promise.all([...document.images].map((img) => img.decode().catch(() => {}))),
-    );
-  };
 
   const browser = await chromium.launch();
   try {
@@ -110,7 +53,17 @@ export async function renderAll(model, options) {
       deviceScaleFactor: 1,
     });
 
-    await settle(page, buildHtml(model, cards, 'px'));
+    await settlePage(page, buildCardsHtml(model, cards, 'px'));
+
+    // Audit before writing anything: a printed defect is expensive, a refused
+    // build is free.
+    const audit =
+      options.audit === false ? { errors: [], warnings: [] } : classify(await auditPage(page, model), model);
+    if (audit.errors.length) {
+      return { audit, written: [], pdfFile: null, proofFile: null, outDir };
+    }
+
+    fs.mkdirSync(outDir, { recursive: true });
 
     const written = [];
     for (const card of cards) {
@@ -129,9 +82,10 @@ export async function renderAll(model, options) {
       // The PDF is built from a second, millimetre-sized page. Printing the
       // pixel page would place an 816 CSS px card on paper as 8.5 inches.
       const pdfPage = await browser.newPage();
-      await settle(pdfPage, buildHtml(model, cards, 'mm'));
+      await settlePage(pdfPage, buildCardsHtml(model, cards, 'mm'));
       // Explicit width/height rather than preferCSSPageSize: Chromium quantizes
-      // an @page size and landed ~0.09 mm off the printer's spec.
+      // an @page size and landed ~0.09 mm off the printer's spec either way,
+      // but this keeps the intent in one place.
       await pdfPage.pdf({
         path: pdfFile,
         printBackground: true,
@@ -141,6 +95,15 @@ export async function renderAll(model, options) {
         pageRanges: `1-${cards.length}`,
       });
       await pdfPage.close();
+    }
+
+    let proofFile = null;
+    if (options.proof !== false) {
+      proofFile = path.resolve(ROOT, 'out', 'proof-sheet.png');
+      const proofPage = await browser.newPage({ deviceScaleFactor: 1 });
+      await settlePage(proofPage, buildProofHtml(model, cards));
+      await proofPage.locator('.sheet').screenshot({ path: proofFile });
+      await proofPage.close();
     }
 
     const manifest = {
@@ -159,7 +122,7 @@ export async function renderAll(model, options) {
       'utf8',
     );
 
-    return { written, pdfFile, outDir };
+    return { audit, written, pdfFile, proofFile, outDir };
   } finally {
     await browser.close();
   }
