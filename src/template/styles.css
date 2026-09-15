@@ -359,8 +359,10 @@
   font-size: calc(46 * var(--u));
   letter-spacing: calc(6 * var(--u));
   text-transform: uppercase;
-  color: var(--ink);
-  opacity: 0.85;
+  /* The accent, matching the emblem and frame. The ink is chosen to contrast
+     with a card *face*, not with the back's own field, so it read as dark navy
+     on blue here. */
+  color: var(--accent);
 }
 
 /* --- procedural decoration ------------------------------------------------
