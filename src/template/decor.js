@@ -215,7 +215,9 @@ export function decorFor(theme) {
       motifPattern({
         names: Object.keys(MOTIFS),
         ink: backInk,
-        opacity: 0.17,
+        // Tone-on-tone: dark ink on a mid field needs far more than the 0.17
+        // used for the stone texture, or the pattern simply is not there.
+        opacity: 0.38,
         cols: 4,
       }),
   };
