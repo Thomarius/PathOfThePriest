@@ -145,6 +145,10 @@ async function cmdBuild(flags) {
     return 1;
   }
 
+  for (const stale of result.removed ?? []) {
+    console.log(`  pruned ${stale} (stale — card renamed or removed)`);
+  }
+
   console.log(`\n  ${result.written.length} cards -> ${path.relative(ROOT, result.outDir)}`);
   if (result.pdfFile) console.log(`  pdf   -> ${path.relative(ROOT, result.pdfFile)}`);
   if (result.proofFile) console.log(`  proof -> ${path.relative(ROOT, result.proofFile)}`);

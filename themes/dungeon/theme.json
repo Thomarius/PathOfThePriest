@@ -1,5 +1,5 @@
 {
-  "$comment": "Sample theme: an underlevelled adventurer delving for treasure. True Masters are helpful party members and equipment; Fake Masters are traps and monsters; the Deity is the treasure chest. Names were chosen so the mechanic is legible from the card: the Mimic eats the lowest adjacent card, the Trapdoor drops it back to the entrance, the Gelatinous Cube shoves you back and creeps forward when it cannot.",
+  "$comment": "Sample theme: an underlevelled adventurer delving for treasure. True Masters are helpful party members and equipment; Fake Masters are traps and monsters; the Deity is the treasure chest. Names were chosen so the mechanic is legible from the card: the Mimic eats the lowest adjacent card, the Trapdoor drops it back to the entrance, the Golem shoves you back and lumbers forward when it cannot, the Minotaur charges a victim clear across the dungeon.",
   "id": "dungeon",
   "title": "Underleveled",
   "subtitle": "A solo dungeon delve",
@@ -72,13 +72,13 @@
       "name": "Trapdoor"
     },
     "4": {
-      "name": "Gelatinous Cube"
+      "name": "Golem"
     },
     "5": {
       "name": "Rogue"
     },
     "6": {
-      "name": "False Treasure"
+      "name": "Minotaur"
     },
     "7": {
       "name": "Wizard"
@@ -159,13 +159,13 @@
           "name": "Falltür"
         },
         "4": {
-          "name": "Gallertwürfel"
+          "name": "Golem"
         },
         "5": {
           "name": "Schurke"
         },
         "6": {
-          "name": "Trugschatz"
+          "name": "Minotaurus"
         },
         "7": {
           "name": "Magier"

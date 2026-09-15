@@ -106,6 +106,18 @@ export async function renderAll(model, options) {
       await proofPage.close();
     }
 
+    // Renaming a card changes its file name, leaving the old PNG behind. An
+    // orphan that still looks like a finished card is exactly the kind of thing
+    // that reaches a printer by accident, so the output directory is pruned to
+    // the cards actually rendered this run.
+    const keep = new Set([...written.map((w) => w.file), 'manifest.json']);
+    const removed = [];
+    for (const entry of fs.readdirSync(outDir)) {
+      if (keep.has(entry) || !entry.toLowerCase().endsWith('.png')) continue;
+      fs.rmSync(path.join(outDir, entry));
+      removed.push(entry);
+    }
+
     const manifest = {
       theme: model.meta.theme,
       locale: model.meta.locale,
@@ -122,7 +134,7 @@ export async function renderAll(model, options) {
       'utf8',
     );
 
-    return { audit, written, pdfFile, proofFile, outDir };
+    return { audit, written, pdfFile, proofFile, outDir, removed };
   } finally {
     await browser.close();
   }
