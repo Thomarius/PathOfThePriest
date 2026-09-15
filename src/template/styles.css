@@ -690,13 +690,16 @@
   color: var(--motif-line);
 }
 
-/* Dark cards need the fill lifted away from the panel or the silhouette
-   disappears into it. */
-.card--fake .card__art--motif,
-.card--deity .card__art--motif {
-  --motif-line: color-mix(in srgb, var(--ink) 70%, var(--accent));
-  --motif-fill: color-mix(in srgb, var(--accent) 60%, var(--ink));
-}
+/*
+ * There is deliberately no per-faction override here. An earlier one mixed the
+ * Hazard fill toward the ink, on the assumption that Fake Masters have dark
+ * paper — true in the engraving theme, false in the bright one, where it made
+ * the fill nearly as dark as the outline it sits against.
+ *
+ * Mixing toward --paper instead works for both: the fill always lands between
+ * the accent and the card's own background, while the outline sits near the
+ * ink, which is the contrasting colour by definition.
+ */
 
 .card__art--motif svg {
   width: calc(400 * var(--u));
