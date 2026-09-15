@@ -112,6 +112,10 @@ export function emblem(kind = 'lozenge') {
       <path d="M50 15 L85 50 L50 85 L15 50 Z" stroke-width="1.2" opacity="0.7"/>
       <path d="M50 28 L59 44 L75 50 L59 56 L50 72 L41 56 L25 50 L41 44 Z"
             fill="currentColor" stroke="none"/>`,
+    star: `
+      <circle cx="50" cy="50" r="44" stroke-width="4"/>
+      <path d="M50 8 L61 38 L92 39 L67 57 L76 88 L50 70 L24 88 L33 57 L8 39 L39 38 Z"
+            fill="currentColor" stroke="currentColor" stroke-width="5"/>`,
     ring: `
       <circle cx="50" cy="50" r="46" stroke-width="2.5"/>
       <circle cx="50" cy="50" r="34" stroke-width="1.2" opacity="0.7"/>
@@ -148,6 +152,8 @@ export function decorFor(theme) {
     // feTurbulence needs a numeric seed, so the theme's seed string is folded
     // into one deterministically.
     vars.push(`--decor-texture:${grain({ seed: Math.floor(seeded(`${seed}-grain`)() * 9999) })}`);
+  } else if (decor.texture === 'dots') {
+    vars.push(`--decor-texture:${dots({})}`);
   } else if (decor.texture === 'stone') {
     vars.push(`--decor-texture:${stone({ seed: `${seed}-stone` })}`);
   }
@@ -155,8 +161,15 @@ export function decorFor(theme) {
   // Coloured from the back's own ink at generation time. Painting it black
   // made it invisible on dark stock, and a CSS mask did not survive the data
   // URI reliably; the theme already knows the colour, so use it directly.
-  const backInk = (theme.palette?.master?.ink ?? '#000000');
-  vars.push(`--decor-back:${stone({ seed: `${seed}-back`, color: backInk, opacity: 0.13 })}`);
+  const backInk = theme.palette?.master?.ink ?? '#000000';
+  const backPatterns = {
+    stone: () => stone({ seed: `${seed}-back`, color: backInk, opacity: 0.13 }),
+    scales: () => scales({ color: backInk, opacity: 0.3 }),
+    rays: () => rays({ color: backInk, opacity: 0.18 }),
+    dots: () => dots({ color: backInk, opacity: 0.22 }),
+  };
+  const backPattern = backPatterns[decor.backPattern] ?? backPatterns.stone;
+  vars.push(`--decor-back:${backPattern()}`);
 
   return { classes, vars, emblem: decor.emblem ?? 'lozenge' };
 }
@@ -203,4 +216,45 @@ export function magicCircle({ seed = 'circle', rings = 3, ticks = 24 } = {}) {
                stroke="currentColor" stroke-linejoin="round" aria-hidden="true">
             ${parts.join('')}
           </svg>`;
+}
+
+/** Halftone dots — the screentone of printed manga, for bright themes. */
+export function dots({ size = 14, radius = 3.1, color = '#000', opacity = 0.16 } = {}) {
+  return svgUrl(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
+      <g fill="${color}" opacity="${opacity}">
+        <circle cx="${size / 4}" cy="${size / 4}" r="${radius}"/>
+        <circle cx="${(size * 3) / 4}" cy="${(size * 3) / 4}" r="${radius}"/>
+      </g>
+    </svg>`);
+}
+
+/** Overlapping scales / fish-scale tiling, for a bright card back. */
+export function scales({ size = 60, color = '#000', opacity = 0.22 } = {}) {
+  const r = size / 2;
+  return svgUrl(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${r}">
+      <g fill="none" stroke="${color}" stroke-width="2.4" opacity="${opacity}">
+        <path d="M0 ${r} a ${r} ${r} 0 0 1 ${size} 0"/>
+        <path d="M${-r} ${r} a ${r} ${r} 0 0 1 ${size} 0" transform="translate(0 ${-r})"/>
+        <path d="M${r} ${r} a ${r} ${r} 0 0 1 ${size} 0" transform="translate(0 ${-r})"/>
+      </g>
+    </svg>`);
+}
+
+/** Radiating sunburst, the classic bright-fantasy backdrop. */
+export function rays({ count = 16, color = '#000', opacity = 0.16 } = {}) {
+  const wedges = [];
+  for (let i = 0; i < count; i += 2) {
+    const a0 = (i / count) * Math.PI * 2;
+    const a1 = ((i + 1) / count) * Math.PI * 2;
+    wedges.push(
+      `<path d="M100 100 L${(100 + Math.cos(a0) * 160).toFixed(1)} ${(100 + Math.sin(a0) * 160).toFixed(1)} ` +
+        `L${(100 + Math.cos(a1) * 160).toFixed(1)} ${(100 + Math.sin(a1) * 160).toFixed(1)} Z"/>`,
+    );
+  }
+  return svgUrl(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+      <g fill="${color}" opacity="${opacity}">${wedges.join('')}</g>
+    </svg>`);
 }

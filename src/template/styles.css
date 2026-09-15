@@ -672,3 +672,101 @@
   height: calc(380 * var(--u));
   opacity: 0.85;
 }
+
+/* --- bright / anime decor -------------------------------------------------
+ *
+ * A second visual register alongside the engraving style: thick outlines, flat
+ * saturated colour, rounded shapes. Selected through theme.decor exactly like
+ * the medieval set, so both live in the same vocabulary.
+ */
+
+/* Chunky outlined name plate with rounded ends, sitting inside the trim. */
+.decor-plate--banner .card__plate {
+  left: calc(34 * var(--u));
+  right: calc(34 * var(--u));
+  height: calc(126 * var(--u));
+  border: calc(6 * var(--u)) solid var(--ink);
+  border-radius: calc(26 * var(--u));
+  background: var(--accent);
+  color: var(--ink);
+  box-shadow: 0 calc(6 * var(--u)) 0 0 color-mix(in srgb, var(--ink) 25%, transparent);
+}
+
+.decor-plate--banner .card__faction {
+  opacity: 0.9;
+  font-weight: 700;
+}
+
+/* Sticker badge: thick outline, rounded square, drop shadow. */
+.decor-badge--sticker .card__number {
+  border-radius: calc(30 * var(--u));
+  border: calc(6 * var(--u)) solid var(--ink);
+  background: var(--accent);
+  color: var(--ink);
+  box-shadow: 0 calc(5 * var(--u)) 0 0 color-mix(in srgb, var(--ink) 30%, transparent);
+}
+
+/*
+ * Faction must never be carried by colour alone — it has to survive greyscale
+ * printing and colour blindness, as on the engraving theme's circle/diamond.
+ * clip-path cannot be used here because it would cut away the sticker outline,
+ * so the shapes differ by corner radius instead: Allies round, Hazards square.
+ */
+.card--true.decor-badge--sticker .card__number {
+  border-radius: 50%;
+}
+
+.card--fake.decor-badge--sticker .card__number {
+  border-radius: calc(14 * var(--u));
+  clip-path: none;
+  transform: none;
+  background: var(--accent);
+}
+
+.decor-plate--banner.card--true .card__plate {
+  border-radius: calc(26 * var(--u));
+}
+
+/* The Hazard plate echoes its badge: squarer corners, cut top-left. */
+.decor-plate--banner.card--fake .card__plate {
+  border-radius: calc(8 * var(--u));
+}
+
+/* Rounded panel frame instead of a thin rule. */
+.decor-frame--bubble .card__text {
+  border: calc(5 * var(--u)) solid var(--ink);
+  border-radius: calc(28 * var(--u));
+  padding: calc(22 * var(--u)) calc(24 * var(--u));
+  box-sizing: border-box;
+  background: color-mix(in srgb, var(--paper) 88%, #fff);
+}
+
+/* Star divider between a True Master's choices. */
+.decor-divider--star .effect-or > span::before,
+.decor-divider--star .effect-or > span::after {
+  content: '\2726';
+  display: inline-block;
+  margin: 0 0.5em;
+  color: var(--accent);
+  opacity: 0.9;
+}
+
+.decor-divider--star .effect-or::before,
+.decor-divider--star .effect-or::after {
+  background: color-mix(in srgb, var(--ink) 18%, transparent);
+}
+
+/* Bright themes keep their art in colour — the whole point of the style. */
+.decor-artTreatment--none .card__art {
+  filter: none;
+}
+
+/* A sunburst behind the art window, so a placeholder still reads as deliberate. */
+.decor-artBacking--rays .card__art--placeholder {
+  /* Oversized on purpose: a square sunburst must overflow the wide art window
+     or its corners show as hard edges. */
+  background-image: var(--decor-back);
+  background-size: calc(1150 * var(--u)) calc(1150 * var(--u));
+  background-position: center center;
+  background-repeat: no-repeat;
+}

@@ -1,0 +1,55 @@
+{
+  "$comment": "Bright fantasy-anime treatment of the same setting — think Super Dungeon Explore or Delicious in Dungeon. Inherits every card name, faction label and world term from the `dungeon` theme via `extends`, and overrides only presentation: palette, typography and decor. Artwork is deliberately NOT inherited; this style wants colour illustration, not sepia engravings, and the art files will be sourced separately.",
+  "extends": "dungeon",
+  "id": "dungeon-bright",
+  "subtitle": "A solo dungeon delve",
+  "palette": {
+    "true": {
+      "ink": "#1d3557",
+      "paper": "#eaf6ff",
+      "accent": "#4cc9f0"
+    },
+    "fake": {
+      "ink": "#3d1230",
+      "paper": "#ffe9f3",
+      "accent": "#ff5d8f"
+    },
+    "apprentice": {
+      "ink": "#2a2140",
+      "paper": "#fff6df",
+      "accent": "#ffd166"
+    },
+    "deity": {
+      "ink": "#3a2a05",
+      "paper": "#fff3c4",
+      "accent": "#ffc300"
+    },
+    "master": {
+      "ink": "#10233f",
+      "paper": "#2a4d8f",
+      "accent": "#ffd166"
+    },
+    "rules": {
+      "ink": "#4b3f9e",
+      "paper": "#f7f4ee",
+      "accent": "#ffc300"
+    }
+  },
+  "typography": {
+    "display": "\"Baloo 2\", sans-serif",
+    "body": "\"Nunito\", sans-serif"
+  },
+  "decor": {
+    "seed": "underleveled-bright",
+    "texture": "dots",
+    "frame": "bubble",
+    "corners": "none",
+    "plate": "banner",
+    "badge": "sticker",
+    "divider": "star",
+    "emblem": "star",
+    "backPattern": "rays",
+    "artTreatment": "none",
+    "artBacking": "rays"
+  }
+}

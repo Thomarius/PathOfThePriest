@@ -28,6 +28,10 @@ const SUBSETS = new Set(['latin', 'latin-ext']);
 const FAMILIES = [
   { family: 'Cormorant Garamond', weights: [600, 700], licence: 'cormorantgaramond' },
   { family: 'Alegreya Sans', weights: [400, 700], licence: 'alegreyasans' },
+  // Bright/anime themes: a rounded display face and a rounded, highly legible
+  // body face. Both OFL, both cover latin-ext for German.
+  { family: 'Baloo 2', weights: [700, 800], licence: 'baloo2' },
+  { family: 'Nunito', weights: [400, 700], licence: 'nunito' },
 ];
 
 async function get(url, asText = true) {

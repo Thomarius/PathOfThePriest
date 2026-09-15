@@ -389,6 +389,27 @@ npm run model -- --out out/model.json   # dump the merged render model
 
 ---
 
+## Themes
+
+| Theme | Style | Artwork |
+|---|---|---|
+| `dungeon` | 19th-century engraving, sepia monochrome | 15 sourced + 1 drawn motif |
+| `dungeon-bright` | Bright fantasy-anime: flat colour, thick outlines, rounded shapes | **none yet — to be sourced** |
+
+`dungeon-bright` uses `extends: "dungeon"`, so it shares every card name,
+faction label and world term and overrides only palette, typography and decor.
+Renaming a card in `dungeon` renames it in both.
+
+To add artwork to the bright theme, drop files in `themes/dungeon-bright/art/`
+and point each card at one:
+
+```json
+"cards": { "6": { "art": "minotaur.png", "focus": [0.5, 0.35] } }
+```
+
+Colour illustration is kept as-is there (`artTreatment: "none"`); the sepia
+unification is specific to the engraving theme.
+
 ## Part 5 — Definition of done
 
 - [ ] `npm run validate -- --deep` reports **0 errors and 0 warnings**

@@ -145,6 +145,7 @@ export function validate(overrides = {}) {
   // --- artwork (M6 still pending, so absence is a warning) ------------------
 
   let missingArt = 0;
+  let artFiles = 0;
   for (const card of model.cards) {
     // A card with a drawn motif has its art window filled procedurally and
     // needs no file — see decor.js.
@@ -152,6 +153,7 @@ export function validate(overrides = {}) {
       if (!card.motif) missingArt += 1;
       continue;
     }
+    artFiles += 1;
     const artPath = path.join(ROOT, 'themes', themeName, 'art', card.art);
     if (!fs.existsSync(artPath)) {
       errors.push(`card "${card.id}": art file themes/${themeName}/art/${card.art} not found`);
@@ -161,8 +163,11 @@ export function validate(overrides = {}) {
     warnings.push(`${missingArt} of ${model.cards.length} cards have no artwork assigned yet (M6)`);
   }
 
+  // Required only when actual image files are used. A drawn motif is ours and
+  // needs no attribution; counting it as "art in use" wrongly failed a theme
+  // that had no image files at all.
   const attribution = path.join(ROOT, 'themes', themeName, 'ATTRIBUTION.md');
-  if (missingArt < model.cards.length && !fs.existsSync(attribution)) {
+  if (artFiles > 0 && !fs.existsSync(attribution)) {
     errors.push(`theme ${themeName}: artwork is in use but ATTRIBUTION.md is missing`);
   }
 

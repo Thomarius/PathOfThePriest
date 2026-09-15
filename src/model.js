@@ -88,6 +88,71 @@ export function resolveGeometry(profile, name) {
  * forms for faction labels ("einen *Wahren* Meister"), which is why faction
  * forms are an open-ended map rather than a fixed singular/plural pair.
  */
+/**
+ * Resolves `theme.extends`: a theme may inherit from another and override only
+ * what differs. Two themes sharing a setting should not have to duplicate 16
+ * card names in two languages.
+ *
+ * Artwork is NOT inherited. Art belongs to a visual style, and a bright theme
+ * pointing at an engraving theme's files would reference images that do not
+ * exist in its own art directory. A child opts in with `inheritArt: true`.
+ */
+export function resolveExtends(theme, loadTheme, seen = []) {
+  if (!theme.extends) return theme;
+  if (seen.includes(theme.extends)) {
+    throw new Error(`theme inheritance loop: ${[...seen, theme.extends].join(' -> ')}`);
+  }
+
+  const parent = resolveExtends(loadTheme(theme.extends), loadTheme, [...seen, theme.extends]);
+
+  const mergeById = (base = {}, patch = {}) => {
+    const out = {};
+    for (const [id, value] of Object.entries(base)) out[id] = { ...value };
+    for (const [id, value] of Object.entries(patch)) out[id] = { ...(out[id] ?? {}), ...value };
+    return out;
+  };
+
+  const cards = mergeById(parent.cards, theme.cards);
+  if (!theme.inheritArt) {
+    for (const card of Object.values(cards)) {
+      delete card.art;
+      delete card.focus;
+    }
+    for (const [id, own] of Object.entries(theme.cards ?? {})) {
+      if (own.art) cards[id].art = own.art;
+      if (own.focus) cards[id].focus = own.focus;
+    }
+  }
+
+  const localeOverrides = {};
+  for (const code of new Set([
+    ...Object.keys(parent.localeOverrides ?? {}),
+    ...Object.keys(theme.localeOverrides ?? {}),
+  ])) {
+    const p = parent.localeOverrides?.[code] ?? {};
+    const c = theme.localeOverrides?.[code] ?? {};
+    localeOverrides[code] = {
+      ...p,
+      ...c,
+      factions: mergeById(p.factions, c.factions),
+      terms: mergeById(p.terms, c.terms),
+      cards: mergeById(p.cards, c.cards),
+    };
+  }
+
+  return {
+    ...parent,
+    ...theme,
+    factions: mergeById(parent.factions, theme.factions),
+    terms: mergeById(parent.terms, theme.terms),
+    palette: mergeById(parent.palette, theme.palette),
+    typography: { ...parent.typography, ...theme.typography },
+    decor: { ...parent.decor, ...theme.decor },
+    cards,
+    localeOverrides,
+  };
+}
+
 export function applyLocaleOverride(theme, localeName) {
   const override = theme.localeOverrides?.[localeName];
   if (!override) return theme;
@@ -123,7 +188,11 @@ export function buildModel(overrides = {}) {
   const localeName = overrides.locale ?? deck.locale;
   const profileName = overrides.profile ?? deck.profile ?? profiles.default;
 
-  const theme = applyLocaleOverride(loadJson(`themes/${themeName}/theme.json`), localeName);
+  const loadTheme = (name) => loadJson(`themes/${name}/theme.json`);
+  const theme = applyLocaleOverride(
+    resolveExtends(loadTheme(themeName), loadTheme),
+    localeName,
+  );
   const locale = loadJson(`locales/${localeName}.json`);
 
   const profile = profiles.profiles[profileName];

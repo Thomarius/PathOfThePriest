@@ -49,6 +49,7 @@ must be achievable by adding one locale file.
 | Cards are monolingual | One language per deck. Two languages = two complete card and rules sets from one theme via `localeOverrides`. |
 | Flavour text | None. The `flavor` field was removed. |
 | Card backs | One neutral shared back for the 14 Masters; Apprentice and Deity reuse their own front as their back. |
+| Themes | `dungeon` (sepia engraving) and `dungeon-bright` (fantasy-anime), the latter inheriting all naming from the former. |
 
 ## Print geometry
 
@@ -122,6 +123,12 @@ active theme, so re-theming can never break text on another card.
 Token parsing lives in `src/tokens.js` and emits a **segment list**, not HTML, so
 the templates decide how a glyph or card reference is actually drawn. Any brace
 surviving expansion is a validation error.
+
+**`extends: "<theme>"`** lets a theme inherit another and override only what
+differs — two themes sharing a setting should not duplicate 16 card names in two
+languages. **Artwork is not inherited**: art belongs to a visual style, and a
+child pointing at the parent's files would reference images absent from its own
+art directory. Opt in with `inheritArt: true`.
 
 ### `themes/<name>/theme.json`
 
