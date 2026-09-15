@@ -11,40 +11,27 @@
     "rulesCardTag": "Regeln"
   },
   "effects": {
-    "1.a": "Tausche {icon:swap} die 2 angrenzenden {icon:adjacent} Karten.",
+    "1.a": "Tausche {icon:swap} die 2 angrenzenden Karten.",
     "1.b": "Bewege {icon:move} diese Karte 1 Feld in Richtung Mitte {term:path.of}.",
-
-    "2.a": "Zerstöre {icon:destroy} die niedrigste {icon:lowest} angrenzende {icon:adjacent} Karte.",
-
-    "3.a": "Sende {icon:send} die niedrigste {icon:lowest} angrenzende {icon:adjacent} Karte an den Anfang {term:path.of}.",
-
-    "4.a": "Bewege {icon:moveBack} die niedrigste {icon:lowest} angrenzende {icon:adjacent} Karte 2 Felder zurück.",
+    "2.a": "Zerstöre {icon:destroy} die niedrigste {icon:lowest} angrenzende Karte.",
+    "3.a": "Sende die niedrigste {icon:lowest} angrenzende Karte an den Anfang {term:path.of}.",
+    "4.a": "Bewege {icon:moveBack} die niedrigste {icon:lowest} angrenzende Karte 2 Felder zurück.",
     "4.b": "Rücke {icon:advance} diese Karte 1 Feld vor.",
-
     "5.a": "Tausche {icon:swap} diese Karte mit einer Karte, die bis zu 2 Felder entfernt ist.",
-
-    "6.a": "Sende {icon:send} die niedrigste {icon:lowest} angrenzende {icon:adjacent} Karte auf das Feld vor {card:2}.",
+    "6.a": "Sende die niedrigste {icon:lowest} angrenzende Karte auf das Feld vor {card:2}.",
     "6.b": "Ist es {card:2}, bewege {icon:move} {card:2} 2 Felder in Richtung {card:0}, auch wenn sie sich darüber hinaus bewegt.",
-
     "7.a": "Wähle eine Karte, die 3 Felder entfernt ist, und bewege {icon:move} sie 1 Feld.",
     "7.b": "Wähle eine Karte, die 2 Felder entfernt ist, und bewege {icon:move} sie 2 Felder.",
     "7.c": "Wähle eine Karte, die 1 Feld entfernt ist, und bewege {icon:move} sie 3 Felder.",
-
-    "8.a": "Bewege {icon:moveBack} eine beliebige angrenzende {icon:adjacent} Karte 2 Felder zurück.",
-    "8.b": "Rücke {icon:advance} eine beliebige angrenzende {icon:adjacent} Karte 1 Feld vor.",
-
+    "8.a": "Bewege {icon:moveBack} eine beliebige angrenzende Karte 2 Felder zurück.",
+    "8.b": "Rücke {icon:advance} eine beliebige angrenzende Karte 1 Feld vor.",
     "9.a": "Tausche {icon:swap} diese Karte mit einer Karte, die 3 Felder entfernt ist.",
-
-    "10.a": "Tausche {icon:swap} diese Karte mit einer beliebigen angrenzenden {icon:adjacent} Karte.",
-
-    "11.a": "Bewege {icon:move} die niedrigste {icon:lowest} angrenzende {icon:adjacent} Karte 2 Felder in Richtung {card:2}, auch wenn sie sich darüber hinaus bewegt.",
+    "10.a": "Tausche {icon:swap} diese Karte mit einer beliebigen angrenzenden Karte.",
+    "11.a": "Bewege {icon:move} die niedrigste {icon:lowest} angrenzende Karte 2 Felder in Richtung {card:2}, auch wenn sie sich darüber hinaus bewegt.",
     "11.b": "Ist es {card:2}, bewege {icon:move} {card:2} 2 Felder in Richtung {card:0}, auch wenn sie sich darüber hinaus bewegt.",
-
-    "12.a": "Bewege {icon:move} eine beliebige angrenzende {icon:adjacent} Karte 2 Felder.",
-
-    "13.a": "Bewege {icon:moveBack} eine beliebige angrenzende {icon:adjacent} Karte 3 Felder zurück.",
-    "13.b": "Rücke {icon:advance} eine beliebige angrenzende {icon:adjacent} Karte 2 Felder vor.",
-
+    "12.a": "Bewege {icon:move} eine beliebige angrenzende Karte 2 Felder.",
+    "13.a": "Bewege {icon:moveBack} eine beliebige angrenzende Karte 3 Felder zurück.",
+    "13.b": "Rücke {icon:advance} eine beliebige angrenzende Karte 2 Felder vor.",
     "14.a": "Tausche {icon:swap} diese Karte mit einer Karte, die 4 Felder entfernt ist."
   },
   "rules": {
@@ -84,14 +71,44 @@
     "glossary": {
       "title": "Glossar",
       "entries": [
-        { "term": "Angrenzend", "icon": "adjacent", "text": "Unmittelbar links oder rechts davon (1 Feld entfernt)." },
-        { "term": "Vorrücken", "icon": "advance", "text": "Nach rechts bewegen." },
-        { "term": "Zurückbewegen", "icon": "moveBack", "text": "Nach links bewegen." },
-        { "term": "Bewegen", "icon": "move", "text": "In eine beliebige Richtung bewegen (links oder rechts)." },
-        { "term": "Tauschen", "icon": "swap", "text": "Die Positionen der angegebenen Karten vertauschen." },
-        { "term": "Senden", "icon": "send", "text": "Direkt auf die angegebene Position bewegen." },
-        { "term": "Zerstören", "icon": "destroy", "text": "Entferne die Karte {term:path.from} und damit aus dem Spiel." },
-        { "term": "Niedrigste", "icon": "lowest", "text": "Die Karte mit der niedrigsten Zahl in der oberen linken Ecke." }
+        {
+          "term": "Angrenzend",
+          "text": "Unmittelbar links oder rechts davon (1 Feld entfernt)."
+        },
+        {
+          "term": "Vorrücken",
+          "icon": "advance",
+          "text": "Nach rechts bewegen."
+        },
+        {
+          "term": "Zurückbewegen",
+          "icon": "moveBack",
+          "text": "Nach links bewegen."
+        },
+        {
+          "term": "Bewegen",
+          "icon": "move",
+          "text": "In eine beliebige Richtung bewegen (links oder rechts)."
+        },
+        {
+          "term": "Tauschen",
+          "icon": "swap",
+          "text": "Die Positionen der angegebenen Karten vertauschen."
+        },
+        {
+          "term": "Senden",
+          "text": "Direkt auf die angegebene Position bewegen."
+        },
+        {
+          "term": "Zerstören",
+          "icon": "destroy",
+          "text": "Entferne die Karte {term:path.from} und damit aus dem Spiel."
+        },
+        {
+          "term": "Niedrigste",
+          "icon": "lowest",
+          "text": "Die Karte mit der niedrigsten Zahl in der oberen linken Ecke."
+        }
       ]
     },
     "clarifications": {

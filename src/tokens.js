@@ -19,8 +19,6 @@ export const ICON_NAMES = [
   'move',
   'swap',
   'destroy',
-  'send',
-  'adjacent',
   'lowest',
 ];
 

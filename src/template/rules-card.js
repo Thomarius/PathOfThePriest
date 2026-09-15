@@ -35,7 +35,8 @@ function renderBlock(block) {
       return `<dl class="rules__glossary">${block.entries
         .map(
           (entry) =>
-            `<dt>${entry.icon ? icon(entry.icon) : ''}<span>${escapeHtml(entry.term)}</span></dt>` +
+            `<dt>${entry.icon ? icon(entry.icon) : '<i class="rules__no-icon"></i>'}` +
+            `<span>${escapeHtml(entry.term)}</span></dt>` +
             `<dd>${renderSegments(entry.segments)}</dd>`,
         )
         .join('')}</dl>`;

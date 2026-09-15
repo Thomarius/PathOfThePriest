@@ -777,3 +777,10 @@
   background-position: center center;
   background-repeat: no-repeat;
 }
+
+/* Terms without a glyph keep the column aligned — "Adjacent" and "Send" have no
+   icon, and without this they start flush left while the rest are indented. */
+.rules__no-icon {
+  display: inline-block;
+  width: 1.02em;
+}

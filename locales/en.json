@@ -11,40 +11,27 @@
     "rulesCardTag": "Rules"
   },
   "effects": {
-    "1.a": "Swap {icon:swap} the 2 adjacent {icon:adjacent} cards.",
+    "1.a": "Swap {icon:swap} the 2 adjacent cards.",
     "1.b": "Move {icon:move} this card 1 space towards the center {term:path.of}.",
-
-    "2.a": "Destroy {icon:destroy} the lowest {icon:lowest} adjacent {icon:adjacent} card.",
-
-    "3.a": "Send {icon:send} the lowest {icon:lowest} adjacent {icon:adjacent} card to the beginning {term:path.of}.",
-
-    "4.a": "Move {icon:moveBack} the lowest {icon:lowest} adjacent {icon:adjacent} card back 2 spaces.",
+    "2.a": "Destroy {icon:destroy} the lowest {icon:lowest} adjacent card.",
+    "3.a": "Send the lowest {icon:lowest} adjacent card to the beginning {term:path.of}.",
+    "4.a": "Move {icon:moveBack} the lowest {icon:lowest} adjacent card back 2 spaces.",
     "4.b": "Advance {icon:advance} this card 1 space.",
-
     "5.a": "Swap {icon:swap} this card with a card up to 2 spaces away.",
-
-    "6.a": "Send {icon:send} the lowest {icon:lowest} adjacent {icon:adjacent} card to the space before {card:2}.",
+    "6.a": "Send the lowest {icon:lowest} adjacent card to the space before {card:2}.",
     "6.b": "If it is {card:2}, move {icon:move} {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
-
     "7.a": "Choose a card 3 spaces away and move {icon:move} it 1 space.",
     "7.b": "Choose a card 2 spaces away and move {icon:move} it 2 spaces.",
     "7.c": "Choose a card 1 space away and move {icon:move} it 3 spaces.",
-
-    "8.a": "Move {icon:moveBack} any adjacent {icon:adjacent} card back 2 spaces.",
-    "8.b": "Advance {icon:advance} any adjacent {icon:adjacent} card 1 space.",
-
+    "8.a": "Move {icon:moveBack} any adjacent card back 2 spaces.",
+    "8.b": "Advance {icon:advance} any adjacent card 1 space.",
     "9.a": "Swap {icon:swap} this card with a card 3 spaces away.",
-
-    "10.a": "Swap {icon:swap} this card with any adjacent {icon:adjacent} card.",
-
-    "11.a": "Move {icon:move} the lowest {icon:lowest} adjacent {icon:adjacent} card 2 spaces towards {card:2}, even if it moves beyond it.",
+    "10.a": "Swap {icon:swap} this card with any adjacent card.",
+    "11.a": "Move {icon:move} the lowest {icon:lowest} adjacent card 2 spaces towards {card:2}, even if it moves beyond it.",
     "11.b": "If it is {card:2}, move {icon:move} {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
-
-    "12.a": "Move {icon:move} any adjacent {icon:adjacent} card 2 spaces.",
-
-    "13.a": "Move {icon:moveBack} any adjacent {icon:adjacent} card back 3 spaces.",
-    "13.b": "Advance {icon:advance} any adjacent {icon:adjacent} card 2 spaces.",
-
+    "12.a": "Move {icon:move} any adjacent card 2 spaces.",
+    "13.a": "Move {icon:moveBack} any adjacent card back 3 spaces.",
+    "13.b": "Advance {icon:advance} any adjacent card 2 spaces.",
     "14.a": "Swap {icon:swap} this card with a card 4 spaces away."
   },
   "rules": {
@@ -84,14 +71,44 @@
     "glossary": {
       "title": "Glossary",
       "entries": [
-        { "term": "Adjacent", "icon": "adjacent", "text": "Immediately to its left or right (1 space away)." },
-        { "term": "Advance", "icon": "advance", "text": "Move to the right." },
-        { "term": "Move back", "icon": "moveBack", "text": "Move to the left." },
-        { "term": "Move", "icon": "move", "text": "Move in any direction (left or right)." },
-        { "term": "Swap", "icon": "swap", "text": "Exchange the indicated cards' positions." },
-        { "term": "Send", "icon": "send", "text": "Move directly to the indicated position." },
-        { "term": "Destroy", "icon": "destroy", "text": "Remove the card {term:path.from} and therefore from the game." },
-        { "term": "Lowest", "icon": "lowest", "text": "Card with the lowest number in its top left corner." }
+        {
+          "term": "Adjacent",
+          "text": "Immediately to its left or right (1 space away)."
+        },
+        {
+          "term": "Advance",
+          "icon": "advance",
+          "text": "Move to the right."
+        },
+        {
+          "term": "Move back",
+          "icon": "moveBack",
+          "text": "Move to the left."
+        },
+        {
+          "term": "Move",
+          "icon": "move",
+          "text": "Move in any direction (left or right)."
+        },
+        {
+          "term": "Swap",
+          "icon": "swap",
+          "text": "Exchange the indicated cards' positions."
+        },
+        {
+          "term": "Send",
+          "text": "Move directly to the indicated position."
+        },
+        {
+          "term": "Destroy",
+          "icon": "destroy",
+          "text": "Remove the card {term:path.from} and therefore from the game."
+        },
+        {
+          "term": "Lowest",
+          "icon": "lowest",
+          "text": "Card with the lowest number in its top left corner."
+        }
       ]
     },
     "clarifications": {
