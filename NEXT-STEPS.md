@@ -19,14 +19,13 @@ Everything left is either a decision or content.
 |---|---|---|---|
 | 1 | **Setting / topic** | M6 artwork, all card names | Pick a theme with a deep public-domain image pool, and one where 6 *vices* and 8 *virtues* map onto Fake and True Masters. Candidates below. |
 | 2 | ~~**Language**~~ — decided: German | — | `locales/de.json` drafted. English kept as the reference; both ship from the same artwork via `localeOverrides`. |
-| 8 | **German wording choices** (below) | M0 sign-off | Review the seven points listed under the table. |
-| 3 | **Rules cards: German only, or bilingual?** | M7 | German only. Five rules cards are already dense; doubling the text would need 10 cards or unreadable type. |
-| 4 | **Keep `{icon:adjacent}` and `{icon:lowest}` in effect text?** | M0 wording | Drop both from effect text, keep them on the glossary card. They appear on almost every line and add noise; the movement verbs are what benefit from a glyph. Judge from a printed proof first. |
-| 5 | **Flavour text on cards?** | M7 | Skip. `theme.json` accepts a `flavor` field and the model carries it, but no template renders it — see Part 2. There is room on single-effect cards, but not on cards 6, 7 and 11. |
-| 6 | **Card back designs (3)** | M7 | One shared back for the 14 Masters (must not hint True vs Fake), plus distinct Apprentice and Deity backs. |
-| 7 | **Print service** | — | `mpc` is the default and is already configured. `drivethru` and `home-a4` profiles exist; switching is a flag, not a rewrite. |
+| 3 | ~~**Bilingual cards?**~~ — decided: monolingual | — | Each language is a complete, separate card and rules set. Two languages means two decks, produced from one theme via `localeOverrides`. |
+| 4 | **Keep `{icon:adjacent}` and `{icon:lowest}`?** — kept for now | proof-reading | Retained. Revisit during proof-reading of a printed copy; removing them is a locale-file edit, no code change. |
+| 5 | ~~**Flavour text**~~ — decided: none | — | The `flavor` field has been removed from the model. There was room on single-effect cards but not on 6, 7 and 11. |
+| 6 | ~~**Card backs**~~ — decided | M7 build | One neutral shared back for the 14 Masters, giving away nothing about True vs Fake. Apprentice and Deity reuse their own front as their back for now. |
+| 7 | **Print service** — default stands | — | `mpc` is the default and is already configured. `drivethru` and `home-a4` profiles exist; switching is a flag, not a rewrite. |
 
-### On decision 8 — German wording to confirm
+### German wording — all seven points approved 2026-09-15
 
 1. **"zurückbewegen", not "zurückziehen".** In German game usage *ziehen* also
    means "draw a card"; this deck already has cards moving along a path, so
@@ -78,7 +77,7 @@ Measured result: German runs **+32%** longer than English overall; card 7 grows
 +40% yet keeps 2 spare lines. No card falls below 2 spare lines, so the layout
 needs no change for German.
 
-Open wording choices to confirm are listed in Part 1, decision 8.
+The seven wording choices below were reviewed and approved.
 
 ### M6 — Artwork *(needs decision 1; the long pole)*
 
@@ -102,7 +101,6 @@ cannot drift from the glyphs printed on the cards.
 
 | Gap | Detail |
 |---|---|
-| `flavor` unused | `theme.json` accepts it, `model.js` carries it, no template prints it. Implement in M7 or drop the field. |
 | Art focus is vertical only | `theme.json` `focus: [x, y]` — only `y` is applied (`background-position: center <y>`). Add horizontal support if a chosen image needs it. |
 | Rules cards not rendered | `npm run build` renders the 16 faces only. Rules cards and backs join once their templates exist. |
 | `.gitattributes` | Git reports LF→CRLF on every commit. Adding `* text=auto eol=lf` would settle it if the repo is ever opened on another machine. |

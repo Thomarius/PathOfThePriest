@@ -27,7 +27,7 @@ Apprentice and Deity are separated before shuffling and may be told apart.
 
 - `data/` — mechanical skeleton. Card numbers, factions, effect slots. Fixed by
   the rules, never edited for a re-theme.
-- `themes/<name>/` — topic layer. Card names, faction labels, flavor text, art,
+- `themes/<name>/` — topic layer. Card names, faction labels, art,
   palette, typography.
 - `locales/<lang>.json` — wording layer. Effect sentences with icon and card-name
   tokens, rules card copy, glossary.
@@ -46,6 +46,9 @@ must be achievable by adding one locale file.
 | Primary language | German (`de`); English (`en`) maintained as a fallback from `RulesSummary.txt` |
 | Topic / theme | **Deferred.** Build the pipeline theme-agnostic with a placeholder theme. |
 | Faction names | Theme data — never hardcoded as "True Master" / "Fake Master" |
+| Cards are monolingual | One language per deck. Two languages = two complete card and rules sets from one theme via `localeOverrides`. |
+| Flavour text | None. The `flavor` field was removed. |
+| Card backs | One neutral shared back for the 14 Masters; Apprentice and Deity reuse their own front as their back. |
 
 ## Print geometry
 
@@ -112,6 +115,7 @@ active theme, so re-theming can never break text on another card.
 | Token | Resolves to | Notes |
 |---|---|---|
 | `{icon:<name>}` | inline glyph | valid names: `advance` `moveBack` `move` `swap` `destroy` `send` `adjacent` `lowest` |
+| | | **Glyphs go *after* the keyword they annotate** — "Swap `<swap>` the 2 adjacent `<adjacent>` cards", matching the original game's cards. `renderSegments` converts the space before a glyph to a non-breaking one, so a wrap can never strand it away from its verb. |
 | `{card:<id>}` | card name from theme | cards 6 and 11 reference `{card:2}` (GRUDGE); card 11 also references `{card:0}` (APPRENTICE) |
 | `{faction:<id>.<form>}` | faction label from theme | `<form>` is any key the theme defines — `one`, `other`, and for German also case forms (`dat`, `akk`) |
 
@@ -121,7 +125,7 @@ surviving expansion is a validation error.
 
 ### `themes/<name>/theme.json`
 
-Per-card `name`, optional `flavor`, `art` filename and focal-point crop; deck
+Per-card `name`, optional `art` filename and focal-point crop; deck
 title; faction display labels; palette; font choices.
 
 **`localeOverrides.<code>`** folds language-specific values over the base theme,

@@ -269,11 +269,13 @@
   white-space: nowrap;
 }
 
+/* Glyphs sit after the keyword they annotate, matching the original game's
+   cards. The leading space is non-breaking (see renderSegments), so the pair
+   never splits across lines. */
 .icon {
   width: 1.02em;
   height: 1.02em;
   vertical-align: -0.16em;
-  margin-right: calc(3 * var(--u));
   color: var(--accent);
 }
 

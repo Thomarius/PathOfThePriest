@@ -11,41 +11,41 @@
     "rulesCardTag": "Rules"
   },
   "effects": {
-    "1.a": "{icon:swap} Swap the 2 {icon:adjacent} adjacent cards.",
-    "1.b": "{icon:move} Move this card 1 space towards the center of the path.",
+    "1.a": "Swap {icon:swap} the 2 adjacent {icon:adjacent} cards.",
+    "1.b": "Move {icon:move} this card 1 space towards the center of the path.",
 
-    "2.a": "{icon:destroy} Destroy the {icon:lowest} lowest {icon:adjacent} adjacent card.",
+    "2.a": "Destroy {icon:destroy} the lowest {icon:lowest} adjacent {icon:adjacent} card.",
 
-    "3.a": "{icon:send} Send the {icon:lowest} lowest {icon:adjacent} adjacent card to the beginning of the path.",
+    "3.a": "Send {icon:send} the lowest {icon:lowest} adjacent {icon:adjacent} card to the beginning of the path.",
 
-    "4.a": "{icon:moveBack} Move the {icon:lowest} lowest {icon:adjacent} adjacent card back 2 spaces.",
-    "4.b": "{icon:advance} Advance this card 1 space.",
+    "4.a": "Move {icon:moveBack} the lowest {icon:lowest} adjacent {icon:adjacent} card back 2 spaces.",
+    "4.b": "Advance {icon:advance} this card 1 space.",
 
-    "5.a": "{icon:swap} Swap this card with a card up to 2 spaces away.",
+    "5.a": "Swap {icon:swap} this card with a card up to 2 spaces away.",
 
-    "6.a": "{icon:send} Send the {icon:lowest} lowest {icon:adjacent} adjacent card to the space before {card:2}.",
-    "6.b": "If it is {card:2}, {icon:move} move {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
+    "6.a": "Send {icon:send} the lowest {icon:lowest} adjacent {icon:adjacent} card to the space before {card:2}.",
+    "6.b": "If it is {card:2}, move {icon:move} {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
 
-    "7.a": "{icon:move} Choose a card 3 spaces away and move it 1 space.",
-    "7.b": "{icon:move} Choose a card 2 spaces away and move it 2 spaces.",
-    "7.c": "{icon:move} Choose a card 1 space away and move it 3 spaces.",
+    "7.a": "Choose a card 3 spaces away and move {icon:move} it 1 space.",
+    "7.b": "Choose a card 2 spaces away and move {icon:move} it 2 spaces.",
+    "7.c": "Choose a card 1 space away and move {icon:move} it 3 spaces.",
 
-    "8.a": "{icon:moveBack} Move any {icon:adjacent} adjacent card back 2 spaces.",
-    "8.b": "{icon:advance} Advance any {icon:adjacent} adjacent card 1 space.",
+    "8.a": "Move {icon:moveBack} any adjacent {icon:adjacent} card back 2 spaces.",
+    "8.b": "Advance {icon:advance} any adjacent {icon:adjacent} card 1 space.",
 
-    "9.a": "{icon:swap} Swap this card with a card 3 spaces away.",
+    "9.a": "Swap {icon:swap} this card with a card 3 spaces away.",
 
-    "10.a": "{icon:swap} Swap this card with any {icon:adjacent} adjacent card.",
+    "10.a": "Swap {icon:swap} this card with any adjacent {icon:adjacent} card.",
 
-    "11.a": "{icon:move} Move the {icon:lowest} lowest {icon:adjacent} adjacent card 2 spaces towards {card:2}, even if it moves beyond it.",
-    "11.b": "If it is {card:2}, {icon:move} move {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
+    "11.a": "Move {icon:move} the lowest {icon:lowest} adjacent {icon:adjacent} card 2 spaces towards {card:2}, even if it moves beyond it.",
+    "11.b": "If it is {card:2}, move {icon:move} {card:2} 2 spaces towards {card:0}, even if it moves beyond it.",
 
-    "12.a": "{icon:move} Move any {icon:adjacent} adjacent card 2 spaces.",
+    "12.a": "Move {icon:move} any adjacent {icon:adjacent} card 2 spaces.",
 
-    "13.a": "{icon:moveBack} Move any {icon:adjacent} adjacent card back 3 spaces.",
-    "13.b": "{icon:advance} Advance any {icon:adjacent} adjacent card 2 spaces.",
+    "13.a": "Move {icon:moveBack} any adjacent {icon:adjacent} card back 3 spaces.",
+    "13.b": "Advance {icon:advance} any adjacent {icon:adjacent} card 2 spaces.",
 
-    "14.a": "{icon:swap} Swap this card with a card 4 spaces away."
+    "14.a": "Swap {icon:swap} this card with a card 4 spaces away."
   },
   "rules": {
     "objective": {

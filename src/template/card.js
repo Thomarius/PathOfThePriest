@@ -19,10 +19,20 @@ export function escapeHtml(value) {
 /** Renders a parsed segment list to inline HTML. */
 export function renderSegments(segments) {
   return segments
-    .map((seg) => {
+    .map((seg, i) => {
       switch (seg.t) {
         case 'icon':
           return icon(seg.name);
+        case 'text': {
+          // Glyphs follow the keyword they annotate ("Swap <swap> the 2 …"), so
+          // the space before one is made non-breaking. Otherwise a wrap can
+          // strand the icon at the start of the next line, away from its verb.
+          const next = segments[i + 1];
+          if (next?.t === 'icon' && /\s$/.test(seg.v)) {
+            return `${escapeHtml(seg.v.replace(/\s+$/, ''))}&nbsp;`;
+          }
+          return escapeHtml(seg.v);
+        }
         case 'card':
           // Card names are set apart because effects on cards 6 and 11 target a
           // specific other card; the player has to spot it while scanning.
