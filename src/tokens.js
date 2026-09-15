@@ -82,6 +82,23 @@ export function parseSegments(text, ctx = {}) {
         segments.push({ t: 'faction', id, form, v: label });
         break;
       }
+      // World vocabulary — the Path becomes a Dungeon, a Road, a River. Without
+      // this the noun would sit hardcoded in the locale, which is the one thing
+      // the wording layer must never contain. Forms carry their article, since
+      // German gender changes it ("das Verlies" vs "den Pfad").
+      case 'term': {
+        const dot = arg.indexOf('.');
+        const id = dot === -1 ? arg : arg.slice(0, dot);
+        const form = dot === -1 ? 'def' : arg.slice(dot + 1);
+        const label = ctx.term?.(id, form);
+        if (label == null) {
+          errors.push(`unknown term "${id}.${form}" in ${raw}`);
+          segments.push({ t: 'text', v: raw });
+          break;
+        }
+        segments.push({ t: 'term', id, form, v: label });
+        break;
+      }
       default:
         errors.push(`unknown token type "${kind}" in ${raw}`);
         segments.push({ t: 'text', v: raw });

@@ -1,32 +1,88 @@
 {
   "$comment": "Defines one print run: which faces are printed, which rules cards accompany them, and which back each card gets. Theme, locale and print profile are defaults here and can be overridden from the CLI.",
-  "theme": "placeholder",
-  "locale": "en",
+  "theme": "dungeon",
+  "locale": "de",
   "profile": "mpc",
-  "faces": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "D"],
+  "faces": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "D"
+  ],
   "rulesCards": [
-    { "id": "rules-objective", "key": "rules.objective", "layout": "prose" },
-    { "id": "rules-setup", "key": "rules.setup", "layout": "steps" },
-    { "id": "rules-turn", "key": "rules.turn", "layout": "steps" },
-    { "id": "rules-glossary", "key": "rules.glossary", "layout": "glossary" },
-    { "id": "rules-clarifications", "key": "rules.clarifications", "layout": "bullets" }
+    {
+      "id": "rules-objective",
+      "key": "rules.objective",
+      "layout": "prose"
+    },
+    {
+      "id": "rules-setup",
+      "key": "rules.setup",
+      "layout": "steps"
+    },
+    {
+      "id": "rules-turn",
+      "key": "rules.turn",
+      "layout": "steps"
+    },
+    {
+      "id": "rules-glossary",
+      "key": "rules.glossary",
+      "layout": "glossary"
+    },
+    {
+      "id": "rules-clarifications",
+      "key": "rules.clarifications",
+      "layout": "bullets"
+    }
   ],
   "backs": [
     {
       "id": "back-master",
       "design": "master",
-      "appliesTo": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"],
+      "appliesTo": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14"
+      ],
       "notes": "The 14 Masters are shuffled during setup, so this back must be identical across all of them and must not hint at True vs Fake."
     },
     {
       "id": "back-apprentice",
       "design": "apprentice",
-      "appliesTo": ["0"]
+      "appliesTo": [
+        "0"
+      ]
     },
     {
       "id": "back-deity",
       "design": "deity",
-      "appliesTo": ["D"]
+      "appliesTo": [
+        "D"
+      ]
     }
   ]
 }

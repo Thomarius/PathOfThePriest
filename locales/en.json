@@ -12,11 +12,11 @@
   },
   "effects": {
     "1.a": "Swap {icon:swap} the 2 adjacent {icon:adjacent} cards.",
-    "1.b": "Move {icon:move} this card 1 space towards the center of the path.",
+    "1.b": "Move {icon:move} this card 1 space towards the center {term:path.of}.",
 
     "2.a": "Destroy {icon:destroy} the lowest {icon:lowest} adjacent {icon:adjacent} card.",
 
-    "3.a": "Send {icon:send} the lowest {icon:lowest} adjacent {icon:adjacent} card to the beginning of the path.",
+    "3.a": "Send {icon:send} the lowest {icon:lowest} adjacent {icon:adjacent} card to the beginning {term:path.of}.",
 
     "4.a": "Move {icon:moveBack} the lowest {icon:lowest} adjacent {icon:adjacent} card back 2 spaces.",
     "4.b": "Advance {icon:advance} this card 1 space.",
@@ -51,8 +51,8 @@
     "objective": {
       "title": "Objective",
       "body": [
-        "Walk along a Path of 14 cards, made up of 8 {faction:true.other} and 6 {faction:fake.other}.",
-        "Take {card:0} from the beginning of the Path to the end and connect with {card:D}."
+        "Make your way along {term:path.indef} of 14 cards, made up of 8 {faction:true.other} and 6 {faction:fake.other}.",
+        "Take {card:0} from the beginning {term:path.of} to the end and connect with {card:D}."
       ],
       "sections": [
         {
@@ -68,16 +68,16 @@
       "title": "Setup",
       "items": [
         "Separate {card:0} and {card:D}.",
-        "Shuffle the 14 remaining cards and form the Path by placing them from left to right.",
-        "Place {card:0} at the beginning of the Path (left).",
-        "Place {card:D} at the end of the Path (right)."
+        "Shuffle the 14 remaining cards and form {term:path.def} by placing them from left to right.",
+        "Place {card:0} at the beginning {term:path.of} (left).",
+        "Place {card:D} at the end {term:path.of} (right)."
       ]
     },
     "turn": {
       "title": "How to Play",
       "items": [
-        "Player turn: choose any {faction:true.one} within the Path and activate it by resolving 1 of its effects.",
-        "{faction:fake.other} turn: each {faction:fake.one} within the Path is activated from lowest to highest (1, 2, 3, 4, 6, 11).",
+        "Player turn: choose any {faction:true.one} {term:path.in} and activate it by resolving 1 of its effects.",
+        "{faction:fake.other} turn: each {faction:fake.one} {term:path.in} is activated from lowest to highest (1, 2, 3, 4, 6, 11).",
         "Begin a new round with the player turn."
       ]
     },
@@ -90,7 +90,7 @@
         { "term": "Move", "icon": "move", "text": "Move in any direction (left or right)." },
         { "term": "Swap", "icon": "swap", "text": "Exchange the indicated cards' positions." },
         { "term": "Send", "icon": "send", "text": "Move directly to the indicated position." },
-        { "term": "Destroy", "icon": "destroy", "text": "Take out of the Path and therefore out of the game." },
+        { "term": "Destroy", "icon": "destroy", "text": "Remove the card {term:path.from} and therefore from the game." },
         { "term": "Lowest", "icon": "lowest", "text": "Card with the lowest number in its top left corner." }
       ]
     },
@@ -103,7 +103,7 @@
         "If you cannot activate any {faction:true.one}, you lose immediately.",
         "When activating a {faction:fake.one}, resolve its top effect. If unable, the bottom effect offers an alternative. If neither can be resolved, ignore that card.",
         "The numbers of the effects are exact, unless preceded by \"up to\". Example: \"up to 2\" means 1 or 2.",
-        "No card can move back beyond the first position of the Path.",
+        "No card can move back beyond the first position {term:path.of}.",
         "No card can move beyond {card:D}. You need to move {card:0} exactly to the position on the left side of {card:D}.",
         "No effect can affect {card:D}."
       ]

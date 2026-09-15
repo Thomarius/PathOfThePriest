@@ -1,0 +1,200 @@
+{
+  "$comment": "Sample theme: an underlevelled adventurer delving for treasure. True Masters are helpful party members and equipment; Fake Masters are traps and monsters; the Deity is the treasure chest. Names were chosen so the mechanic is legible from the card: the Mimic eats the lowest adjacent card, the Trapdoor drops it back to the entrance, the Gelatinous Cube shoves you back and creeps forward when it cannot.",
+  "id": "dungeon",
+  "title": "Underleveled",
+  "subtitle": "A solo dungeon delve",
+  "terms": {
+    "path": {
+      "def": "the dungeon",
+      "indef": "a dungeon",
+      "in": "in the dungeon",
+      "of": "of the dungeon",
+      "from": "from the dungeon"
+    }
+  },
+  "factions": {
+    "true": {
+      "one": "Ally",
+      "other": "Allies"
+    },
+    "fake": {
+      "one": "Hazard",
+      "other": "Hazards"
+    },
+    "apprentice": {
+      "one": "Adventurer",
+      "other": "Adventurers"
+    },
+    "deity": {
+      "one": "Treasure",
+      "other": "Treasures"
+    }
+  },
+  "palette": {
+    "true": {
+      "ink": "#22303a",
+      "paper": "#f3ecdd",
+      "accent": "#2f6f4f"
+    },
+    "fake": {
+      "ink": "#f0e4e2",
+      "paper": "#241c20",
+      "accent": "#b04a36"
+    },
+    "apprentice": {
+      "ink": "#2a2622",
+      "paper": "#f7f0dd",
+      "accent": "#b8862b"
+    },
+    "deity": {
+      "ink": "#f9f1d9",
+      "paper": "#1b2133",
+      "accent": "#d8ad33"
+    }
+  },
+  "typography": {
+    "display": "\"Cormorant Garamond\", serif",
+    "body": "\"Alegreya Sans\", sans-serif"
+  },
+  "cards": {
+    "0": {
+      "name": "Level 1 Bard",
+      "inline": "the Bard"
+    },
+    "1": {
+      "name": "Teleporter Trap"
+    },
+    "2": {
+      "name": "Hungry Mimic",
+      "inline": "the Mimic"
+    },
+    "3": {
+      "name": "Trapdoor"
+    },
+    "4": {
+      "name": "Gelatinous Cube"
+    },
+    "5": {
+      "name": "Rogue"
+    },
+    "6": {
+      "name": "False Treasure"
+    },
+    "7": {
+      "name": "Wizard"
+    },
+    "8": {
+      "name": "Cleric"
+    },
+    "9": {
+      "name": "Blink Dog"
+    },
+    "10": {
+      "name": "Fighter"
+    },
+    "11": {
+      "name": "Cursed Coin"
+    },
+    "12": {
+      "name": "Pack Mule"
+    },
+    "13": {
+      "name": "Staff of Power"
+    },
+    "14": {
+      "name": "Teleportation Circle"
+    },
+    "D": {
+      "name": "Treasure Chest"
+    }
+  },
+  "localeOverrides": {
+    "de": {
+      "title": "Unterlevelt",
+      "subtitle": "Ein Solo-Verlies",
+      "terms": {
+        "path": {
+          "def": "das Verlies",
+          "indef": "ein Verlies",
+          "in": "im Verlies",
+          "of": "des Verlieses",
+          "from": "aus dem Verlies"
+        }
+      },
+      "factions": {
+        "true": {
+          "one": "Verbündeter",
+          "akk": "Verbündeten",
+          "other": "Verbündete",
+          "genPl": "Verbündeten"
+        },
+        "fake": {
+          "one": "Gefahr",
+          "akk": "Gefahr",
+          "other": "Gefahren",
+          "genPl": "Gefahren"
+        },
+        "apprentice": {
+          "one": "Abenteurer",
+          "other": "Abenteurer"
+        },
+        "deity": {
+          "one": "Schatz",
+          "other": "Schätze"
+        }
+      },
+      "cards": {
+        "0": {
+          "name": "Barde (Stufe 1)",
+          "inline": "Barde"
+        },
+        "1": {
+          "name": "Teleportfalle"
+        },
+        "2": {
+          "name": "Hungrige Mimik",
+          "inline": "Mimik"
+        },
+        "3": {
+          "name": "Falltür"
+        },
+        "4": {
+          "name": "Gallertwürfel"
+        },
+        "5": {
+          "name": "Schurke"
+        },
+        "6": {
+          "name": "Trugschatz"
+        },
+        "7": {
+          "name": "Magier"
+        },
+        "8": {
+          "name": "Kleriker"
+        },
+        "9": {
+          "name": "Blinkhund"
+        },
+        "10": {
+          "name": "Kämpfer"
+        },
+        "11": {
+          "name": "Verfluchte Münze"
+        },
+        "12": {
+          "name": "Lastesel"
+        },
+        "13": {
+          "name": "Stab der Macht"
+        },
+        "14": {
+          "name": "Teleportkreis"
+        },
+        "D": {
+          "name": "Schatztruhe"
+        }
+      }
+    }
+  }
+}

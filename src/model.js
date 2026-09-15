@@ -103,6 +103,7 @@ export function applyLocaleOverride(theme, localeName) {
     ...theme,
     ...override,
     factions: mergeById(theme.factions, override.factions),
+    terms: mergeById(theme.terms, override.terms),
     cards: mergeById(theme.cards, override.cards),
     palette: mergeById(theme.palette, override.palette),
     typography: { ...theme.typography, ...override.typography },
@@ -135,8 +136,13 @@ export function buildModel(overrides = {}) {
   const byId = new Map(cardData.cards.map((c) => [c.id, c]));
 
   const ctx = {
-    cardName: (id) => theme.cards?.[id]?.name,
+    // `inline` is the name as it reads *inside a sentence*; `name` is what is
+    // printed on the card. Only cards 0 and 2 are ever referenced by token, and
+    // a flavourful multi-word name ("Hungry Mimic") reads badly after a
+    // preposition, where "the Mimic" is what you would actually say.
+    cardName: (id) => theme.cards?.[id]?.inline ?? theme.cards?.[id]?.name,
     factionLabel: (id, form) => theme.factions?.[id]?.[form],
+    term: (id, form) => theme.terms?.[id]?.[form],
   };
 
   /** Parses one string, attributing any token error to a source location. */
