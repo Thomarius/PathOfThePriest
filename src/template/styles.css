@@ -635,3 +635,27 @@
   margin: 0;
   text-wrap: pretty;
 }
+
+/* --- artwork treatment ----------------------------------------------------
+ *
+ * Sourced art comes from wildly different media — steel engravings, an
+ * illuminated manuscript, a tinted film still — and mixing them raw made the
+ * deck look like a scrapbook. Reducing every image to a warm monochrome makes
+ * sixteen unrelated sources read as one deck, and is applied to the image
+ * itself rather than blended with the card, so it works on light and dark
+ * stock alike.
+ */
+.decor-artTreatment--sepia .card__art {
+  filter: grayscale(1) sepia(0.38) contrast(1.06);
+}
+
+.decor-artTreatment--mono .card__art {
+  filter: grayscale(1) contrast(1.08);
+}
+
+/* Dark cards need the art pulled down a little or it glares against the
+   near-black panel. */
+.card--fake.decor-artTreatment--sepia .card__art,
+.card--fake.decor-artTreatment--mono .card__art {
+  filter: grayscale(1) sepia(0.32) contrast(1.05) brightness(0.82);
+}

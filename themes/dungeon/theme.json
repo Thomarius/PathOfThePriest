@@ -78,53 +78,68 @@
   "cards": {
     "0": {
       "name": "Level 1 Bard",
-      "inline": "the Bard"
+      "inline": "the Bard",
+      "art": "0-level-1-bard.jpg"
     },
     "1": {
-      "name": "Teleporter Trap"
+      "name": "Teleporter Trap",
+      "art": "1-teleporter-trap.jpg"
     },
     "2": {
       "name": "Hungry Mimic",
-      "inline": "the Mimic"
+      "inline": "the Mimic",
+      "art": "2-hungry-mimic.png"
     },
     "3": {
-      "name": "Trapdoor"
+      "name": "Trapdoor",
+      "art": "3-trapdoor.jpg"
     },
     "4": {
-      "name": "Golem"
+      "name": "Golem",
+      "art": "4-golem.jpg"
     },
     "5": {
-      "name": "Rogue"
+      "name": "Rogue",
+      "art": "5-rogue.jpg"
     },
     "6": {
-      "name": "Minotaur"
+      "name": "Minotaur",
+      "art": "6-minotaur.jpg"
     },
     "7": {
-      "name": "Wizard"
+      "name": "Wizard",
+      "art": "7-wizard.jpg"
     },
     "8": {
-      "name": "Cleric"
+      "name": "Cleric",
+      "art": "8-cleric.jpg"
     },
     "9": {
-      "name": "Blink Dog"
+      "name": "Blink Dog",
+      "art": "9-blink-dog.jpg"
     },
     "10": {
-      "name": "Fighter"
+      "name": "Fighter",
+      "art": "10-fighter.jpg"
     },
     "11": {
-      "name": "Cursed Coin"
+      "name": "Cursed Coin",
+      "art": "11-cursed-coin.jpg"
     },
     "12": {
-      "name": "Pack Mule"
+      "name": "Pack Mule",
+      "art": "12-pack-mule.jpg"
     },
     "13": {
-      "name": "Staff of Power"
+      "name": "Staff of Power",
+      "art": "13-staff-of-power.jpg"
     },
     "14": {
       "name": "Teleportation Circle"
     },
     "D": {
-      "name": "Treasure Chest"
+      "name": "Treasure Chest",
+      "art": "D-treasure-chest.jpg"
     }
   },
   "localeOverrides": {
@@ -235,6 +250,7 @@
     "corners": "studs",
     "plate": "ruled",
     "badge": "ring",
-    "divider": "lozenge"
+    "divider": "lozenge",
+    "artTreatment": "sepia"
   }
 }
