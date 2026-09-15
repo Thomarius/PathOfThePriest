@@ -661,10 +661,25 @@
 }
 
 /* Drawn motif filling the art window — see decor.js magicCircle(). */
+/*
+ * Motifs are two-tone: a filled silhouette with a darker outline. Inline SVG
+ * inherits custom properties, so both colours come from the card's palette and
+ * follow the theme without the motif knowing anything about it.
+ */
 .card__art--motif {
   display: grid;
   place-items: center;
-  color: color-mix(in srgb, var(--accent) 72%, var(--ink));
+  --motif-line: color-mix(in srgb, var(--ink) 86%, var(--accent));
+  --motif-fill: color-mix(in srgb, var(--accent) 52%, var(--paper));
+  color: var(--motif-line);
+}
+
+/* Dark cards need the fill lifted away from the panel or the silhouette
+   disappears into it. */
+.card--fake .card__art--motif,
+.card--deity .card__art--motif {
+  --motif-line: color-mix(in srgb, var(--ink) 70%, var(--accent));
+  --motif-fill: color-mix(in srgb, var(--accent) 60%, var(--ink));
 }
 
 .card__art--motif svg {

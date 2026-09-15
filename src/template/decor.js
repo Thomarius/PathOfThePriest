@@ -185,6 +185,8 @@ export function decorFor(theme) {
 export function magicCircle({ seed = 'circle', rings = 3, ticks = 24 } = {}) {
   const rand = seeded(seed);
   const parts = [
+    // Filled disc so the circle carries the same weight as the other motifs.
+    '<circle cx="100" cy="100" r="92" fill="var(--motif-fill, none)"/>',
     '<circle cx="100" cy="100" r="92" stroke-width="1.4"/>',
     '<circle cx="100" cy="100" r="78" stroke-width="2.6"/>',
     '<circle cx="100" cy="100" r="46" stroke-width="1.4"/>',
@@ -213,9 +215,8 @@ export function magicCircle({ seed = 'circle', rings = 3, ticks = 24 } = {}) {
   }
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none"
-               stroke="currentColor" stroke-linejoin="round" aria-hidden="true">
-            ${parts.join('')}
-          </svg>`;
+               stroke="var(--motif-line, currentColor)" stroke-linejoin="round"
+               aria-hidden="true">${parts.join('')}</svg>`;
 }
 
 /** Halftone dots — the screentone of printed manga, for bright themes. */

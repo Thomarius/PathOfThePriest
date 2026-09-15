@@ -16,7 +16,7 @@ shippable — the deck renders and validates after every one.
 
 ---
 
-## M8 — Two-tone motifs, and evening out the set
+## ~~M8~~ — Two-tone motifs, and evening out the set — **DONE**
 
 *Affects `dungeon-bright`. The single biggest visual improvement available.*
 
@@ -34,7 +34,18 @@ same sticker logic the badges and name plates already use but the art does not.
   weight and how much of the 200×200 box each motif fills is what will make the
   sheet look like one hand drew it.
 
-Done when the proof sheet reads as a single coherent set at 33% zoom.
+**Done.** Motifs are now filled silhouettes with a darker outline, both colours
+driven by `--motif-fill` / `--motif-line`, which inline SVG inherits from the
+card's palette. `golem` gained shoulders, a sunken head and a cracked chest.
+`minotaur` needed **three** attempts: thin curves read as ears, thick vertical
+shapes read as a rabbit, and only crescents sweeping *outward* from the sides
+read as horns — with nostrils and a nose ring in place of a smile. `staff`,
+`chalice`, `dagger` and `trapdoor` were weighted up afterwards; they were
+visibly lighter than the rest on the sheet. `magicCircle` gained a filled disc
+so it no longer sits lighter than everything around it.
+
+Lesson worth keeping: a motif's *silhouette* decides what it reads as. Detail
+inside it barely matters at 63 mm, and no amount of it fixes a wrong outline.
 
 ---
 

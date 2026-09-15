@@ -4,37 +4,60 @@
  * A theme can give any card a `motif` instead of an image file. They serve two
  * purposes: as a stand-in while artwork is being sourced, and as the permanent
  * answer for cards nothing in the public domain depicts — a teleportation
- * circle among them.
+ * circle among them. The `dungeon-bright` deck is built entirely from these, so
+ * it carries no third-party artwork at all.
  *
- * All are stroked in `currentColor` and sized in a 200x200 box, so they take the
- * card's palette and scale with the layout. Bold and simple on purpose: at
- * 63 mm a detailed line drawing turns to mud.
+ * TWO-TONE: each motif is a filled silhouette with a darker outline, the same
+ * sticker logic the badges and name plates use. The two colours come from CSS
+ * custom properties rather than `currentColor`, because inline SVG inherits
+ * them — so both are driven by the card's palette and follow the theme.
  *
- * Deterministic: no randomness here at all, and `magicCircle` (in decor.js)
- * takes a seed.
+ *   --motif-fill   the body colour
+ *   --motif-line   the outline, and any solid detail such as an eye
+ *
+ * Bold and simple on purpose: at 63 mm a detailed line drawing turns to mud.
+ * Deterministic — no randomness here at all.
  */
 
-const wrap = (body, stroke = 7) =>
+const LINE = 'var(--motif-line, currentColor)';
+const FILL = 'var(--motif-fill, none)';
+
+/**
+ * Motifs are drawn to fill roughly a 150x150 area inside the 200x200 box, and
+ * share one stroke weight. Both matter more than they sound: uneven coverage and
+ * uneven stroke weight are what made the first set look like fifteen different
+ * hands rather than one.
+ */
+const svg = (body, stroke = 8) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none"
-        stroke="currentColor" stroke-width="${stroke}" stroke-linecap="round"
+        stroke="${LINE}" stroke-width="${stroke}" stroke-linecap="round"
         stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
 
-/** Four-point sparkle, reused as a decorative accent by several motifs. */
-const sparkle = (x, y, r) =>
-  `<path d="M${x} ${y - r} Q${x + r * 0.25} ${y - r * 0.25} ${x + r} ${y} ` +
-  `Q${x + r * 0.25} ${y + r * 0.25} ${x} ${y + r} ` +
-  `Q${x - r * 0.25} ${y + r * 0.25} ${x - r} ${y} ` +
-  `Q${x - r * 0.25} ${y - r * 0.25} ${x} ${y - r} Z" fill="currentColor" stroke="none"/>`;
+/** Filled silhouette with an outline. */
+const solid = (d) => `<path d="${d}" fill="${FILL}"/>`;
+const solidCircle = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${FILL}"/>`;
+
+/** Outline only. */
+const line = (d, w) => `<path d="${d}"${w ? ` stroke-width="${w}"` : ''}/>`;
+
+/** Solid detail in the outline colour — eyes, locks, sparkles. */
+const dot = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${LINE}" stroke="none"/>`;
+const spark = (x, y, r) =>
+  `<path d="M${x} ${y - r} Q${x + r * 0.26} ${y - r * 0.26} ${x + r} ${y} ` +
+  `Q${x + r * 0.26} ${y + r * 0.26} ${x} ${y + r} ` +
+  `Q${x - r * 0.26} ${y + r * 0.26} ${x - r} ${y} ` +
+  `Q${x - r * 0.26} ${y - r * 0.26} ${x} ${y - r} Z" fill="${LINE}" stroke="none"/>`;
 
 export const MOTIFS = {
   /** 0 — the adventurer: a lute. */
   lute: () =>
-    wrap(
-      '<ellipse cx="78" cy="132" rx="46" ry="42"/>' +
-        '<circle cx="78" cy="128" r="13" fill="currentColor" stroke="none"/>' +
-        '<path d="M110 102 L156 54"/><path d="M150 46 l16 -16"/>' +
-        '<path d="M160 64 l10 -10"/>' +
-        sparkle(150, 118, 12),
+    svg(
+      solid('M96 108 L146 56 L162 72 L112 124 Z') +
+        solidCircle(74, 128, 48) +
+        dot(74, 126, 15) +
+        line('M150 52 l14 -14', 7) +
+        line('M164 66 l12 -12', 7) +
+        spark(150, 126, 13),
     ),
 
   /** 1 — the teleporter trap: a vortex. Plotted, because chained SVG arcs
@@ -44,136 +67,153 @@ export const MOTIFS = {
     for (let i = 0; i <= 200; i += 2) {
       const t = i / 200;
       const angle = t * Math.PI * 5.2;
-      const radius = 86 * (1 - t * 0.93);
-      points.push(`${(100 + Math.cos(angle) * radius).toFixed(1)} ${(100 + Math.sin(angle) * radius).toFixed(1)}`);
+      const radius = 82 * (1 - t * 0.9);
+      points.push(
+        `${(100 + Math.cos(angle) * radius).toFixed(1)} ${(100 + Math.sin(angle) * radius).toFixed(1)}`,
+      );
     }
-    return wrap(`<path d="M${points.join(' L')}"/>`);
+    return svg(solidCircle(100, 100, 22) + line(`M${points.join(' L')}`, 9));
   },
 
   /** 2 — the mimic: a chest that bites. */
   mimic: () =>
-    wrap(
-      '<path d="M40 150 v-34 h120 v34 a10 10 0 0 1 -10 10 H50 a10 10 0 0 1 -10 -10 Z"/>' +
-        '<path d="M40 116 a60 44 0 0 1 120 0"/>' +
-        '<path d="M50 116 l12 18 l12 -18 l12 18 l12 -18 l12 18 l12 -18 l12 18 l12 -18" stroke-width="5"/>' +
-        '<circle cx="76" cy="90" r="7" fill="currentColor" stroke="none"/>' +
-        '<circle cx="124" cy="90" r="7" fill="currentColor" stroke="none"/>',
+    svg(
+      solid('M40 152 v-36 h120 v36 a10 10 0 0 1 -10 10 H50 a10 10 0 0 1 -10 -10 Z') +
+        solid('M40 116 a60 46 0 0 1 120 0 Z') +
+        line('M50 116 l12 20 l12 -20 l12 20 l12 -20 l12 20 l12 -20 l12 20 l12 -20', 6) +
+        dot(76, 88, 8) +
+        dot(124, 88, 8),
     ),
 
-  /** 3 — the trapdoor: a hatch swinging open. */
+  /** 3 — the trapdoor: a floor giving way. */
   trapdoor: () =>
-    wrap(
-      '<path d="M26 96 h148"/>' +
-        '<path d="M96 96 L52 162 h34 L96 96"/>' +
-        '<path d="M104 96 L148 162 h-34 L104 96"/>' +
-        '<path d="M100 18 v50"/><path d="M82 52 l18 20 l18 -20"/>',
+    svg(
+      solid('M96 100 L44 166 h44 L96 100 Z') +
+        solid('M104 100 L156 166 h-44 L104 100 Z') +
+        line('M24 100 h152', 9) +
+        line('M100 20 v48') +
+        line('M80 54 l20 22 l20 -22'),
     ),
 
-  /** 4 — the golem: stacked stone. */
+  /** 4 — the golem: a slab of animated stone.
+   *  Redrawn: two rounded rectangles read as a robot. It now has shoulders, a
+   *  sunken head and a cracked chest. */
   golem: () =>
-    wrap(
-      '<rect x="64" y="34" width="72" height="56" rx="12"/>' +
-        '<rect x="46" y="102" width="108" height="64" rx="12"/>' +
-        '<circle cx="86" cy="62" r="7" fill="currentColor" stroke="none"/>' +
-        '<circle cx="114" cy="62" r="7" fill="currentColor" stroke="none"/>' +
-        '<path d="M46 130 h108" stroke-width="5"/>' +
-        '<path d="M100 102 v64" stroke-width="5"/>',
+    svg(
+      solid('M54 92 q0 -16 18 -16 h56 q18 0 18 16 l8 64 q2 14 -14 14 H60 q-16 0 -14 -14 Z') +
+        solid('M74 34 h52 q12 0 12 12 v26 q0 12 -12 12 H74 q-12 0 -12 -12 V46 q0 -12 12 -12 Z') +
+        dot(86, 58, 8) +
+        dot(114, 58, 8) +
+        line('M100 106 l-14 22 l20 10 l-10 26', 6) +
+        line('M62 122 h-16', 7) +
+        line('M138 122 h16', 7),
     ),
 
   /** 5 — the rogue: a dagger. */
   dagger: () =>
-    wrap(
-      '<path d="M100 22 L120 92 L100 108 L80 92 Z"/>' +
-        '<path d="M66 108 h68"/>' +
-        '<path d="M100 108 v48"/>' +
-        '<circle cx="100" cy="166" r="11"/>',
+    svg(
+      solid('M100 16 L130 92 L100 114 L70 92 Z') +
+        line('M58 114 h84', 10) +
+        line('M100 116 v40', 12) +
+        solidCircle(100, 168, 14),
     ),
 
-  /** 6 — the minotaur: horns. */
+  /** 6 — the minotaur: a bull's skull.
+   *  Redrawn twice: thin curves read as ears, and thick shapes rising vertically
+   *  read as a rabbit's. Horns must sweep *outward* from the head before they
+   *  taper, or the silhouette is a bunny. */
   minotaur: () =>
-    wrap(
-      '<path d="M64 98 q-38 -4 -38 -50 q32 8 44 38"/>' +
-        '<path d="M136 98 q38 -4 38 -50 q-32 8 -44 38"/>' +
-        '<ellipse cx="100" cy="116" rx="40" ry="44"/>' +
-        '<circle cx="86" cy="106" r="7" fill="currentColor" stroke="none"/>' +
-        '<circle cx="114" cy="106" r="7" fill="currentColor" stroke="none"/>' +
-        '<path d="M88 144 q12 10 24 0"/>',
+    svg(
+      solid('M74 96 C40 100 16 80 14 44 C24 74 46 86 78 82 Z') +
+        solid('M126 96 C160 100 184 80 186 44 C176 74 154 86 122 82 Z') +
+        solid(
+          'M64 74 h72 q14 0 12 18 l-6 28 q-4 26 -26 34 q-20 6 -40 0 q-22 -8 -26 -34 l-6 -28 q-2 -18 12 -18 Z',
+        ) +
+        dot(80, 100, 8) +
+        dot(120, 100, 8) +
+        dot(92, 132, 5) +
+        dot(108, 132, 5) +
+        line('M100 146 a13 13 0 1 0 0.1 0', 6),
     ),
 
   /** 7 — the wizard: a pointed hat. */
   wizardHat: () =>
-    wrap(
-      '<path d="M100 26 L134 126 H66 Z"/>' +
-        '<ellipse cx="100" cy="132" rx="62" ry="14"/>' +
-        '<path d="M78 96 h44" stroke-width="5"/>' +
-        sparkle(146, 62, 14) +
-        sparkle(56, 86, 10),
+    svg(
+      solid('M100 22 L136 122 H64 Z') +
+        solid('M100 108 a62 18 0 0 0 0 36 a62 18 0 0 0 0 -36 Z') +
+        line('M74 98 h52', 7) +
+        spark(150, 58, 15) +
+        spark(52, 84, 11),
     ),
 
   /** 8 — the cleric: a chalice. */
   chalice: () =>
-    wrap(
-      '<path d="M68 76 a32 34 0 0 0 64 0 Z"/>' +
-        '<path d="M100 110 v42"/>' +
-        '<path d="M72 156 h56"/>' +
-        '<path d="M100 26 v22"/><path d="M62 42 l14 16"/><path d="M138 42 l-14 16"/>',
+    svg(
+      solid('M54 66 h92 a46 50 0 0 1 -92 0 Z') +
+        line('M100 116 v30', 11) +
+        solid('M64 146 h72 q8 0 8 10 h-88 q0 -10 8 -10 Z') +
+        line('M100 22 v20') +
+        line('M60 38 l14 16') +
+        line('M140 38 l-14 16'),
     ),
 
   /** 9 — the blink dog: a hound, half here. */
   hound: () =>
-    wrap(
-      '<path d="M66 88 l-12 -36 l32 18"/>' +
-        '<path d="M134 88 l12 -36 l-32 18"/>' +
-        '<ellipse cx="100" cy="116" rx="40" ry="38"/>' +
-        '<circle cx="86" cy="108" r="6" fill="currentColor" stroke="none"/>' +
-        '<circle cx="114" cy="108" r="6" fill="currentColor" stroke="none"/>' +
-        '<path d="M92 136 h16" stroke-width="6"/>' +
-        sparkle(160, 130, 13) +
-        sparkle(40, 142, 10),
+    svg(
+      solid('M64 88 L52 44 L92 66 Z') +
+        solid('M136 88 L148 44 L108 66 Z') +
+        solidCircle(100, 114, 42) +
+        dot(84, 106, 7) +
+        dot(116, 106, 7) +
+        line('M92 136 h16', 8) +
+        spark(164, 128, 14) +
+        spark(38, 144, 11),
     ),
 
-  /** 10 — the fighter: sword and shield. */
+  /** 10 — the fighter: a shield. */
   shield: () =>
-    wrap(
-      '<path d="M100 32 l48 20 v40 q0 44 -48 66 q-48 -22 -48 -66 v-40 Z"/>' +
-        '<path d="M100 66 v76"/>' +
-        '<path d="M72 96 h56"/>',
+    svg(
+      solid('M100 28 l50 20 v42 q0 46 -50 68 q-50 -22 -50 -68 v-42 Z') +
+        line('M100 62 v78', 8) +
+        line('M70 94 h60', 8),
     ),
 
   /** 11 — the cursed coin: cracked gold. */
   coin: () =>
-    wrap(
-      '<circle cx="100" cy="102" r="58"/>' +
-        '<circle cx="100" cy="102" r="42"/>' +
-        '<path d="M100 60 l-14 28 l18 14 l-12 42" stroke-width="6"/>',
+    svg(
+      solidCircle(100, 100, 60) +
+        line('M100 58 a42 42 0 0 1 0 84 a42 42 0 0 1 0 -84', 6) +
+        line('M100 56 l-16 30 l20 16 l-14 42', 7),
     ),
 
   /** 12 — the pack mule: a laden sack. */
   sack: () =>
-    wrap(
-      '<path d="M88 46 q12 -6 24 0 l-6 32 q26 14 34 42 q10 38 -40 38 q-50 0 -40 -38 q8 -28 34 -42 Z"/>' +
-        '<path d="M82 80 q18 10 36 0" stroke-width="6"/>' +
-        '<path d="M70 132 q30 12 60 0" stroke-width="5"/>',
+    svg(
+      solid('M88 42 q12 -6 24 0 l-6 34 q28 16 36 46 q10 40 -42 40 q-52 0 -42 -40 q8 -30 36 -46 Z') +
+        line('M82 78 q18 12 36 0', 7) +
+        line('M68 132 q32 14 64 0', 6),
     ),
 
   /** 13 — the staff of power: a gem on a shaft. */
   staff: () =>
-    wrap(
-      '<path d="M100 22 l24 28 l-24 28 l-24 -28 Z"/>' +
-        '<path d="M100 78 v98"/>' +
-        '<path d="M146 60 l16 -8"/><path d="M54 60 l-16 -8"/>' +
-        '<path d="M150 96 l18 4"/><path d="M50 96 l-18 4"/>',
+    svg(
+      solid('M100 12 l34 38 l-34 38 l-34 -38 Z') +
+        line('M100 88 v88', 14) +
+        line('M148 54 l16 -10') +
+        line('M52 54 l-16 -10') +
+        line('M152 92 l18 4') +
+        line('M48 92 l-18 4'),
     ),
 
   /** D — the treasure: a chest, open. */
   chest: () =>
-    wrap(
-      '<path d="M38 156 v-52 h124 v52 a8 8 0 0 1 -8 8 H46 a8 8 0 0 1 -8 -8 Z"/>' +
-        '<path d="M38 104 a62 36 0 0 1 124 0"/>' +
-        '<path d="M100 104 v60" stroke-width="5"/>' +
-        '<rect x="88" y="116" width="24" height="22" rx="5" fill="currentColor" stroke="none"/>' +
-        sparkle(48, 58, 14) +
-        sparkle(158, 44, 11) +
-        sparkle(150, 78, 8),
+    svg(
+      solid('M36 158 v-54 h128 v54 a8 8 0 0 1 -8 8 H44 a8 8 0 0 1 -8 -8 Z') +
+        solid('M36 104 a64 38 0 0 1 128 0 Z') +
+        line('M100 104 v62', 7) +
+        `<rect x="88" y="116" width="24" height="24" rx="5" fill="${LINE}" stroke="none"/>` +
+        spark(44, 56, 15) +
+        spark(160, 42, 12) +
+        spark(152, 78, 9),
     ),
 };
