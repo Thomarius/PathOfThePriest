@@ -100,7 +100,7 @@ their final weight.
 
 ---
 
-## M11 — A card back tiled from the motifs
+## ~~M11~~ — A card back tiled from the motifs — **DONE**
 
 *Affects `dungeon-bright`.*
 
@@ -108,21 +108,36 @@ The shared Masters back is a sunburst and a generic star. A **tiled pattern of
 the motifs themselves** — small lutes, daggers, chests, coins — would be
 unmistakably this deck's, and reuses assets M8 will already have improved.
 
-The constraint still governs: all 14 Masters are shuffled face down, so the back
-must be identical on every one and must not hint at Ally versus Hazard. The
-validator enforces the single shared design; keeping the imagery neutral is a
-design responsibility.
+**Done.** `decor.backPattern: "motifs"` tiles all sixteen motifs, outline-only at
+low opacity, under the star emblem. Colours are baked in at generation time
+rather than left as custom properties, because a background-image data URI is a
+separate document and does not inherit the page's CSS variables — the same
+reason the stone pattern takes its colour as an argument.
+
+No information leaks: all 14 Masters carry the identical tile. The mix of Ally
+and Hazard subjects is cosmetic; what would leak is variation *between* cards,
+which the validator still enforces against.
 
 ---
 
-## M12 — Push the faction shape language further
+## ~~M12~~ — Push the faction shape language further — **DONE**
 
 *Affects both themes.*
 
-Faction currently reads through colour plus badge shape and plate corner radius.
-In a drawn set this can go further: Hazards get spiky, jagged framing and speed
-lines; Allies get rounded, calm shapes. The aim is that the distinction survives
-a glance across the table, not only a close look.
+**Done.** The text frame and name plate now carry the same language as the badge:
+Allies rounded and calm, Hazards cut and angular via a chamfer. Both themes
+express it in their own idiom — the bright deck contrasts rounded against cut,
+the engraving deck square against cut.
+
+Implemented with `clip-path`, never `transform`: it changes the painted shape
+without touching the layout box, so the safe-zone audit is unaffected. A
+`rotate()` here would have pushed corners outside the safe zone exactly as it
+did on the Fake Master badge in M5.
+
+Watch for: clipping runs along the border-box edge, so antialiasing shaves the
+border. Each frame style compensates in proportion to its own weight — one
+global value made the engraving theme's 2u rule frame three times heavier on
+Hazards than on Allies.
 
 ---
 

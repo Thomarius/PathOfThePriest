@@ -844,3 +844,57 @@
 .rules .rules__list--bullets > li::before {
   background: color-mix(in srgb, var(--accent) 45%, var(--ink));
 }
+
+/* --- M12: faction shape language ------------------------------------------
+ *
+ * Faction already reads through colour and badge shape. This extends the same
+ * language to the text frame, so the distinction survives a glance across the
+ * table rather than only a close look: Allies are rounded and calm, Hazards are
+ * cut and angular.
+ *
+ * clip-path, not transform — it changes the painted shape without touching the
+ * layout box, so the safe-zone audit is unaffected. A rotate() here would push
+ * the corners outside the safe zone exactly as it did on the Fake Master badge.
+ */
+.card--fake .card__text {
+  border-radius: 0;
+  clip-path: polygon(
+    calc(20 * var(--u)) 0,
+    100% 0,
+    100% calc(100% - 20 * var(--u)),
+    calc(100% - 20 * var(--u)) 100%,
+    0 100%,
+    0 calc(20 * var(--u))
+  );
+}
+
+/* The Hazard name plate takes the same cut, so badge, plate and frame agree. */
+.decor-plate--banner.card--fake .card__plate {
+  border-radius: 0;
+  border-width: calc(8 * var(--u));
+  clip-path: polygon(
+    calc(18 * var(--u)) 0,
+    100% 0,
+    100% calc(100% - 18 * var(--u)),
+    calc(100% - 18 * var(--u)) 100%,
+    0 100%,
+    0 calc(18 * var(--u))
+  );
+}
+
+/* Allies keep the soft frame the theme asks for. */
+.decor-frame--bubble.card--true .card__text {
+  border-radius: calc(28 * var(--u));
+}
+
+/* Clipping runs along the border-box edge, so antialiasing shaves the outer
+   edge of the border. Each frame style compensates in proportion to its own
+   weight — a single global value made the engraving theme's 2u rule frame three
+   times heavier on Hazards than on Allies. */
+.decor-frame--bubble.card--fake .card__text {
+  border-width: calc(7 * var(--u));
+}
+
+.decor-frame--rule.card--fake .card__text {
+  border-width: calc(3 * var(--u));
+}

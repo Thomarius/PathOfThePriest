@@ -11,6 +11,8 @@
  * is fully specified by the SVG spec and keyed on an explicit `seed`.
  */
 
+import { MOTIFS } from './motifs.js';
+
 /** Small deterministic PRNG (mulberry32), for placing ornament reproducibly. */
 export function seeded(seedText) {
   let h = 1779033703 ^ String(seedText).length;
@@ -99,6 +101,48 @@ export function stone({ seed = 'stone', cols = 4, rows = 6, color = '#000', opac
 }
 
 /**
+ * A tiling pattern built from the card motifs themselves.
+ *
+ * Colours are baked in at generation time rather than left as custom
+ * properties: this becomes a background-image data URI, which is a separate
+ * document and does not inherit the page's CSS variables.
+ *
+ * Drawn outline-only and at low opacity — the motifs are the subject on a card
+ * face, but only texture here.
+ *
+ * Safe for the shared Masters back: all 14 carry the identical tile, so nothing
+ * distinguishes one from another. The mix of Ally and Hazard subjects is
+ * cosmetic; what would leak information is variation *between* cards.
+ */
+export function motifPattern({ names, ink = '#000', opacity = 0.16, cols = 4 } = {}) {
+  const cell = 200;
+  const size = cols * cell;
+  const parts = [];
+
+  names.forEach((name, i) => {
+    const draw = MOTIFS[name];
+    if (!draw) return;
+    const inner = draw()
+      .replace(/^[\s\S]*?>/, '')
+      .replace(/<\/svg>\s*$/, '')
+      .split('var(--motif-fill, none)')
+      .join('none')
+      .split('var(--motif-line, currentColor)')
+      .join(ink);
+    const x = (i % cols) * cell;
+    const y = Math.floor(i / cols) * cell;
+    parts.push(`<g transform="translate(${x} ${y})">${inner}</g>`);
+  });
+
+  return svgUrl(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"
+         viewBox="0 0 ${size} ${size}">
+      <g fill="none" stroke="${ink}" stroke-width="8" stroke-linecap="round"
+         stroke-linejoin="round" opacity="${opacity}">${parts.join('')}</g>
+    </svg>`);
+}
+
+/**
  * Central emblem for the shared card back.
  *
  * Deliberately abstract. The 14 Masters are shuffled face down, so this mark
@@ -167,6 +211,13 @@ export function decorFor(theme) {
     scales: () => scales({ color: backInk, opacity: 0.3 }),
     rays: () => rays({ color: backInk, opacity: 0.18 }),
     dots: () => dots({ color: backInk, opacity: 0.22 }),
+    motifs: () =>
+      motifPattern({
+        names: Object.keys(MOTIFS),
+        ink: backInk,
+        opacity: 0.17,
+        cols: 4,
+      }),
   };
   const backPattern = backPatterns[decor.backPattern] ?? backPatterns.stone;
   vars.push(`--decor-back:${backPattern()}`);
