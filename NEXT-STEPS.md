@@ -49,7 +49,7 @@ inside it barely matters at 63 mm, and no amount of it fixes a wrong outline.
 
 ---
 
-## M9 — Drawn diagrams on the rules cards
+## ~~M9~~ — Drawn diagrams on the rules cards — **DONE**
 
 *Affects both themes. The only item here that improves comprehension rather than
 decoration, which is why it comes early.*
@@ -65,8 +65,18 @@ Both are drawn from existing primitives, so they stay first-party. They need a
 new block type in the rules model and a matching branch in
 `src/template/rules-card.js`.
 
-Watch: the M5 audit measures rules cards too, so a diagram competing with text
-for space surfaces as a real failure rather than a silent overflow.
+**Done.** `src/template/diagrams.js` draws both. They are **language-neutral by
+construction** — no words, only digits — so no diagram needs translating and a
+third language would add nothing here. Colours come from the card's palette, so
+the same diagram renders gold-on-parchment in `dungeon` and violet-on-cream in
+`dungeon-bright` with no per-theme code.
+
+A diagram is structure rather than wording, so it is its own block type in the
+model (`{ type: 'diagram', name }`) attached via `"diagram": "setup"` in the
+locale; the validator fails on an unknown name rather than rendering nothing.
+
+The turn card's text dropped its "(1, 2, 3, 4, 6, 11)" parenthetical, since the
+diagram now carries it — which was the point of drawing it.
 
 ---
 

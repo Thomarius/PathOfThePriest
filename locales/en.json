@@ -58,15 +58,17 @@
         "Shuffle the 14 remaining cards and form {term:path.def} by placing them from left to right.",
         "Place {card:0} at the beginning {term:path.of} (left).",
         "Place {card:D} at the end {term:path.of} (right)."
-      ]
+      ],
+      "diagram": "setup"
     },
     "turn": {
       "title": "How to Play",
       "items": [
         "Player turn: choose {faction:true.anyAkk} {term:path.in} and resolve 1 effect on that card.",
-        "{faction:fake.other} turn: {faction:fake.eachNom} {term:path.in} is activated from lowest to highest (1, 2, 3, 4, 6, 11).",
+        "{faction:fake.other} turn: {faction:fake.eachNom} {term:path.in} is activated from lowest to highest:",
         "Begin a new round with the player turn."
-      ]
+      ],
+      "diagram": "turnOrder"
     },
     "glossary": {
       "title": "Glossary",

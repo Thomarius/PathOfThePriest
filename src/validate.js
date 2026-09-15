@@ -10,6 +10,7 @@ import path from 'node:path';
 import { buildModel, ROOT } from './model.js';
 import { missingIconFiles } from './icons/index.js';
 import { vendoredFamilies } from './template/fonts.js';
+import { DIAGRAMS } from './template/diagrams.js';
 
 const EXPECTED = {
   true: [5, 7, 8, 9, 10, 12, 13, 14],
@@ -110,6 +111,16 @@ export function validate(overrides = {}) {
         `theme ${themeName}: typography.${role} leads with "${first}", which is not vendored ` +
           `(have: ${families.join(', ')}) — rendering would differ between machines`,
       );
+    }
+  }
+
+  // --- diagrams -------------------------------------------------------------
+
+  for (const card of model.rulesCards) {
+    for (const block of card.blocks) {
+      if (block.type === 'diagram' && !DIAGRAMS[block.name]) {
+        errors.push(`rules card ${card.id}: unknown diagram "${block.name}"`);
+      }
     }
   }
 

@@ -205,6 +205,31 @@ export const MOTIFS = {
         line('M48 92 l-18 4'),
     ),
 
+  /** 14 — the teleportation circle.
+   *  Redrawn for M8: the original lived in decor.js and kept 1.4-2.6 stroke
+   *  weights and 24 tick marks, so it read as fine engraving beside motifs
+   *  drawn at 8. Same idea, same weight as everything else. */
+  magicCircle: () => {
+    const ticks = [];
+    for (let i = 0; i < 8; i += 1) {
+      const a = (i / 8) * Math.PI * 2 - Math.PI / 2;
+      const [c, s] = [Math.cos(a), Math.sin(a)];
+      ticks.push(
+        line(
+          `M${(100 + c * 62).toFixed(1)} ${(100 + s * 62).toFixed(1)} ` +
+            `L${(100 + c * 76).toFixed(1)} ${(100 + s * 76).toFixed(1)}`,
+          8,
+        ),
+      );
+    }
+    return svg(
+      solidCircle(100, 100, 84) +
+        line('M100 44 a56 56 0 0 1 0 112 a56 56 0 0 1 0 -112', 8) +
+        ticks.join('') +
+        spark(100, 100, 40),
+    );
+  },
+
   /** D — the treasure: a chest, open. */
   chest: () =>
     svg(

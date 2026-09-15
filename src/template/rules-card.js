@@ -13,6 +13,7 @@
 
 import { escapeHtml, geometryVars, renderSegments } from './card.js';
 import { icon } from '../icons/index.js';
+import { DIAGRAMS } from './diagrams.js';
 
 function renderBlock(block) {
   switch (block.type) {
@@ -40,6 +41,11 @@ function renderBlock(block) {
             `<dd>${renderSegments(entry.segments)}</dd>`,
         )
         .join('')}</dl>`;
+
+    case 'diagram': {
+      const draw = DIAGRAMS[block.name];
+      return draw ? `<div class="rules__diagram">${draw()}</div>` : '';
+    }
 
     case 'section':
       return (

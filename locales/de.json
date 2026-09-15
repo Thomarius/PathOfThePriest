@@ -58,15 +58,17 @@
         "Mische die übrigen 14 Karten und bilde {term:path.def}, indem du sie von links nach rechts auslegst.",
         "Lege {card:0} an den Anfang {term:path.of} (links).",
         "Lege {card:D} an das Ende {term:path.of} (rechts)."
-      ]
+      ],
+      "diagram": "setup"
     },
     "turn": {
       "title": "Spielablauf",
       "items": [
         "Spielerzug: Wähle {faction:true.anyAkk} {term:path.in} und führe 1 Effekt dieser Karte aus.",
-        "Zug der {faction:fake.genPl}: {faction:fake.eachNom} {term:path.in} wird von der niedrigsten zur höchsten Zahl aktiviert (1, 2, 3, 4, 6, 11).",
+        "Zug der {faction:fake.genPl}: {faction:fake.eachNom} {term:path.in} wird von der niedrigsten zur höchsten Zahl aktiviert:",
         "Beginne eine neue Runde mit dem Spielerzug."
-      ]
+      ],
+      "diagram": "turnOrder"
     },
     "glossary": {
       "title": "Glossar",

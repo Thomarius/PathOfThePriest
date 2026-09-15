@@ -799,3 +799,14 @@
   display: inline-block;
   width: 1.02em;
 }
+
+/* Drawn diagrams on the rules cards — see src/template/diagrams.js. */
+.rules__diagram {
+  margin: calc(6 * var(--u)) 0;
+}
+
+.rules__diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}

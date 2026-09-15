@@ -381,6 +381,11 @@ function buildRulesBlocks(content, layout, parse, where) {
     });
   }
 
+  // Language-neutral, so it carries no translatable content — just a name.
+  if (content.diagram) {
+    blocks.push({ type: 'diagram', name: content.diagram });
+  }
+
   for (const [i, section] of (content.sections ?? []).entries()) {
     blocks.push({
       type: 'section',
