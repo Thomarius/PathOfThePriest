@@ -8,6 +8,7 @@
 
 import { icon } from '../icons/index.js';
 import { decorFor, magicCircle } from './decor.js';
+import { MOTIFS as DRAWN_MOTIFS } from './motifs.js';
 
 export function escapeHtml(value) {
   return String(value)
@@ -74,7 +75,8 @@ function renderEffects(card, ui) {
   return parts.join('\n        ');
 }
 
-const MOTIFS = { magicCircle };
+// magicCircle lives in decor.js because it is seeded; the rest are fixed.
+const MOTIFS = { ...DRAWN_MOTIFS, magicCircle };
 
 function renderArt(card) {
   // A drawn motif, for cards no public-domain engraving depicts.

@@ -51,5 +51,55 @@
     "backPattern": "rays",
     "artTreatment": "none",
     "artBacking": "rays"
+  },
+  "cards": {
+    "0": {
+      "motif": "lute"
+    },
+    "1": {
+      "motif": "vortex"
+    },
+    "2": {
+      "motif": "mimic"
+    },
+    "3": {
+      "motif": "trapdoor"
+    },
+    "4": {
+      "motif": "golem"
+    },
+    "5": {
+      "motif": "dagger"
+    },
+    "6": {
+      "motif": "minotaur"
+    },
+    "7": {
+      "motif": "wizardHat"
+    },
+    "8": {
+      "motif": "chalice"
+    },
+    "9": {
+      "motif": "hound"
+    },
+    "10": {
+      "motif": "shield"
+    },
+    "11": {
+      "motif": "coin"
+    },
+    "12": {
+      "motif": "sack"
+    },
+    "13": {
+      "motif": "staff"
+    },
+    "14": {
+      "motif": "magicCircle"
+    },
+    "D": {
+      "motif": "chest"
+    }
   }
 }

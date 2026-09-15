@@ -668,9 +668,16 @@
 }
 
 .card__art--motif svg {
-  width: calc(380 * var(--u));
-  height: calc(380 * var(--u));
+  width: calc(400 * var(--u));
+  height: calc(400 * var(--u));
   opacity: 0.85;
+}
+
+/* Apprentice and Deity are full-art, so their window is the whole card and a
+   400u mark floats in it. */
+.card--plain .card__art--motif svg {
+  width: calc(560 * var(--u));
+  height: calc(560 * var(--u));
 }
 
 /* --- bright / anime decor -------------------------------------------------

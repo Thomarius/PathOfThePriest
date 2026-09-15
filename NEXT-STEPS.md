@@ -394,14 +394,19 @@ npm run model -- --out out/model.json   # dump the merged render model
 | Theme | Style | Artwork |
 |---|---|---|
 | `dungeon` | 19th-century engraving, sepia monochrome | 15 sourced + 1 drawn motif |
-| `dungeon-bright` | Bright fantasy-anime: flat colour, thick outlines, rounded shapes | **none yet — to be sourced** |
+| `dungeon-bright` | Bright fantasy-anime: flat colour, thick outlines, rounded shapes | **drawn motifs on all 16 cards** — placeholders until you source images |
 
 `dungeon-bright` uses `extends: "dungeon"`, so it shares every card name,
 faction label and world term and overrides only palette, typography and decor.
 Renaming a card in `dungeon` renames it in both.
 
-To add artwork to the bright theme, drop files in `themes/dungeon-bright/art/`
-and point each card at one:
+Every card in the bright theme carries a drawn motif from `src/template/motifs.js`,
+stroked in `currentColor` so it takes the card's palette. Adding an `art` file to
+a card replaces its motif — `renderArt()` prefers a file when one is present, so
+you can swap them in one at a time and the rest stay presentable.
+
+To add artwork, drop files in `themes/dungeon-bright/art/` and point each card
+at one:
 
 ```json
 "cards": { "6": { "art": "minotaur.png", "focus": [0.5, 0.35] } }
