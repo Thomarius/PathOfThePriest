@@ -7,7 +7,7 @@
  */
 
 import { icon } from '../icons/index.js';
-import { decorFor } from './decor.js';
+import { decorFor, magicCircle } from './decor.js';
 
 export function escapeHtml(value) {
   return String(value)
@@ -74,7 +74,17 @@ function renderEffects(card, ui) {
   return parts.join('\n        ');
 }
 
+const MOTIFS = { magicCircle };
+
 function renderArt(card) {
+  // A drawn motif, for cards no public-domain engraving depicts.
+  if (!card.art && card.motif && MOTIFS[card.motif]) {
+    return (
+      '<div class="card__art card__art--motif">' +
+      MOTIFS[card.motif]({ seed: card.id }) +
+      '</div>'
+    );
+  }
   if (!card.art) {
     return (
       '<div class="card__art card__art--placeholder">' +

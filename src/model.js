@@ -179,6 +179,7 @@ export function buildModel(overrides = {}) {
       factionLabel: theme.factions?.[card.faction]?.one ?? null,
       name: themeCard.name ?? null,
       art: themeCard.art ?? null,
+      motif: themeCard.motif ?? null,
       artFocus: themeCard.focus ?? [0.5, 0.5],
       palette: theme.palette?.[card.faction] ?? null,
       effects,

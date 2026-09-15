@@ -146,8 +146,10 @@ export function validate(overrides = {}) {
 
   let missingArt = 0;
   for (const card of model.cards) {
+    // A card with a drawn motif has its art window filled procedurally and
+    // needs no file — see decor.js.
     if (!card.art) {
-      missingArt += 1;
+      if (!card.motif) missingArt += 1;
       continue;
     }
     const artPath = path.join(ROOT, 'themes', themeName, 'art', card.art);

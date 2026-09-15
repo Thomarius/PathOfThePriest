@@ -69,5 +69,6 @@ M1–M5 and M7 complete: data model, card template, icon glyphs, rendering to
 PNG/PDF, layout validation, procedural decor, rules cards and card backs.
 A build emits 16 cards + 5 rules cards + 3 backs.
 
-Remaining: **M6 artwork** — sourcing 16 public-domain images. Everything else is
-built. The `dungeon` sample theme renders complete decks in German and English.
+**All milestones complete.** The `dungeon` sample theme renders finished decks in
+German and English: 16 cards, 5 rules cards and 3 backs each, with sourced
+public-domain artwork and generated attribution.

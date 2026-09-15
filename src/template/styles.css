@@ -659,3 +659,16 @@
 .card--fake.decor-artTreatment--mono .card__art {
   filter: grayscale(1) sepia(0.32) contrast(1.05) brightness(0.82);
 }
+
+/* Drawn motif filling the art window — see decor.js magicCircle(). */
+.card__art--motif {
+  display: grid;
+  place-items: center;
+  color: color-mix(in srgb, var(--accent) 72%, var(--ink));
+}
+
+.card__art--motif svg {
+  width: calc(380 * var(--u));
+  height: calc(380 * var(--u));
+  opacity: 0.85;
+}

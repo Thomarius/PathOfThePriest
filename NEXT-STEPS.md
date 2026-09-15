@@ -79,9 +79,32 @@ needs no change for German.
 
 The seven wording choices below were reviewed and approved.
 
-### M6 — Artwork *(needs decision 1; the long pole)*
+### ~~M6 — Artwork~~ — DONE for the `dungeon` sample theme
 
-Manual per-card sourcing, 16 images. The pipeline cannot shorten this.
+15 public-domain / CC0 images sourced from Wikimedia Commons via
+`scripts/find-art.mjs` (search) and `scripts/fetch-art.mjs` (download +
+attribution). Card 14 uses a **drawn motif** instead — see below.
+
+```sh
+node scripts/find-art.mjs          # shortlist candidates -> out/art-candidates.json
+# edit themes/<theme>/art-selection.json  (card id -> candidate index)
+node scripts/fetch-art.mjs <theme> # download, wire into theme.json, write ATTRIBUTION.md
+```
+
+Three things learned that will apply to any future theme:
+
+- **Commons full-text search matches file descriptions.** "Staff of Power"
+  returned photographs of the North Staffordshire Regiment. Name an artist or a
+  print collection, not the subject.
+- **Fetch thumbnails, not originals.** Wikimedia returns 429 and asks for it
+  explicitly. Only certain widths are served — 1280 and 1920 work, 800 and 1024
+  do not.
+- **Unify the art at render time, not at sourcing time.** `decor.artTreatment`
+  reduces every image to warm monochrome. An illuminated manuscript, a tinted
+  film still and a steel engraving read as one deck without re-sourcing any of
+  them. This is what makes mixed-provenance sourcing practical at all.
+- **Some cards have no depiction in public-domain art.** A theme can give a card
+  a `motif` instead, drawn procedurally — card 14 uses `magicCircle`.
 
 ### ~~M7~~ — DONE (rules cards and card backs)
 

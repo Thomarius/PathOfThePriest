@@ -135,7 +135,8 @@
       "art": "13-staff-of-power.jpg"
     },
     "14": {
-      "name": "Teleportation Circle"
+      "name": "Teleportation Circle",
+      "motif": "magicCircle"
     },
     "D": {
       "name": "Treasure Chest",

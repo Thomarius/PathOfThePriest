@@ -160,3 +160,47 @@ export function decorFor(theme) {
 
   return { classes, vars, emblem: decor.emblem ?? 'lozenge' };
 }
+
+/**
+ * A magic circle, drawn rather than sourced.
+ *
+ * Some cards describe things no public-domain engraving depicts — a
+ * teleportation circle among them. Rather than force a bad photographic match,
+ * a theme can give a card a `motif` and have the art window drawn instead.
+ * Seeded, so the glyph ticks are irregular but identical on every run.
+ */
+export function magicCircle({ seed = 'circle', rings = 3, ticks = 24 } = {}) {
+  const rand = seeded(seed);
+  const parts = [
+    '<circle cx="100" cy="100" r="92" stroke-width="1.4"/>',
+    '<circle cx="100" cy="100" r="78" stroke-width="2.6"/>',
+    '<circle cx="100" cy="100" r="46" stroke-width="1.4"/>',
+  ];
+
+  for (let i = 0; i < ticks; i += 1) {
+    const a = (i / ticks) * Math.PI * 2;
+    const inner = 78 + rand() * 3;
+    const outer = 88 + rand() * 4;
+    parts.push(
+      `<line x1="${(100 + Math.cos(a) * inner).toFixed(1)}" y1="${(100 + Math.sin(a) * inner).toFixed(1)}" ` +
+        `x2="${(100 + Math.cos(a) * outer).toFixed(1)}" y2="${(100 + Math.sin(a) * outer).toFixed(1)}" stroke-width="1.6"/>`,
+    );
+  }
+
+  // Heptagram: seven points, skipping two each step.
+  const star = [];
+  for (let i = 0; i <= 7; i += 1) {
+    const a = ((i * 3) / 7) * Math.PI * 2 - Math.PI / 2;
+    star.push(`${(100 + Math.cos(a) * 72).toFixed(1)},${(100 + Math.sin(a) * 72).toFixed(1)}`);
+  }
+  parts.push(`<polyline points="${star.join(' ')}" stroke-width="1.8"/>`);
+
+  for (let r = 1; r < rings; r += 1) {
+    parts.push(`<circle cx="100" cy="100" r="${(46 - r * 12).toFixed(1)}" stroke-width="1"/>`);
+  }
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none"
+               stroke="currentColor" stroke-linejoin="round" aria-hidden="true">
+            ${parts.join('')}
+          </svg>`;
+}
