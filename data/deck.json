@@ -46,6 +46,11 @@
       "id": "rules-clarifications",
       "key": "rules.clarifications",
       "layout": "bullets"
+    },
+    {
+      "id": "rules-clarifications-2",
+      "key": "rules.clarifications2",
+      "layout": "bullets"
     }
   ],
   "backs": [

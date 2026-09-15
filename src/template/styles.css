@@ -509,7 +509,14 @@
  */
 
 .rules {
-  font-size: calc(26 * var(--u));
+  /*
+   * ~7.7 pt at 300 dpi, up from 6.2 pt which a physical proof showed was too
+   * small to read. The glossary is the binding card: it sits at 80% here, and
+   * at 34u it drops to a single spare line. Re-measure with `npm run preview`
+   * against the German deck, which is the longer of the two, after any change
+   * to rules text.
+   */
+  font-size: calc(32 * var(--u));
   line-height: 1.3;
 }
 
@@ -616,24 +623,33 @@
 
 .rules__glossary {
   margin: 0;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: calc(16 * var(--u));
-  row-gap: calc(10 * var(--u));
-  align-items: baseline;
+  display: flex;
+  flex-direction: column;
+  gap: calc(9 * var(--u));
+}
+
+/* Term and definition share a line and wrap together, so a long term costs
+   only its own width rather than a column for every entry. */
+.rules__term {
+  text-wrap: pretty;
 }
 
 .rules__glossary dt {
-  display: flex;
-  align-items: baseline;
-  gap: calc(8 * var(--u));
+  display: inline;
   font-weight: 700;
-  white-space: nowrap;
+}
+
+.rules__glossary dt .icon {
+  margin-right: calc(4 * var(--u));
+}
+
+.rules__glossary dt::after {
+  content: ' — ';
 }
 
 .rules__glossary dd {
+  display: inline;
   margin: 0;
-  text-wrap: pretty;
 }
 
 /* --- artwork treatment ----------------------------------------------------
@@ -809,4 +825,17 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+/*
+ * Rules cards use a pale paper with a light accent, so an accent-coloured glyph
+ * nearly vanishes — a physical proof showed the glossary icons as barely there.
+ * Pull them toward the ink, which keeps a hint of accent but reads.
+ */
+.rules .icon {
+  color: color-mix(in srgb, var(--accent) 30%, var(--ink));
+}
+
+.rules .rules__list--bullets > li::before {
+  background: color-mix(in srgb, var(--accent) 45%, var(--ink));
 }

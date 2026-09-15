@@ -33,12 +33,17 @@ function renderBlock(block) {
     case 'glossary':
       // Built from the same SVG files the cards print, so the legend cannot
       // drift from the glyphs it explains.
+      // Flowing, not a two-column grid: the grid reserved a term column as wide
+      // as its longest entry, which cost roughly a third of the line for every
+      // definition and made the glossary the card that capped the type size for
+      // the whole deck.
       return `<dl class="rules__glossary">${block.entries
         .map(
           (entry) =>
-            `<dt>${entry.icon ? icon(entry.icon) : '<i class="rules__no-icon"></i>'}` +
-            `<span>${escapeHtml(entry.term)}</span></dt>` +
-            `<dd>${renderSegments(entry.segments)}</dd>`,
+            `<div class="rules__term">` +
+            `<dt>${entry.icon ? icon(entry.icon) : ''}<span>${escapeHtml(entry.term)}</span></dt>` +
+            `<dd>${renderSegments(entry.segments)}</dd>` +
+            `</div>`,
         )
         .join('')}</dl>`;
 

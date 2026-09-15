@@ -114,13 +114,18 @@
       ]
     },
     "clarifications": {
-      "title": "Clarifications",
+      "title": "Clarifications 1",
       "items": [
         "You may activate {faction:true.sameAkk} in consecutive rounds.",
         "A few {faction:true.other} have multiple effects. When activating them, choose only one effect and resolve it.",
-        "If the movement from an effect cannot be carried out completely, you can't resolve that effect.",
         "If you cannot activate {faction:true.negAkk}, you lose immediately.",
-        "When you activate {faction:fake.indefAkk}, resolve its top effect. If unable, the bottom effect offers an alternative. If neither can be resolved, ignore that card.",
+        "When you activate {faction:fake.indefAkk}, resolve its top effect. If unable, the bottom effect offers an alternative. If neither can be resolved, ignore that card."
+      ]
+    },
+    "clarifications2": {
+      "title": "Clarifications 2",
+      "items": [
+        "If the movement from an effect cannot be carried out completely, you can't resolve that effect.",
         "The numbers of the effects are exact, unless preceded by \"up to\". Example: \"up to 2\" means 1 or 2.",
         "No card can move back beyond the first position {term:path.of}.",
         "No card can move beyond {card:D}. You need to move {card:0} exactly to the position on the left side of {card:D}.",

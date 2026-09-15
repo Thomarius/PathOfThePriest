@@ -9,6 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { renderCard, escapeHtml } from './card.js';
+import { renderRulesCard } from './rules-card.js';
 import { fontFaceCss } from './fonts.js';
 
 const STYLES = fs.readFileSync(path.join(import.meta.dirname, 'styles.css'), 'utf8');
@@ -77,6 +78,19 @@ export function renderPreview(model, { themeName }) {
     })
     .join('\n    ');
 
+  // Rules cards carry the densest text in the deck, so they belong in the
+  // review page too. Leaving them out is why a type size that was too small to
+  // read only showed up on a physical proof.
+  const rules = model.rulesCards
+    .map((r) => {
+      const chars = JSON.stringify(r.blocks).replace(/[^ -~ -￿]/g, '').length;
+      return `<figure>
+      ${renderRulesCard(r, model, { unit: 'px' })}
+      <figcaption>${escapeHtml(r.title ?? r.id)} &middot; ${chars} chars</figcaption>
+    </figure>`;
+    })
+    .join(String.fromCharCode(10));
+
   const g = model.geometry;
 
   return `<!doctype html>
@@ -104,6 +118,7 @@ ${PREVIEW_CHROME}
 </div>
 <div class="sheet">
     ${cards}
+    ${rules}
 </div>
 <p class="legend">
   Red dashed line = trim (${g.trimWidthPx}&times;${g.trimHeightPx}px). Blue dashed line = safe zone
@@ -161,8 +176,10 @@ ${PREVIEW_CHROME}
       // of extra text with no height change at all until it tips into another
       // line. Spare lines is the number that actually predicts a German
       // overflow; a flat fill percentage under stress is expected, not a bug.
-      const effect = figure.querySelector('.effect');
-      const lineH = effect ? parseFloat(getComputedStyle(effect).lineHeight) : 0;
+      // Rules cards have no .effect element, so take the line height from
+      // whichever text element the card actually uses.
+      const sample = figure.querySelector('.effect, .rules__list li, .rules__para, .rules__glossary dd');
+      const lineH = sample ? parseFloat(getComputedStyle(sample).lineHeight) : 0;
       const spare = lineH ? Math.floor((boxH - innerH) / lineH) : 0;
 
       const caption = figure.querySelector('figcaption');
@@ -174,7 +191,11 @@ ${PREVIEW_CHROME}
       else if (fill > 0.75) caption.classList.add('is-tight');
       if (fill > worst) {
         worst = fill;
-        worstCard = figure.querySelector('[data-card-id]').dataset.cardId;
+        // Rules cards carry data-rules-id, not data-card-id. Assuming the
+        // latter threw as soon as a rules card became the fullest, which
+        // aborted the loop and silently dropped every figure after it.
+        const el = figure.querySelector('[data-card-id], [data-rules-id]');
+        worstCard = el?.dataset.cardId ?? el?.dataset.rulesId ?? '?';
       }
     }
     document.getElementById('summary').textContent = worstCard

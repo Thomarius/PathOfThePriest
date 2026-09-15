@@ -10,7 +10,7 @@ design are re-themed.
 **The pipeline is complete (M0–M7).** Remaining work is art direction, tracked in
 **`NEXT-STEPS.md`** as M8 onward.
 
-Four finished decks build today, each **16 cards + 5 rules cards + 3 backs**:
+Four finished decks build today, each **16 cards + 6 rules cards + 3 backs**:
 
 | Theme | Locales | Style | Artwork |
 |---|---|---|---|
@@ -40,7 +40,7 @@ is a neutral fixture for pipeline work and is not meant for printing.
 | True Masters | 8 | numbers 5, 7, 8, 9, 10, 12, 13, 14 — choose-one effects |
 | Fake Masters | 6 | numbers 1, 2, 3, 4, 6, 11 — forced effect + fallback/conditional |
 | **Playing cards total** | **16** | |
-| Rules cards | 5 | objective+endgame / setup / turn order / glossary / clarifications |
+| Rules cards | 6 | objective+endgame / setup / turn order / glossary / clarifications 1 / clarifications 2 |
 | Card backs | 3 designs | shared back for the **14 Masters**, plus distinct backs for Apprentice and Deity |
 
 The 14 Masters are shuffled during setup, so their back must be identical.
@@ -341,7 +341,7 @@ drift from the output, and it **writes nothing at all** when a card fails.
   `data/deck.json`). `src/template/rules-card.js` renders the five rules cards,
   reusing `.card__text`/`.card__text-inner` so the M5 overflow audit covers them
   automatically — they carry far more text than a face. A build now emits
-  **16 cards + 5 rules cards + 3 backs**, with rules cards included in the PDF
+  **16 cards + 6 rules cards + 3 backs**, with rules cards included in the PDF
   and the proof sheet.
 
 **M0–M7 are complete.** Remaining work is art direction, tracked in
@@ -396,6 +396,13 @@ winnable, only needed if the effects themselves are ever altered.
   fallback face, card 7 read as 73% full; with Alegreya Sans it was 47%, because
   the fallback was considerably wider.
 - Art bleeds past trim; all text stays inside the safe zone.
+- **Rules-card type is 32u (~7.7 pt), and the glossary is what caps it.** A
+  physical proof showed 26u (6.2 pt) was too small to read. The glossary sits at
+  80% at 32u and drops to a single spare line at 34u, so re-measure with
+  `npm run preview` against the *German* deck after any change to rules text.
+- **Glyphs on rules cards need mixing toward the ink.** The rules palette is pale
+  paper with a light accent, so an accent-coloured icon nearly vanishes in print
+  even though it reads fine on a card face.
 - **Never pre-encode `#` as `%23` inside a procedural SVG.** `encodeURIComponent`
   escapes the `%` again into `%2523`, which silently corrupted every colour and
   the grain filter's reference — the textures rendered as nothing at all and

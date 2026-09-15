@@ -114,13 +114,18 @@
       ]
     },
     "clarifications": {
-      "title": "Klarstellungen",
+      "title": "Klarstellungen 1",
       "items": [
         "Du darfst {faction:true.sameAkk} in aufeinanderfolgenden Runden aktivieren.",
         "Einige {faction:true.other} haben mehrere Effekte. Wähle beim Aktivieren nur einen Effekt und führe ihn aus.",
-        "Kann die Bewegung eines Effekts nicht vollständig ausgeführt werden, darfst du diesen Effekt nicht ausführen.",
         "Kannst du {faction:true.negAkk} aktivieren, verlierst du sofort.",
-        "Wenn du {faction:fake.indefAkk} aktivierst, führe zuerst den oberen Effekt aus. Ist das nicht möglich, bietet der untere Effekt eine Alternative. Ist keiner von beiden möglich, ignoriere diese Karte.",
+        "Wenn du {faction:fake.indefAkk} aktivierst, führe zuerst den oberen Effekt aus. Ist das nicht möglich, bietet der untere Effekt eine Alternative. Ist keiner von beiden möglich, ignoriere diese Karte."
+      ]
+    },
+    "clarifications2": {
+      "title": "Klarstellungen 2",
+      "items": [
+        "Kann die Bewegung eines Effekts nicht vollständig ausgeführt werden, darfst du diesen Effekt nicht ausführen.",
         "Die Zahlen der Effekte sind exakt, sofern ihnen nicht „bis zu“ vorangestellt ist. Beispiel: „bis zu 2“ bedeutet 1 oder 2.",
         "Keine Karte kann sich über das erste Feld {term:path.of} hinaus zurückbewegen.",
         "Keine Karte kann sich über {card:D} hinaus bewegen. Du musst {card:0} genau auf das Feld links neben {card:D} bewegen.",
