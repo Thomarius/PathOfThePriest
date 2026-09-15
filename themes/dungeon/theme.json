@@ -15,11 +15,25 @@
   "factions": {
     "true": {
       "one": "Ally",
-      "other": "Allies"
+      "other": "Allies",
+      "genPl": "Allies",
+      "anyAkk": "any Ally",
+      "indefAkk": "an Ally",
+      "eachNom": "Each Ally",
+      "sameAkk": "the same Ally",
+      "negAkk": "any Ally",
+      "negNom": "no Ally"
     },
     "fake": {
       "one": "Hazard",
-      "other": "Hazards"
+      "other": "Hazards",
+      "genPl": "Hazards",
+      "anyAkk": "any Hazard",
+      "indefAkk": "a Hazard",
+      "eachNom": "Each Hazard",
+      "sameAkk": "the same Hazard",
+      "negAkk": "any Hazard",
+      "negNom": "no Hazard"
     },
     "apprentice": {
       "one": "Adventurer",
@@ -131,13 +145,25 @@
           "one": "Verbündeter",
           "akk": "Verbündeten",
           "other": "Verbündete",
-          "genPl": "Verbündeten"
+          "genPl": "Verbündeten",
+          "anyAkk": "einen beliebigen Verbündeten",
+          "indefAkk": "einen Verbündeten",
+          "eachNom": "Jeder Verbündete",
+          "sameAkk": "denselben Verbündeten",
+          "negAkk": "keinen Verbündeten",
+          "negNom": "kein Verbündeter"
         },
         "fake": {
           "one": "Gefahr",
           "akk": "Gefahr",
           "other": "Gefahren",
-          "genPl": "Gefahren"
+          "genPl": "Gefahren",
+          "anyAkk": "eine beliebige Gefahr",
+          "indefAkk": "eine Gefahr",
+          "eachNom": "Jede Gefahr",
+          "sameAkk": "dieselbe Gefahr",
+          "negAkk": "keine Gefahr",
+          "negNom": "keine Gefahr"
         },
         "apprentice": {
           "one": "Abenteurer",

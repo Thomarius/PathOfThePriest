@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { renderCard, escapeHtml } from './card.js';
 import { renderBack } from './back.js';
+import { renderRulesCard } from './rules-card.js';
 import { baseStyles } from './page.js';
 import { ROOT } from '../model.js';
 
@@ -35,7 +36,7 @@ export function embedArt(model, themeName) {
 /**
  * @param {'px'|'mm'} unit  px for screenshots and auditing, mm for the PDF
  */
-export function buildCardsHtml(model, cards, unit) {
+export function buildCardsHtml(model, cards, unit, { extras = [] } = {}) {
   const g = model.geometry;
   const widthMm = ((g.widthPx / g.dpi) * 25.4).toFixed(4);
   const heightMm = ((g.heightPx / g.dpi) * 25.4).toFixed(4);
@@ -56,6 +57,7 @@ html, body { margin: 0; padding: 0; background: #fff; }
 </head>
 <body>
 ${cards.map((card) => renderCard(card, model, { unit })).join('\n')}
+${extras.join('\n')}
 </body>
 </html>
 `;
@@ -93,6 +95,18 @@ ${drawnBacks(model)
  * own it produced one endless row, since the flex container sizes to content.
  */
 export function buildProofHtml(model, cards, { scale = 0.34, columns = 4 } = {}) {
+  const extraFigures = [
+    ...model.rulesCards.map(
+      (r) => `<figure>${renderRulesCard(r, model, { unit: 'px' })}
+  <figcaption>${escapeHtml(r.title ?? r.id)}</figcaption>
+</figure>`,
+    ),
+    ...drawnBacks(model).map(
+      (b) => `<figure>${renderBack(b, model, { unit: 'px' })}
+  <figcaption>${escapeHtml(b.id)}</figcaption>
+</figure>`,
+    ),
+  ];
   const gap = 24;
   const padding = 24;
   const sheetWidth = columns * model.geometry.widthPx + (columns - 1) * gap + padding * 2;
@@ -124,6 +138,7 @@ ${cards
 </figure>`,
   )
   .join('\n')}
+${extraFigures.join('\n')}
 </div>
 </body>
 </html>
@@ -139,4 +154,22 @@ export async function settlePage(page, html) {
   await page.evaluate(() =>
     Promise.all([...document.images].map((img) => img.decode().catch(() => {}))),
   );
+}
+
+export function buildRulesHtml(model, unit) {
+  return `<!doctype html>
+<html lang="${escapeHtml(model.meta.htmlLang)}">
+<head>
+<meta charset="utf-8">
+<style>
+${baseStyles(model)}
+html, body { margin: 0; padding: 0; background: #fff; }
+.card { display: block; }
+</style>
+</head>
+<body>
+${model.rulesCards.map((rules) => renderRulesCard(rules, model, { unit })).join(String.fromCharCode(10))}
+</body>
+</html>
+`;
 }

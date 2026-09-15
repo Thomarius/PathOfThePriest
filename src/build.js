@@ -150,8 +150,8 @@ async function cmdBuild(flags) {
   }
 
   console.log(
-    `\n  ${result.written.length} cards + ${result.backs?.length ?? 0} backs -> ` +
-      `${path.relative(ROOT, result.outDir)}`,
+    `\n  ${result.written.length} cards + ${result.rules?.length ?? 0} rules + ` +
+      `${result.backs?.length ?? 0} backs -> ${path.relative(ROOT, result.outDir)}`,
   );
   if (result.pdfFile) console.log(`  pdf   -> ${path.relative(ROOT, result.pdfFile)}`);
   if (result.proofFile) console.log(`  proof -> ${path.relative(ROOT, result.proofFile)}`);

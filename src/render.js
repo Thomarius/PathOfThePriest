@@ -17,6 +17,7 @@ import { chromium } from 'playwright';
 import {
   buildBacksHtml,
   buildCardsHtml,
+  buildRulesHtml,
   buildProofHtml,
   drawnBacks,
   embedArt,
@@ -111,6 +112,37 @@ export async function renderAll(model, options) {
       backs.push({ id: back.id, file: name, sha256: front.sha256, copiedFrom: front.file });
     }
 
+    // --- rules cards --------------------------------------------------------
+    const rules = [];
+    if (model.rulesCards.length) {
+      const rulesPage = await browser.newPage({
+        viewport: { width: g.widthPx, height: g.heightPx },
+        deviceScaleFactor: 1,
+      });
+      await settlePage(rulesPage, buildRulesHtml(model, 'px'));
+
+      // Rules cards carry far more text than a card face, so they are audited
+      // too — the same .card__text structure makes that automatic.
+      const rulesAudit = options.audit === false
+        ? { errors: [], warnings: [] }
+        : classify(await auditPage(rulesPage, model), model);
+      audit.errors.push(...rulesAudit.errors);
+      audit.warnings.push(...rulesAudit.warnings);
+
+      if (!audit.errors.length) {
+        for (const card of model.rulesCards) {
+          const name = `${card.id}.png`;
+          const file = path.join(outDir, name);
+          await rulesPage.locator(`[data-rules-id="${card.id}"]`).screenshot({ path: file });
+          rules.push({ id: card.id, file: name, sha256: sha256(file) });
+        }
+      }
+      await rulesPage.close();
+      if (audit.errors.length) {
+        return { audit, written, backs, rules: [], pdfFile: null, proofFile: null, outDir };
+      }
+    }
+
     let pdfFile = null;
     if (options.pdf !== false) {
       const name = `${slug(model.meta.title ?? 'cards')}-${model.meta.locale}-${g.profile}.pdf`;
@@ -120,7 +152,10 @@ export async function renderAll(model, options) {
       // The PDF is built from a second, millimetre-sized page. Printing the
       // pixel page would place an 816 CSS px card on paper as 8.5 inches.
       const pdfPage = await browser.newPage();
-      await settlePage(pdfPage, buildCardsHtml(model, cards, 'mm'));
+      // The PDF is the whole product: faces then rules cards.
+      const { renderRulesCard } = await import('./template/rules-card.js');
+      const rulesMm = model.rulesCards.map((rc) => renderRulesCard(rc, model, { unit: 'mm' }));
+      await settlePage(pdfPage, buildCardsHtml(model, cards, 'mm', { extras: rulesMm }));
       // Explicit width/height rather than preferCSSPageSize: Chromium quantizes
       // an @page size and landed ~0.09 mm off the printer's spec either way,
       // but this keeps the intent in one place.
@@ -130,7 +165,7 @@ export async function renderAll(model, options) {
         width: `${((g.widthPx / g.dpi) * 25.4).toFixed(4)}mm`,
         height: `${((g.heightPx / g.dpi) * 25.4).toFixed(4)}mm`,
         margin: { top: 0, right: 0, bottom: 0, left: 0 },
-        pageRanges: `1-${cards.length}`,
+        pageRanges: `1-${cards.length + model.rulesCards.length}`,
       });
       await pdfPage.close();
     }
@@ -148,7 +183,7 @@ export async function renderAll(model, options) {
     // orphan that still looks like a finished card is exactly the kind of thing
     // that reaches a printer by accident, so the output directory is pruned to
     // the cards actually rendered this run.
-    const keep = new Set([...written.map((w) => w.file), ...backs.map((b) => b.file), 'manifest.json']);
+    const keep = new Set([...written.map((w) => w.file), ...backs.map((b) => b.file), ...rules.map((x) => x.file), 'manifest.json']);
     const removed = [];
     for (const entry of fs.readdirSync(outDir)) {
       if (keep.has(entry) || !entry.toLowerCase().endsWith('.png')) continue;
@@ -166,6 +201,7 @@ export async function renderAll(model, options) {
       bleedMm: g.bleedMm,
       cards: written,
       backs,
+      rules,
     };
     fs.writeFileSync(
       path.join(outDir, 'manifest.json'),
@@ -173,7 +209,7 @@ export async function renderAll(model, options) {
       'utf8',
     );
 
-    return { audit, written, backs, pdfFile, proofFile, outDir, removed };
+    return { audit, written, backs, rules, pdfFile, proofFile, outDir, removed };
   } finally {
     await browser.close();
   }

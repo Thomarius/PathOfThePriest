@@ -219,6 +219,7 @@ export function buildModel(overrides = {}) {
       geometry: resolveGeometry(profile, profileName),
       typography: theme.typography ?? {},
       decor: decorFor(theme),
+      rulesPalette: theme.palette?.rules ?? theme.palette?.apprentice ?? null,
       ui: locale.ui ?? {},
       cards: cards.filter(Boolean),
       rulesCards,

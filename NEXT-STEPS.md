@@ -83,14 +83,11 @@ The seven wording choices below were reviewed and approved.
 
 Manual per-card sourcing, 16 images. The pipeline cannot shorten this.
 
-### M7 — Rules cards *(card backs are done)*
+### ~~M7~~ — DONE (rules cards and card backs)
 
 Two templates are not yet written:
 
-- `src/template/rules-card.js` — five rules cards. The data and locale entries
-  already exist (`data/deck.json` → `rulesCards`, `locales/*.json` → `rules`),
-  and the model already builds them into normalised blocks. Only the template is
-  missing.
+- ~~`src/template/rules-card.js`~~ — **done.** All five render, and are included in the PDF and proof sheet.
 - ~~`src/template/back.js`~~ — **done.** All three backs render; Apprentice and
   Deity are byte-identical copies of their own fronts.
 
@@ -102,7 +99,7 @@ cannot drift from the glyphs printed on the cards.
 | Gap | Detail |
 |---|---|
 | Art focus is vertical only | `theme.json` `focus: [x, y]` — only `y` is applied (`background-position: center <y>`). Add horizontal support if a chosen image needs it. |
-| Rules cards not rendered | `npm run build` renders the 16 faces only. Rules cards and backs join once their templates exist. |
+
 | `.gitattributes` | Git reports LF→CRLF on every commit. Adding `* text=auto eol=lf` would settle it if the repo is ever opened on another machine. |
 
 ---

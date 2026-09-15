@@ -6,11 +6,25 @@
   "factions": {
     "true": {
       "one": "True Master",
-      "other": "True Masters"
+      "other": "True Masters",
+      "genPl": "True Masters",
+      "anyAkk": "any True Master",
+      "indefAkk": "a True Master",
+      "eachNom": "Each True Master",
+      "sameAkk": "the same True Master",
+      "negAkk": "any True Master",
+      "negNom": "no True Master"
     },
     "fake": {
       "one": "Fake Master",
-      "other": "Fake Masters"
+      "other": "Fake Masters",
+      "genPl": "Fake Masters",
+      "anyAkk": "any Fake Master",
+      "indefAkk": "a Fake Master",
+      "eachNom": "Each Fake Master",
+      "sameAkk": "the same Fake Master",
+      "negAkk": "any Fake Master",
+      "negNom": "no Fake Master"
     },
     "apprentice": {
       "one": "Apprentice",
@@ -62,13 +76,25 @@
           "one": "Wahrer Meister",
           "akk": "Wahren Meister",
           "other": "Wahre Meister",
-          "genPl": "Wahren Meister"
+          "genPl": "Wahren Meister",
+          "anyAkk": "einen beliebigen Wahren Meister",
+          "indefAkk": "einen Wahren Meister",
+          "eachNom": "Jeder Wahre Meister",
+          "sameAkk": "denselben Wahren Meister",
+          "negAkk": "keinen Wahren Meister",
+          "negNom": "kein Wahrer Meister"
         },
         "fake": {
           "one": "Falscher Meister",
           "akk": "Falschen Meister",
           "other": "Falsche Meister",
-          "genPl": "Falschen Meister"
+          "genPl": "Falschen Meister",
+          "anyAkk": "einen beliebigen Falschen Meister",
+          "indefAkk": "einen Falschen Meister",
+          "eachNom": "Jeder Falsche Meister",
+          "sameAkk": "denselben Falschen Meister",
+          "negAkk": "keinen Falschen Meister",
+          "negNom": "kein Falscher Meister"
         },
         "apprentice": {
           "one": "Lehrling",

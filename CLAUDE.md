@@ -281,12 +281,14 @@ drift from the output, and it **writes nothing at all** when a card fails.
   verified against deliberately broken input.
 - **M6 — Art integration.** Source public-domain images, set focal crops, fill
   `ATTRIBUTION.md`. *Long pole — manual per-card work the pipeline cannot shortcut.*
-- **M7 — Card backs DONE; rules cards remain.** `src/template/back.js` draws the
-  shared Masters back (stone coursing, neutral emblem, deck title); the Apprentice
-  and Deity backs are *copied* from their own front renders, so the two files are
-  guaranteed identical rather than merely similar. Which backs copy a front is
-  declared by `reuseFront` in `data/deck.json`. Still to do: the five rules
-  cards (`src/template/rules-card.js`).
+- **M7 — DONE.** `src/template/back.js` draws the shared Masters back; the
+  Apprentice and Deity backs are *copied* from their own front renders, so the
+  files are identical rather than merely similar (declared by `reuseFront` in
+  `data/deck.json`). `src/template/rules-card.js` renders the five rules cards,
+  reusing `.card__text`/`.card__text-inner` so the M5 overflow audit covers them
+  automatically — they carry far more text than a face. A build now emits
+  **16 cards + 5 rules cards + 3 backs**, with rules cards included in the PDF
+  and the proof sheet.
 
 Optional M8: a rules simulator to verify the deck stays winnable — only needed if
 effects are ever altered, which is currently out of scope.
@@ -341,6 +343,11 @@ effects are ever altered, which is currently out of scope.
   escapes the `%` again into `%2523`, which silently corrupted every colour and
   the grain filter's reference — the textures rendered as nothing at all and
   looked merely "subtle". Write plain `#` and let the encoder handle it.
+- **Determiners belong in the faction form, not the locale text.** German
+  articles agree with the noun's gender, and the noun is theme data: a locale
+  reading "einen {faction:fake.akk}" produced "einen Gefahr" once a theme used a
+  feminine noun. Forms like `indefAkk`, `negAkk`, `eachNom` and `sameAkk` carry
+  their determiner, exactly as `{term:}` forms carry their article.
 - Decor data URIs go into a `style="..."` attribute, so they must be
   single-quoted; `renderCard`/`renderBack` throw if one contains a double quote.
 - **Never use `transform: rotate()` for a badge or panel shape.** It keeps the

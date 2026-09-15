@@ -59,7 +59,7 @@
           "heading": "End of the Game",
           "items": [
             "You win if, at the end of the {faction:fake.other} turn, {card:0} is next to {card:D}.",
-            "You lose if {card:0} is destroyed, or if you cannot activate any {faction:true.one}."
+            "You lose if {card:0} is destroyed, or if {faction:true.negNom} can be activated."
           ]
         }
       ]
@@ -76,8 +76,8 @@
     "turn": {
       "title": "How to Play",
       "items": [
-        "Player turn: choose any {faction:true.one} {term:path.in} and activate it by resolving 1 of its effects.",
-        "{faction:fake.other} turn: each {faction:fake.one} {term:path.in} is activated from lowest to highest (1, 2, 3, 4, 6, 11).",
+        "Player turn: choose {faction:true.anyAkk} {term:path.in} and resolve 1 effect on that card.",
+        "{faction:fake.other} turn: {faction:fake.eachNom} {term:path.in} is activated from lowest to highest (1, 2, 3, 4, 6, 11).",
         "Begin a new round with the player turn."
       ]
     },
@@ -97,11 +97,11 @@
     "clarifications": {
       "title": "Clarifications",
       "items": [
-        "You may activate the same {faction:true.one} in consecutive rounds.",
+        "You may activate {faction:true.sameAkk} in consecutive rounds.",
         "A few {faction:true.other} have multiple effects. When activating them, choose only one effect and resolve it.",
         "If the movement from an effect cannot be carried out completely, you can't resolve that effect.",
-        "If you cannot activate any {faction:true.one}, you lose immediately.",
-        "When activating a {faction:fake.one}, resolve its top effect. If unable, the bottom effect offers an alternative. If neither can be resolved, ignore that card.",
+        "If you cannot activate {faction:true.negAkk}, you lose immediately.",
+        "When you activate {faction:fake.indefAkk}, resolve its top effect. If unable, the bottom effect offers an alternative. If neither can be resolved, ignore that card.",
         "The numbers of the effects are exact, unless preceded by \"up to\". Example: \"up to 2\" means 1 or 2.",
         "No card can move back beyond the first position {term:path.of}.",
         "No card can move beyond {card:D}. You need to move {card:0} exactly to the position on the left side of {card:D}.",
