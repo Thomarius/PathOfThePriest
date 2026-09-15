@@ -1,0 +1,112 @@
+{
+  "$comment": "DRAFT — for review. Wording layer, German. Contains NO card names and NO faction names; those come from the theme via tokens. Faction case forms (akk, genPl) are declared in the theme's localeOverrides.de. Mechanical vocabulary is fixed here and recurs on nearly every card: vorrücken, zurückbewegen, bewegen, tauschen, zerstören, senden, angrenzend, niedrigste, Feld/Felder, Pfad.",
+  "meta": {
+    "code": "de",
+    "label": "Deutsch",
+    "htmlLang": "de"
+  },
+  "ui": {
+    "fallbackLabel": "Falls nicht möglich:",
+    "choiceSeparator": "oder",
+    "rulesCardTag": "Regeln"
+  },
+  "effects": {
+    "1.a": "{icon:swap} Tausche die 2 {icon:adjacent} angrenzenden Karten.",
+    "1.b": "{icon:move} Bewege diese Karte 1 Feld in Richtung Mitte des Pfades.",
+
+    "2.a": "{icon:destroy} Zerstöre die {icon:lowest} niedrigste {icon:adjacent} angrenzende Karte.",
+
+    "3.a": "{icon:send} Sende die {icon:lowest} niedrigste {icon:adjacent} angrenzende Karte an den Anfang des Pfades.",
+
+    "4.a": "{icon:moveBack} Bewege die {icon:lowest} niedrigste {icon:adjacent} angrenzende Karte 2 Felder zurück.",
+    "4.b": "{icon:advance} Rücke diese Karte 1 Feld vor.",
+
+    "5.a": "{icon:swap} Tausche diese Karte mit einer Karte, die bis zu 2 Felder entfernt ist.",
+
+    "6.a": "{icon:send} Sende die {icon:lowest} niedrigste {icon:adjacent} angrenzende Karte auf das Feld vor {card:2}.",
+    "6.b": "Ist es {card:2}, bewege {icon:move} {card:2} 2 Felder in Richtung {card:0}, auch wenn sie sich darüber hinaus bewegt.",
+
+    "7.a": "{icon:move} Wähle eine Karte, die 3 Felder entfernt ist, und bewege sie 1 Feld.",
+    "7.b": "{icon:move} Wähle eine Karte, die 2 Felder entfernt ist, und bewege sie 2 Felder.",
+    "7.c": "{icon:move} Wähle eine Karte, die 1 Feld entfernt ist, und bewege sie 3 Felder.",
+
+    "8.a": "{icon:moveBack} Bewege eine beliebige {icon:adjacent} angrenzende Karte 2 Felder zurück.",
+    "8.b": "{icon:advance} Rücke eine beliebige {icon:adjacent} angrenzende Karte 1 Feld vor.",
+
+    "9.a": "{icon:swap} Tausche diese Karte mit einer Karte, die 3 Felder entfernt ist.",
+
+    "10.a": "{icon:swap} Tausche diese Karte mit einer beliebigen {icon:adjacent} angrenzenden Karte.",
+
+    "11.a": "{icon:move} Bewege die {icon:lowest} niedrigste {icon:adjacent} angrenzende Karte 2 Felder in Richtung {card:2}, auch wenn sie sich darüber hinaus bewegt.",
+    "11.b": "Ist es {card:2}, bewege {icon:move} {card:2} 2 Felder in Richtung {card:0}, auch wenn sie sich darüber hinaus bewegt.",
+
+    "12.a": "{icon:move} Bewege eine beliebige {icon:adjacent} angrenzende Karte 2 Felder.",
+
+    "13.a": "{icon:moveBack} Bewege eine beliebige {icon:adjacent} angrenzende Karte 3 Felder zurück.",
+    "13.b": "{icon:advance} Rücke eine beliebige {icon:adjacent} angrenzende Karte 2 Felder vor.",
+
+    "14.a": "{icon:swap} Tausche diese Karte mit einer Karte, die 4 Felder entfernt ist."
+  },
+  "rules": {
+    "objective": {
+      "title": "Ziel",
+      "body": [
+        "Gehe einen Pfad aus 14 Karten entlang, bestehend aus 8 {faction:true.other} und 6 {faction:fake.other}.",
+        "Bringe {card:0} vom Anfang des Pfades ans Ende und verbinde dich mit {card:D}."
+      ],
+      "sections": [
+        {
+          "heading": "Spielende",
+          "items": [
+            "Du gewinnst, wenn {card:0} am Ende des Zuges der {faction:fake.genPl} neben {card:D} liegt.",
+            "Du verlierst, wenn {card:0} zerstört wird oder wenn kein {faction:true.one} aktiviert werden kann."
+          ]
+        }
+      ]
+    },
+    "setup": {
+      "title": "Spielaufbau",
+      "items": [
+        "Lege {card:0} und {card:D} beiseite.",
+        "Mische die übrigen 14 Karten und bilde den Pfad, indem du sie von links nach rechts auslegst.",
+        "Lege {card:0} an den Anfang des Pfades (links).",
+        "Lege {card:D} an das Ende des Pfades (rechts)."
+      ]
+    },
+    "turn": {
+      "title": "Spielablauf",
+      "items": [
+        "Spielerzug: Wähle einen beliebigen {faction:true.akk} im Pfad und aktiviere ihn, indem du 1 seiner Effekte ausführst.",
+        "Zug der {faction:fake.genPl}: Jeder {faction:fake.one} im Pfad wird von der niedrigsten zur höchsten Zahl aktiviert (1, 2, 3, 4, 6, 11).",
+        "Beginne eine neue Runde mit dem Spielerzug."
+      ]
+    },
+    "glossary": {
+      "title": "Glossar",
+      "entries": [
+        { "term": "Angrenzend", "icon": "adjacent", "text": "Unmittelbar links oder rechts davon (1 Feld entfernt)." },
+        { "term": "Vorrücken", "icon": "advance", "text": "Nach rechts bewegen." },
+        { "term": "Zurückbewegen", "icon": "moveBack", "text": "Nach links bewegen." },
+        { "term": "Bewegen", "icon": "move", "text": "In eine beliebige Richtung bewegen (links oder rechts)." },
+        { "term": "Tauschen", "icon": "swap", "text": "Die Positionen der angegebenen Karten vertauschen." },
+        { "term": "Senden", "icon": "send", "text": "Direkt auf die angegebene Position bewegen." },
+        { "term": "Zerstören", "icon": "destroy", "text": "Aus dem Pfad und damit aus dem Spiel entfernen." },
+        { "term": "Niedrigste", "icon": "lowest", "text": "Die Karte mit der niedrigsten Zahl in der oberen linken Ecke." }
+      ]
+    },
+    "clarifications": {
+      "title": "Klarstellungen",
+      "items": [
+        "Du darfst denselben {faction:true.akk} in aufeinanderfolgenden Runden aktivieren.",
+        "Einige {faction:true.other} haben mehrere Effekte. Wähle beim Aktivieren nur einen Effekt und führe ihn aus.",
+        "Kann die Bewegung eines Effekts nicht vollständig ausgeführt werden, darfst du diesen Effekt nicht ausführen.",
+        "Kannst du keinen {faction:true.akk} aktivieren, verlierst du sofort.",
+        "Wenn du einen {faction:fake.akk} aktivierst, führe zuerst den oberen Effekt aus. Ist das nicht möglich, bietet der untere Effekt eine Alternative. Ist keiner von beiden möglich, ignoriere diese Karte.",
+        "Die Zahlen der Effekte sind exakt, sofern ihnen nicht „bis zu“ vorangestellt ist. Beispiel: „bis zu 2“ bedeutet 1 oder 2.",
+        "Keine Karte kann sich über das erste Feld des Pfades hinaus zurückbewegen.",
+        "Keine Karte kann sich über {card:D} hinaus bewegen. Du musst {card:0} genau auf das Feld links neben {card:D} bewegen.",
+        "Kein Effekt kann {card:D} beeinflussen."
+      ]
+    }
+  }
+}

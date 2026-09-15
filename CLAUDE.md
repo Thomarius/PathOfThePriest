@@ -124,6 +124,16 @@ surviving expansion is a validation error.
 Per-card `name`, optional `flavor`, `art` filename and focal-point crop; deck
 title; faction display labels; palette; font choices.
 
+**`localeOverrides.<code>`** folds language-specific values over the base theme,
+so one theme serves several locales without duplicating artwork or palette. Card
+names and faction labels are theme data *and* language-specific, which is why
+they cannot live in the locale file — the locale must stay free of names.
+
+Faction labels are an **open-ended map of forms**, not a singular/plural pair,
+because German needs case forms: `{faction:true.akk}` yields "Wahren Meister" for
+"einen beliebigen Wahren Meister". A form referenced by a locale but missing from
+the theme is a hard error.
+
 The art crop is stored per card (`{ "art": "grudge.jpg", "focus": [0.5, 0.35] }`)
 because public-domain scans have unpredictable aspect ratios.
 
@@ -231,10 +241,15 @@ drift from the output, and it **writes nothing at all** when a card fails.
 
 ## Milestones
 
-- **M0 — Content lock.** Topic chosen; German mechanical vocabulary fixed
-  (*vorrücken, zurückziehen, bewegen, tauschen, zerstören, senden, angrenzend,
-  niedrigste*). These words recur on nearly every card; changing one later means
-  re-reading the whole deck. Deliverable: `locales/de.json`.
+- **M0 — Content lock. DRAFTED, awaiting review.** `locales/de.json` exists and
+  validates. Mechanical vocabulary as used: *vorrücken, zurückbewegen, bewegen,
+  tauschen, zerstören, senden, angrenzend, niedrigste, Feld/Felder, Pfad*.
+  **"zurückbewegen", not "zurückziehen"** — in German game usage *ziehen* also
+  means "draw a card", and the deck already has cards moving along a path.
+  Measured: German runs **+32%** over English overall, and card 7 grows +40%
+  (145→203 chars) with its fill unchanged at 75% and 2 spare lines still free.
+  No card falls below 2 spare lines. The topic is still open, but it does not
+  block this file — names are tokens.
 - **M1 — Data & model. DONE.** `data/cards.json`, `data/deck.json`,
   `config/print-profiles.json`, `locales/en.json`, `themes/placeholder/`,
   `src/tokens.js`, `src/model.js`, `src/validate.js`, `src/build.js`.

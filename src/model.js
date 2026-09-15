@@ -79,6 +79,37 @@ export function resolveGeometry(profile, name) {
 }
 
 /**
+ * Folds `theme.localeOverrides[<locale>]` into the theme.
+ *
+ * Card names and faction labels are theme data, but they are also
+ * language-specific, so one theme must be able to serve more than one locale
+ * without duplicating its artwork and palette. German additionally needs case
+ * forms for faction labels ("einen *Wahren* Meister"), which is why faction
+ * forms are an open-ended map rather than a fixed singular/plural pair.
+ */
+export function applyLocaleOverride(theme, localeName) {
+  const override = theme.localeOverrides?.[localeName];
+  if (!override) return theme;
+
+  const mergeById = (base = {}, patch = {}) => {
+    const out = { ...base };
+    for (const [id, value] of Object.entries(patch)) {
+      out[id] = { ...(base[id] ?? {}), ...value };
+    }
+    return out;
+  };
+
+  return {
+    ...theme,
+    ...override,
+    factions: mergeById(theme.factions, override.factions),
+    cards: mergeById(theme.cards, override.cards),
+    palette: mergeById(theme.palette, override.palette),
+    typography: { ...theme.typography, ...override.typography },
+  };
+}
+
+/**
  * @param {{theme?: string, locale?: string, profile?: string}} overrides
  */
 export function buildModel(overrides = {}) {
@@ -90,7 +121,7 @@ export function buildModel(overrides = {}) {
   const localeName = overrides.locale ?? deck.locale;
   const profileName = overrides.profile ?? deck.profile ?? profiles.default;
 
-  const theme = loadJson(`themes/${themeName}/theme.json`);
+  const theme = applyLocaleOverride(loadJson(`themes/${themeName}/theme.json`), localeName);
   const locale = loadJson(`locales/${localeName}.json`);
 
   const profile = profiles.profiles[profileName];

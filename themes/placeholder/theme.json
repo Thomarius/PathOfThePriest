@@ -32,6 +32,46 @@
     "body": "\"Alegreya Sans\", \"Segoe UI\", Frutiger, system-ui, sans-serif",
     "$note": "CSS font stacks. The named OFL faces are not vendored yet, so the preview falls back to a local face. Real font files must be placed in assets/fonts and loaded via @font-face before M4, or rendered output will differ between machines."
   },
+  "$localeOverrides": "Card names and faction labels are theme data but also language-specific. One theme serves several locales through these overrides, so artwork and palette are never duplicated. Faction forms are open-ended: German needs case forms, which is why these are not just one/other.",
+  "localeOverrides": {
+    "de": {
+      "title": "Der Pfad des Priesters",
+      "factions": {
+        "true": {
+          "one": "Wahrer Meister",
+          "akk": "Wahren Meister",
+          "other": "Wahre Meister",
+          "genPl": "Wahren Meister"
+        },
+        "fake": {
+          "one": "Falscher Meister",
+          "akk": "Falschen Meister",
+          "other": "Falsche Meister",
+          "genPl": "Falschen Meister"
+        },
+        "apprentice": { "one": "Lehrling", "other": "Lehrlinge" },
+        "deity": { "one": "Gottheit", "other": "Gottheiten" }
+      },
+      "cards": {
+        "0": { "name": "Lehrling" },
+        "1": { "name": "Zweifel" },
+        "2": { "name": "Groll" },
+        "3": { "name": "Furcht" },
+        "4": { "name": "Trägheit" },
+        "5": { "name": "Übung" },
+        "6": { "name": "Zwietracht" },
+        "7": { "name": "Philosophie" },
+        "8": { "name": "Kräuterkundiger" },
+        "9": { "name": "Meditation" },
+        "10": { "name": "Gebet" },
+        "11": { "name": "Neid" },
+        "12": { "name": "Pilger" },
+        "13": { "name": "Magie" },
+        "14": { "name": "Astralkörper" },
+        "D": { "name": "Gottheit" }
+      }
+    }
+  },
   "cards": {
     "0": { "name": "Apprentice" },
     "1": { "name": "Doubt" },

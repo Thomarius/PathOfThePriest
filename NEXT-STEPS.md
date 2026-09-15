@@ -18,12 +18,30 @@ Everything left is either a decision or content.
 | # | Decision | Blocks | Recommendation |
 |---|---|---|---|
 | 1 | **Setting / topic** | M6 artwork, all card names | Pick a theme with a deep public-domain image pool, and one where 6 *vices* and 8 *virtues* map onto Fake and True Masters. Candidates below. |
-| 2 | **Language** | M0 German locale | German as primary (`de`), English kept as the reference. Both can ship from the same artwork. |
+| 2 | ~~**Language**~~ — decided: German | — | `locales/de.json` drafted. English kept as the reference; both ship from the same artwork via `localeOverrides`. |
+| 8 | **German wording choices** (below) | M0 sign-off | Review the seven points listed under the table. |
 | 3 | **Rules cards: German only, or bilingual?** | M7 | German only. Five rules cards are already dense; doubling the text would need 10 cards or unreadable type. |
 | 4 | **Keep `{icon:adjacent}` and `{icon:lowest}` in effect text?** | M0 wording | Drop both from effect text, keep them on the glossary card. They appear on almost every line and add noise; the movement verbs are what benefit from a glyph. Judge from a printed proof first. |
 | 5 | **Flavour text on cards?** | M7 | Skip. `theme.json` accepts a `flavor` field and the model carries it, but no template renders it — see Part 2. There is room on single-effect cards, but not on cards 6, 7 and 11. |
 | 6 | **Card back designs (3)** | M7 | One shared back for the 14 Masters (must not hint True vs Fake), plus distinct Apprentice and Deity backs. |
 | 7 | **Print service** | — | `mpc` is the default and is already configured. `drivethru` and `home-a4` profiles exist; switching is a flag, not a rewrite. |
+
+### On decision 8 — German wording to confirm
+
+1. **"zurückbewegen", not "zurückziehen".** In German game usage *ziehen* also
+   means "draw a card"; this deck already has cards moving along a path, so
+   *zurückbewegen* avoids the collision. Parallel to *bewegen*.
+2. **Duzen.** The rules address the player as *du*. Switch to *Sie* or to
+   impersonal phrasing if you prefer.
+3. **"Feld / Felder"** for *space / spaces*, **"Pfad"** for *path*.
+4. **"Wahrer Meister" / "Falscher Meister".** Alternatives: *Echter Meister*,
+   *Falscher Prophet*. These will likely be renamed by the theme anyway.
+5. **Card references take no article** — "in Richtung {card:0}" renders as
+   "in Richtung Lehrling". Grammatically "in Richtung des Lehrlings" is fuller,
+   but that forces a genitive form per card name and breaks on a re-theme.
+6. **"Ist es {card:2}, …"** for the conditional clause on cards 6 and 11.
+7. **Card names are placeholders.** The German names in the theme override are
+   literal translations of the originals; your setting replaces all 16.
 
 ### On decision 1 — setting candidates
 
@@ -42,18 +60,25 @@ Ask for a worked-up proposal with named sources if you want one before deciding.
 
 ## Part 2 — Remaining work
 
-### M0 — German locale *(unblocked; can start before the setting is chosen)*
+### M0 — German locale — **drafted, awaiting your review**
 
-Card and faction names are tokens, so the mechanical German text does not depend
-on the topic. This is the highest-value next step: **every layout measurement so
-far is against English**, and the text box headroom exists specifically for
-German.
+`locales/de.json` exists, validates, and renders. Review it against the deck:
 
-Lock this vocabulary first — it recurs on nearly every card, and changing one
-word later means re-reading the whole deck:
+```sh
+npm run preview -- --locale de     # then open out/preview/index.html
+npm run build -- --locale de --out out/cards-de
+```
 
-> *vorrücken, zurückziehen, bewegen, tauschen, zerstören, senden, angrenzend,
-> niedrigste*
+Vocabulary as drafted — changing any of these means re-reading the whole deck:
+
+> *vorrücken, zurückbewegen, bewegen, tauschen, zerstören, senden, angrenzend,
+> niedrigste, Feld/Felder, Pfad*
+
+Measured result: German runs **+32%** longer than English overall; card 7 grows
++40% yet keeps 2 spare lines. No card falls below 2 spare lines, so the layout
+needs no change for German.
+
+Open wording choices to confirm are listed in Part 1, decision 8.
 
 ### M6 — Artwork *(needs decision 1; the long pole)*
 
@@ -134,6 +159,22 @@ optional. All 16 card ids must be present.
     // To use others, add them to scripts/fetch-fonts.mjs and run `npm run fonts`.
     "display": "\"Cormorant Garamond\", serif",
     "body": "\"Alegreya Sans\", sans-serif"
+  },
+
+  // Optional. Folds language-specific values over everything above, so one
+  // theme serves several locales without duplicating art or palette.
+  // See themes/placeholder/theme.json for a worked German example.
+  "localeOverrides": {
+    "de": {
+      "title": "…",
+      "factions": {
+        // German needs case forms; declare whichever your locale references.
+        // A form used by the locale but missing here is a hard error.
+        "true": { "one": "…", "akk": "…", "other": "…", "genPl": "…" },
+        "fake": { "one": "…", "akk": "…", "other": "…", "genPl": "…" }
+      },
+      "cards": { "0": { "name": "…" }, "1": { "name": "…" } }
+    }
   },
 
   "cards": {
