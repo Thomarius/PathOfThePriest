@@ -196,5 +196,14 @@
         }
       }
     }
+  },
+  "decor": {
+    "seed": "underleveled",
+    "texture": "grain",
+    "frame": "rule",
+    "corners": "studs",
+    "plate": "ruled",
+    "badge": "ring",
+    "divider": "lozenge"
   }
 }

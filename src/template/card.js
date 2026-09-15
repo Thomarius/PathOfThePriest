@@ -7,6 +7,7 @@
  */
 
 import { icon } from '../icons/index.js';
+import { decorFor } from './decor.js';
 
 export function escapeHtml(value) {
   return String(value)
@@ -55,7 +56,9 @@ function renderEffects(card, ui) {
     // True Masters resolve exactly one effect, so consecutive choices are
     // separated by "or" rather than stacked like a sequence of steps.
     if (previous && previous.kind === 'choice' && effect.kind === 'choice') {
-      parts.push(`<div class="effect-or">${escapeHtml(ui.choiceSeparator ?? 'or')}</div>`);
+      parts.push(
+        `<div class="effect-or"><span>${escapeHtml(ui.choiceSeparator ?? 'or')}</span></div>`,
+      );
     }
 
     const label =
@@ -116,8 +119,11 @@ export function renderCard(card, model, options = {}) {
   const palette = card.palette ?? {};
   const plain = card.effects.length === 0;
 
+  const decor = model.decor ?? { classes: [], vars: [] };
+
   const vars = [
     ...geometryVars(g, options.unit),
+    ...decor.vars,
     palette.ink ? `--ink:${palette.ink}` : '',
     palette.paper ? `--paper:${palette.paper}` : '',
     palette.accent ? `--accent:${palette.accent}` : '',
@@ -125,7 +131,18 @@ export function renderCard(card, model, options = {}) {
     .filter(Boolean)
     .join(';');
 
-  const classes = ['card', `card--${card.faction}`, plain ? 'card--plain' : ''].filter(Boolean);
+  // A double quote here would close the style attribute and silently drop every
+  // property after it, producing a wrong-but-believable card. Fail loudly.
+  if (vars.includes('"')) {
+    throw new Error(`card ${card.id}: inline style contains a double quote, which would truncate it`);
+  }
+
+  const classes = [
+    'card',
+    `card--${card.faction}`,
+    plain ? 'card--plain' : '',
+    ...decor.classes,
+  ].filter(Boolean);
 
   const body = plain
     ? ''

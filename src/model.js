@@ -10,6 +10,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseSegments, toPlain } from './tokens.js';
+import { decorFor } from './template/decor.js';
 
 export const ROOT = path.resolve(import.meta.dirname, '..');
 
@@ -216,6 +217,7 @@ export function buildModel(overrides = {}) {
       },
       geometry: resolveGeometry(profile, profileName),
       typography: theme.typography ?? {},
+      decor: decorFor(theme),
       ui: locale.ui ?? {},
       cards: cards.filter(Boolean),
       rulesCards,
