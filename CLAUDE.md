@@ -5,6 +5,32 @@ microgame *The Path of the Priest*. Mechanics are taken verbatim from
 `RulesSummary.txt` and do **not** change; only naming, art, language and visual
 design are re-themed.
 
+## Status
+
+**The pipeline is complete (M0–M7).** Remaining work is art direction, tracked in
+**`NEXT-STEPS.md`** as M8 onward.
+
+Four finished decks build today, each **16 cards + 5 rules cards + 3 backs**:
+
+| Theme | Locales | Style | Artwork |
+|---|---|---|---|
+| `dungeon` | `de`, `en` | 19th-century engraving, sepia monochrome | 15 public-domain images + 1 drawn motif |
+| `dungeon-bright` | `de`, `en` | Fantasy-anime: flat colour, thick outlines, rounded shapes | **entirely first-party** — 16 drawn motifs, no sourced images |
+
+```sh
+npm install && npx playwright install chromium
+npm run validate -- --deep --theme dungeon-bright --locale de
+npm run build    -- --theme dungeon-bright --locale de --out out/bright-de
+```
+
+All four theme × locale combinations validate with **0 errors and 0 warnings**,
+and consecutive builds are byte-identical.
+
+`dungeon-bright` is the one to print if copyright matters: every image on it is
+drawn by `src/template/motifs.js` and `src/template/decor.js`. Its only external
+assets are two OFL fonts, licensed for exactly this use. The `placeholder` theme
+is a neutral fixture for pipeline work and is not meant for printing.
+
 ## Deck composition
 
 | Group | Count | Notes |
@@ -40,11 +66,11 @@ must be achievable by adding one locale file.
 | Decision | Choice |
 |---|---|
 | Rendering | HTML/CSS templates rendered headless via Playwright (Chromium) |
-| Artwork | Public-domain / CC images, sourced manually, attribution tracked |
+| Artwork | Two approaches: `dungeon` uses public-domain / CC images with generated attribution; `dungeon-bright` is entirely drawn in-repo. Protected art is acceptable for this private print run, but print services screen uploads, so PD/CC or first-party stays the lower-risk path. |
 | Print target | Print-on-demand with bleed; MakePlayingCards as the default profile |
-| Effect text | Icon-augmented German sentences (inline SVG glyphs + short text) |
+| Effect text | Icon-augmented German sentences; glyphs follow the keyword they annotate |
 | Primary language | German (`de`); English (`en`) maintained as a fallback from `RulesSummary.txt` |
-| Topic / theme | **Deferred.** Build the pipeline theme-agnostic with a placeholder theme. |
+| Topic / theme | An underlevelled adventurer delving for treasure. Allies are party members and equipment, Hazards are traps and monsters, the Deity is the treasure chest. |
 | Faction names | Theme data — never hardcoded as "True Master" / "Fake Master" |
 | Cards are monolingual | One language per deck. Two languages = two complete card and rules sets from one theme via `localeOverrides`. |
 | Flavour text | None. The `flavor` field was removed. |
@@ -115,10 +141,11 @@ active theme, so re-theming can never break text on another card.
 
 | Token | Resolves to | Notes |
 |---|---|---|
-| `{icon:<name>}` | inline glyph | valid names: `advance` `moveBack` `move` `swap` `destroy` `send` `adjacent` `lowest` |
-| | | **Glyphs go *after* the keyword they annotate** — "Swap `<swap>` the 2 adjacent `<adjacent>` cards", matching the original game's cards. `renderSegments` converts the space before a glyph to a non-breaking one, so a wrap can never strand it away from its verb. |
+| `{icon:<name>}` | inline glyph | valid names: `advance` `moveBack` `move` `swap` `destroy` `lowest` |
+| | | **Glyphs go *after* the keyword they annotate** — "Swap `<swap>` the 2 adjacent cards", matching the original game's cards. `renderSegments` converts the space before a glyph to a non-breaking one, so a wrap can never strand it away from its verb. |
 | `{card:<id>}` | card name from theme | cards 6 and 11 reference `{card:2}` (GRUDGE); card 11 also references `{card:0}` (APPRENTICE) |
-| `{faction:<id>.<form>}` | faction label from theme | `<form>` is any key the theme defines — `one`, `other`, and for German also case forms (`dat`, `akk`) |
+| `{faction:<id>.<form>}` | faction label from theme | `<form>` is any key the theme defines. German needs **determiner-carrying** forms, because the article agrees with a gender the locale cannot know: `one` `other` `genPl` `anyAkk` `indefAkk` `negAkk` `negNom` `eachNom` `sameAkk` |
+| `{term:<id>.<form>}` | world vocabulary from theme | the Path becomes "the dungeon" / "das Verlies". Forms carry their article for the same reason: `def` `indef` `in` `of` `from` |
 
 Token parsing lives in `src/tokens.js` and emits a **segment list**, not HTML, so
 the templates decide how a glyph or card reference is actually drawn. Any brace
@@ -153,41 +180,55 @@ because public-domain scans have unpredictable aspect ratios.
 ```
 PathOfThePriest/
 ├─ RulesSummary.txt          # source of truth for mechanics
-├─ CLAUDE.md
+├─ CLAUDE.md                 # architecture + past decisions (this file)
+├─ NEXT-STEPS.md             # remaining work, M8 onward
 ├─ README.md
 ├─ package.json              # dep: playwright
 ├─ config/
-│  └─ print-profiles.json
+│  └─ print-profiles.json    # mpc | drivethru | home-a4
 ├─ data/
 │  ├─ cards.json             # mechanical skeleton
-│  └─ deck.json              # print run: cards + rules cards + backs
+│  └─ deck.json              # print run: faces + rules cards + backs
 ├─ locales/
-│  ├─ de.json
+│  ├─ de.json                # primary
 │  └─ en.json
 ├─ themes/
-│  └─ <theme>/
-│     ├─ theme.json
-│     ├─ art/
-│     └─ ATTRIBUTION.md
+│  ├─ dungeon/               # sepia engraving; 15 sourced images + 1 motif
+│  │  ├─ theme.json
+│  │  ├─ art/                # public-domain / CC0 from Wikimedia Commons
+│  │  ├─ art-selection.json  # card id -> candidate index
+│  │  └─ ATTRIBUTION.md      # generated, never hand-written
+│  ├─ dungeon-bright/        # fantasy-anime; extends dungeon, all motifs
+│  │  └─ theme.json
+│  └─ placeholder/           # neutral fixture for pipeline work
 ├─ src/
-│  ├─ build.js               # CLI: build | validate | preview
+│  ├─ build.js               # CLI: validate | model | preview | build
 │  ├─ model.js               # cards + theme + locale -> render model
-│  ├─ tokens.js              # token expansion (icons, card refs)
-│  ├─ template/
-│  │  ├─ card.js
-│  │  ├─ rules-card.js
-│  │  ├─ back.js
-│  │  └─ styles.css          # single source of layout + print geometry
-│  │  └─ fonts.js            # vendored woff2 -> @font-face with data URIs
-│  ├─ icons/                 # SVG glyphs, one file per movement verb
-│  ├─ render.js              # Playwright -> PNG + PDF
-│  └─ validate.js
-├─ scripts/fetch-fonts.mjs   # re-vendors the OFL files (npm run fonts)
+│  ├─ tokens.js              # {icon:} {card:} {faction:} {term:}
+│  ├─ validate.js            # structural checks, no browser
+│  ├─ audit.js               # live layout checks: overflow, safe zone
+│  ├─ render.js              # Playwright -> PNG + PDF + proof sheet
+│  ├─ icons/                 # 6 movement glyphs, one .svg each
+│  └─ template/
+│     ├─ card.js             # card face
+│     ├─ rules-card.js       # the 5 rules cards
+│     ├─ back.js             # shared Masters back
+│     ├─ document.js         # page assembly shared by render + audit
+│     ├─ page.js             # review preview (zoom, guides, fill metrics)
+│     ├─ decor.js            # procedural ornament vocabulary
+│     ├─ motifs.js           # 15 drawn card motifs
+│     ├─ fonts.js            # vendored woff2 -> @font-face data URIs
+│     └─ styles.css          # single source of layout + print geometry
+├─ scripts/
+│  ├─ fetch-fonts.mjs        # vendor the OFL files   (npm run fonts)
+│  ├─ find-art.mjs           # shortlist Commons candidates
+│  └─ fetch-art.mjs          # download + wire in + write ATTRIBUTION.md
 ├─ assets/fonts/             # OFL woff2 + licences + fonts.json manifest
-└─ out/
-   ├─ cards/                 # one PNG per card, bleed included
-   ├─ preview/               # browser contact sheet for proofing
-   └─ PathOfThePriest-de.pdf
+└─ out/                      # gitignored; everything reproducible
+   ├─ <theme>-<locale>/      # 16 cards + 5 rules + 3 backs + manifest.json
+   ├─ preview/index.html
+   ├─ proof-*.png
+   └─ <title>-<locale>-<profile>.pdf
 ```
 
 ## Rendering pipeline
@@ -271,14 +312,15 @@ drift from the output, and it **writes nothing at all** when a card fails.
   wrong proxy: Envy has more text (167 chars) but only 2 paragraphs and fills 40%,
   while Philosophy's 3 effects plus 2 "or" dividers fill 73%. Structure costs more
   height than length. Any future layout change must be checked against card 7.
-- **M3 — Icon language. DONE (glyphs).** The 8 SVG glyphs live in `src/icons/`,
+- **M3 — Icon language. DONE.** **6** SVG glyphs live in `src/icons/`,
   are stroked in `currentColor` and sized in `em`, so they inherit the colour of
-  whatever text they sit in. Remaining: wire the same glyphs into the glossary
-  rules card in M7 so the legend cannot drift from the cards.
+  whatever text they sit in, and the glossary rules card is generated from the
+  same files so the legend cannot drift from the cards. `adjacent` and `send`
+  were later removed — see the rejected list in NEXT-STEPS.md.
 - **M4 — Rendering pipeline. DONE.** `npm run build` → 16 PNGs at 816×1110 in
-  `out/cards/` plus a 16-page PDF. Fonts are vendored (`npm run fonts`) and
+  `out/<theme>-<locale>/` plus a PDF. Fonts are vendored (`npm run fonts`) and
   inlined. Determinism is *verified, not assumed*: the renderer writes SHA-256
-  hashes to `out/cards/manifest.json`, and two consecutive runs produced
+  hashes to each output directory's `manifest.json`, and consecutive runs produced
   byte-identical output for all 16 cards.
 - **M5 — Validation & QA. DONE.** `src/audit.js` measures the live layout and
   promotes the findings to hard failures. `npm run build` audits the exact page
@@ -286,8 +328,13 @@ drift from the output, and it **writes nothing at all** when a card fails.
   -- --deep` runs the same checks standalone. `out/proof-sheet.png` is the
   proofing contact sheet. Overflow, safe-zone and headroom checks were each
   verified against deliberately broken input.
-- **M6 — Art integration.** Source public-domain images, set focal crops, fill
-  `ATTRIBUTION.md`. *Long pole — manual per-card work the pipeline cannot shortcut.*
+- **M6 — Art integration. DONE.** `scripts/find-art.mjs` shortlists Wikimedia
+  Commons candidates by licence metadata; `scripts/fetch-art.mjs` downloads them,
+  wires them into `theme.json` and generates `ATTRIBUTION.md`, so provenance
+  cannot drift from the deck. 15 images for `dungeon`; card 14 uses a drawn motif
+  because no public-domain engraving depicts a teleportation circle.
+  `decor.artTreatment` reduces mixed sources to one monochrome register — this is
+  what made mixed-provenance sourcing practical instead of a re-sourcing exercise.
 - **M7 — DONE.** `src/template/back.js` draws the shared Masters back; the
   Apprentice and Deity backs are *copied* from their own front renders, so the
   files are identical rather than merely similar (declared by `reuseFront` in
@@ -297,8 +344,11 @@ drift from the output, and it **writes nothing at all** when a card fails.
   **16 cards + 5 rules cards + 3 backs**, with rules cards included in the PDF
   and the proof sheet.
 
-Optional M8: a rules simulator to verify the deck stays winnable — only needed if
-effects are ever altered, which is currently out of scope.
+**M0–M7 are complete.** Remaining work is art direction, tracked in
+**`NEXT-STEPS.md`** as M8 onward.
+
+Still optional and out of scope: a rules simulator to verify the deck stays
+winnable, only needed if the effects themselves are ever altered.
 
 ## Rules corrections and rejected features
 
@@ -366,8 +416,8 @@ effects are ever altered, which is currently out of scope.
 
 ## Open items
 
-See **`NEXT-STEPS.md`** for the full list of open decisions, the remaining work,
-the exact files a new theme and locale require, and the commands to check output.
+See **`NEXT-STEPS.md`** — M8 onward, all art direction on `dungeon-bright`, plus
+a list of ideas already rejected and why, so they are not re-proposed.
 
-In short: the theme/topic blocks M6 and the card names; the German locale (M0) is
-*not* blocked by it, since card and faction names are tokens.
+Nothing in the pipeline is blocked. The setting, both languages and both visual
+styles are settled.

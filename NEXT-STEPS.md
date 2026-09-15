@@ -1,429 +1,151 @@
 # Next Steps
 
-Everything still open on the project, in one place: decisions to make, work
-remaining, and — once the setting and language are chosen — exactly which files
-to create where, and how to check the result.
+The pipeline is finished (M0–M7 — see `CLAUDE.md` for architecture and the
+reasoning behind past decisions). What remains is **art direction on the
+`dungeon-bright` set**, which is entirely first-party: every image on it is drawn
+by `src/template/motifs.js` and `src/template/decor.js`, so that deck carries no
+third-party artwork at all. Its only external assets are two OFL fonts, licensed
+for exactly this use.
 
-`CLAUDE.md` holds the architecture and the reasoning behind past decisions. This
-document is the forward-looking half.
+Milestones below continue the existing numbering. Each is independently
+shippable — the deck renders and validates after every one.
 
-**Where the project stands:** M1–M5 are complete. The pipeline renders 16
-print-ready cards, validates them, and proves its own output is reproducible.
-Everything left is either a decision or content.
-
----
-
-## Part 1 — Decisions still open
-
-| # | Decision | Blocks | Recommendation |
-|---|---|---|---|
-| 1 | **Setting / topic** | M6 artwork, all card names | Pick a theme with a deep public-domain image pool, and one where 6 *vices* and 8 *virtues* map onto Fake and True Masters. Candidates below. |
-| 2 | ~~**Language**~~ — decided: German | — | `locales/de.json` drafted. English kept as the reference; both ship from the same artwork via `localeOverrides`. |
-| 3 | ~~**Bilingual cards?**~~ — decided: monolingual | — | Each language is a complete, separate card and rules set. Two languages means two decks, produced from one theme via `localeOverrides`. |
-| 4 | **Keep `{icon:adjacent}` and `{icon:lowest}`?** — kept for now | proof-reading | Retained. Revisit during proof-reading of a printed copy; removing them is a locale-file edit, no code change. |
-| 5 | ~~**Flavour text**~~ — decided: none | — | The `flavor` field has been removed from the model. There was room on single-effect cards but not on 6, 7 and 11. |
-| 6 | ~~**Card backs**~~ — decided | M7 build | One neutral shared back for the 14 Masters, giving away nothing about True vs Fake. Apprentice and Deity reuse their own front as their back for now. |
-| 7 | **Print service** — default stands | — | `mpc` is the default and is already configured. `drivethru` and `home-a4` profiles exist; switching is a flag, not a rewrite. |
-
-### German wording — all seven points approved 2026-09-15
-
-1. **"zurückbewegen", not "zurückziehen".** In German game usage *ziehen* also
-   means "draw a card"; this deck already has cards moving along a path, so
-   *zurückbewegen* avoids the collision. Parallel to *bewegen*.
-2. **Duzen.** The rules address the player as *du*. Switch to *Sie* or to
-   impersonal phrasing if you prefer.
-3. **"Feld / Felder"** for *space / spaces*, **"Pfad"** for *path*.
-4. **"Wahrer Meister" / "Falscher Meister".** Alternatives: *Echter Meister*,
-   *Falscher Prophet*. These will likely be renamed by the theme anyway.
-5. **Card references take no article** — "in Richtung {card:0}" renders as
-   "in Richtung Lehrling". Grammatically "in Richtung des Lehrlings" is fuller,
-   but that forces a genitive form per card name and breaks on a re-theme.
-6. **"Ist es {card:2}, …"** for the conditional clause on cards 6 and 11.
-7. **Card names are placeholders.** The German names in the theme override are
-   literal translations of the originals; your setting replaces all 16.
-
-### On decision 1 — setting candidates
-
-All three have large public-domain pools, which is what makes M6 tractable:
-
-- **Medieval manuscript marginalia** — virtues and vices are a standard
-  iconographic programme, so period art already depicts exactly these concepts.
-- **Alchemy / hermetic engravings** — strong graphic character, fits "Path" and
-  "Master" naturally, and reads well in the existing two-colour treatment.
-- **Botanical or anatomical plates** — beautiful and consistent, but the
-  virtue/vice mapping has to be invented rather than inherited.
-
-Ask for a worked-up proposal with named sources if you want one before deciding.
+> **On judgement:** the composition and visual-weight items can only really be
+> assessed by rendering and looking at the result. Expect a round or two of
+> iteration on each, as with the vortex motif that turned out to be a crescent.
 
 ---
 
-## Part 2 — Remaining work
+## M8 — Two-tone motifs, and evening out the set
 
-### M0 — German locale — **drafted, awaiting your review**
+*Affects `dungeon-bright`. The single biggest visual improvement available.*
 
-`locales/de.json` exists, validates, and renders. Review it against the deck:
+Every motif is currently `fill="none"` with one `currentColor` stroke — outline
+drawings sitting on flat colour. The reference style (Super Dungeon Explore,
+Delicious in Dungeon) is **filled shapes with a darker outline**, which is the
+same sticker logic the badges and name plates already use but the art does not.
 
-```sh
-npm run preview -- --locale de     # then open out/preview/index.html
-npm run build -- --locale de --out out/cards-de
-```
+- Give `wrap()` in `src/template/motifs.js` a fill as well as a stroke, and
+  decide per shape which parts are filled.
+- **Fix the two weak motifs.** `minotaur` reads cat-like; `golem` is two rounded
+  rectangles. Both are legible but neither has character.
+- **Even out optical weight.** On the proof sheet `chest` and `mimic` are dense
+  and dark while `staff` and `vortex` are thin and light. Normalising stroke
+  weight and how much of the 200×200 box each motif fills is what will make the
+  sheet look like one hand drew it.
 
-Vocabulary as drafted — changing any of these means re-reading the whole deck:
+Done when the proof sheet reads as a single coherent set at 33% zoom.
 
-> *vorrücken, zurückbewegen, bewegen, tauschen, zerstören, senden, angrenzend,
-> niedrigste, Feld/Felder, Pfad*
+---
 
-Measured result: German runs **+32%** longer than English overall; card 7 grows
-+40% yet keeps 2 spare lines. No card falls below 2 spare lines, so the layout
-needs no change for German.
+## M9 — Drawn diagrams on the rules cards
 
-The seven wording choices below were reviewed and approved.
+*Affects both themes. The only item here that improves comprehension rather than
+decoration, which is why it comes early.*
 
-### ~~M6 — Artwork~~ — DONE for the `dungeon` sample theme
+The Objective, Setup and Turn cards are roughly half empty, and their content is
+inherently spatial.
 
-15 public-domain / CC0 images sourced from Wikimedia Commons via
-`scripts/find-art.mjs` (search) and `scripts/fetch-art.mjs` (download +
-attribution). Card 14 uses a **drawn motif** instead — see below.
+- **Setup diagram** — Apprentice, fourteen face-down cards, Deity, laid left to
+  right. Replaces a paragraph with a picture.
+- **Turn-order diagram** — the Fake Master activation order (1, 2, 3, 4, 6, 11).
 
-```sh
-node scripts/find-art.mjs          # shortlist candidates -> out/art-candidates.json
-# edit themes/<theme>/art-selection.json  (card id -> candidate index)
-node scripts/fetch-art.mjs <theme> # download, wire into theme.json, write ATTRIBUTION.md
-```
+Both are drawn from existing primitives, so they stay first-party. They need a
+new block type in the rules model and a matching branch in
+`src/template/rules-card.js`.
 
-Three things learned that will apply to any future theme:
+Watch: the M5 audit measures rules cards too, so a diagram competing with text
+for space surfaces as a real failure rather than a silent overflow.
 
-- **Commons full-text search matches file descriptions.** "Staff of Power"
-  returned photographs of the North Staffordshire Regiment. Name an artist or a
-  print collection, not the subject.
-- **Fetch thumbnails, not originals.** Wikimedia returns 429 and asks for it
-  explicitly. Only certain widths are served — 1280 and 1920 work, 800 and 1024
-  do not.
-- **Unify the art at render time, not at sourcing time.** `decor.artTreatment`
-  reduces every image to warm monochrome. An illuminated manuscript, a tinted
-  film still and a steel engraving read as one deck without re-sourcing any of
-  them. This is what makes mixed-provenance sourcing practical at all.
-- **Some cards have no depiction in public-domain art.** A theme can give a card
-  a `motif` instead, drawn procedurally — card 14 uses `magicCircle`.
+---
 
-### ~~M7~~ — DONE (rules cards and card backs)
+## M10 — Art-window composition
 
-Two templates are not yet written:
+*Affects `dungeon-bright`.*
 
-- ~~`src/template/rules-card.js`~~ — **done.** All five render, and are included in the PDF and proof sheet.
-- ~~`src/template/back.js`~~ — **done.** All three backs render; Apprentice and
-  Deity are byte-identical copies of their own fronts.
+The art window is 816 × 470 and the motif occupies a 400 px square dead centre,
+so about two-thirds is flat colour. Apprentice and Deity are worse: a 560 px mark
+in a 1110 px full-card window. Every card shares an identical composition, which
+reads as a placeholder even when the drawing itself is good.
 
-The glossary rules card must be generated from `src/icons/`, so the legend
-cannot drift from the glyphs printed on the cards.
+Options, cheapest first:
 
-### Smaller known gaps
+1. Scale motifs up and let them crop off the top edge.
+2. Add a ground line or horizon band so the subject sits *in* a space.
+3. Scatter sparkles and dots asymmetrically rather than symmetrically.
 
-| Gap | Detail |
+Do this after M8 — composition is far easier to judge once the drawings carry
+their final weight.
+
+---
+
+## M11 — A card back tiled from the motifs
+
+*Affects `dungeon-bright`.*
+
+The shared Masters back is a sunburst and a generic star. A **tiled pattern of
+the motifs themselves** — small lutes, daggers, chests, coins — would be
+unmistakably this deck's, and reuses assets M8 will already have improved.
+
+The constraint still governs: all 14 Masters are shuffled face down, so the back
+must be identical on every one and must not hint at Ally versus Hazard. The
+validator enforces the single shared design; keeping the imagery neutral is a
+design responsibility.
+
+---
+
+## M12 — Push the faction shape language further
+
+*Affects both themes.*
+
+Faction currently reads through colour plus badge shape and plate corner radius.
+In a drawn set this can go further: Hazards get spiky, jagged framing and speed
+lines; Allies get rounded, calm shapes. The aim is that the distinction survives
+a glance across the table, not only a close look.
+
+---
+
+## M13 — Pre-print checks
+
+*Both themes, before any money is spent.*
+
+- **Greyscale proof.** The bright set leans on blue versus pink far more than the
+  engraving deck does. Render the proof sheet desaturated and confirm the shape
+  cues carry the faction distinction on their own.
+- **Physical proof.** Print one card at actual size, on stock, and cut it. Large
+  flat areas of saturated pink and blue shift noticeably on card stock, and flat
+  fills can band; the halftone helps but does not settle it. This is the one
+  thing no amount of validation substitutes for.
+
+---
+
+## Rejected, with reasons
+
+Kept so they are not re-proposed.
+
+| Idea | Why not |
 |---|---|
-| Art focus is vertical only | `theme.json` `focus: [x, y]` — only `y` is applied (`background-position: center <y>`). Add horizontal support if a chosen image needs it. |
-
-| `.gitattributes` | Git reports LF→CRLF on every commit. Adding `* text=auto eol=lf` would settle it if the repo is ever opened on another machine. |
-
----
-
-## Part 3 — What to create once the setting and language are decided
-
-Replace `<theme>` with your theme's folder name — lowercase, no spaces, e.g.
-`marginalia`. Replace `de` with your language code if it is not German.
-
-### 3.1 The theme directory
-
-```
-themes/<theme>/
-├─ theme.json          # names, faction labels, palette, typography
-├─ ATTRIBUTION.md      # required as soon as any art is used
-└─ art/
-   ├─ apprentice.jpg   # any filename; theme.json points at it
-   ├─ doubt.jpg
-   └─ ...              # 16 files when complete
-```
-
-**`themes/<theme>/theme.json`** — every key below is required unless marked
-optional. All 16 card ids must be present.
-
-```jsonc
-{
-  "id": "<theme>",                    // must match the folder name
-  "title": "Der Pfad des Priesters",  // printed on the preview/proof header
-  "subtitle": "",                     // optional
-
-  "factions": {
-    // Any form your locale references. German will likely need cases beyond
-    // one/other — define whatever forms you use; a missing one is a hard error.
-    "true":       { "one": "…", "other": "…" },
-    "fake":       { "one": "…", "other": "…" },
-    "apprentice": { "one": "…", "other": "…" },
-    "deity":      { "one": "…", "other": "…" }
-  },
-
-  "palette": {
-    // ink = text, paper = background, accent = icons and highlights.
-    // Fake and Deity are inverted (light ink on dark paper) in the placeholder.
-    "true":       { "ink": "#…", "paper": "#…", "accent": "#…" },
-    "fake":       { "ink": "#…", "paper": "#…", "accent": "#…" },
-    "apprentice": { "ink": "#…", "paper": "#…", "accent": "#…" },
-    "deity":      { "ink": "#…", "paper": "#…", "accent": "#…" }
-  },
-
-  "typography": {
-    // Must lead with a vendored family, or validation fails. Currently
-    // available: "Cormorant Garamond", "Alegreya Sans".
-    // To use others, add them to scripts/fetch-fonts.mjs and run `npm run fonts`.
-    "display": "\"Cormorant Garamond\", serif",
-    "body": "\"Alegreya Sans\", sans-serif"
-  },
-
-  // Optional. Folds language-specific values over everything above, so one
-  // theme serves several locales without duplicating art or palette.
-  // See themes/placeholder/theme.json for a worked German example.
-  "localeOverrides": {
-    "de": {
-      "title": "…",
-      "factions": {
-        // German needs case forms; declare whichever your locale references.
-        // A form used by the locale but missing here is a hard error.
-        "true": { "one": "…", "akk": "…", "other": "…", "genPl": "…" },
-        "fake": { "one": "…", "akk": "…", "other": "…", "genPl": "…" }
-      },
-      "cards": { "0": { "name": "…" }, "1": { "name": "…" } }
-    }
-  },
-
-  "cards": {
-    "0":  { "name": "…", "art": "apprentice.jpg", "focus": [0.5, 0.35] },
-    "1":  { "name": "…", "art": "doubt.jpg" },
-    "2":  { "name": "…" },
-    "3":  { "name": "…" },
-    "4":  { "name": "…" },
-    "5":  { "name": "…" },
-    "6":  { "name": "…" },
-    "7":  { "name": "…" },
-    "8":  { "name": "…" },
-    "9":  { "name": "…" },
-    "10": { "name": "…" },
-    "11": { "name": "…" },
-    "12": { "name": "…" },
-    "13": { "name": "…" },
-    "14": { "name": "…" },
-    "D":  { "name": "…" }
-  }
-}
-```
-
-`art` and `focus` are optional per card — cards without art render a hatched
-placeholder, so the deck stays buildable while sourcing is in progress.
-
-Which number is which card (`ref` is the original English name, never printed):
-
-| id | ref | faction | | id | ref | faction |
-|---|---|---|---|---|---|---|
-| 0 | APPRENTICE | apprentice | | 8 | HERBALIST | true |
-| 1 | DOUBT | fake | | 9 | MEDITATION | true |
-| 2 | GRUDGE | fake | | 10 | PRAYER | true |
-| 3 | FEAR | fake | | 11 | ENVY | fake |
-| 4 | LAZINESS | fake | | 12 | PILGRIM | true |
-| 5 | EXERCISE | true | | 13 | MAGIC | true |
-| 6 | DISCORD | fake | | 14 | ASTRAL BODY | true |
-| 7 | PHILOSOPHY | true | | D | DEITY | deity |
-
-### 3.2 Artwork files — `themes/<theme>/art/`
-
-| Requirement | Value |
-|---|---|
-| Formats | `.png`, `.jpg`, `.jpeg`, `.webp` |
-| Minimum size, the 14 Masters | **816 × 470 px** (the art window) |
-| Minimum size, Apprentice and Deity | **816 × 1110 px** (full-card art) |
-| Larger images | Fine — scaled down with `cover`, never upscaled |
-| Cropping | Controlled per card by `focus: [x, y]`, values 0–1; only `y` is applied today |
-
-Art deliberately bleeds past the trim line — that is the one element allowed
-outside it. Keep anything that must survive the cut away from the edges.
-
-### 3.3 `themes/<theme>/ATTRIBUTION.md`
-
-Free-form, but it must exist as soon as any card has `art`, or validation fails.
-One entry per image: file name, source work, creator, collection/URL, licence or
-public-domain basis.
-
-### 3.4 The German locale — `locales/de.json`
-
-Copy `locales/en.json` and translate. **Never put card names or faction names in
-here** — that is what breaks when a card is renamed. Use tokens:
-
-| Token | Meaning |
-|---|---|
-| `{icon:<name>}` | Inline glyph. Valid: `advance` `moveBack` `move` `swap` `destroy` `send` `adjacent` `lowest` |
-| `{card:<id>}` | Card name from the active theme, e.g. `{card:2}`, `{card:0}` |
-| `{faction:<id>.<form>}` | Faction label, e.g. `{faction:true.one}`, `{faction:fake.other}` |
-
-Required structure:
-
-```jsonc
-{
-  "meta": { "code": "de", "label": "Deutsch", "htmlLang": "de" },
-  "ui": {
-    "fallbackLabel": "Falls nicht möglich:",  // heading above a Fake Master's fallback
-    "choiceSeparator": "oder",                // divider between a True Master's choices
-    "rulesCardTag": "Regeln"
-  },
-  "effects": { /* all 22 keys, listed below */ },
-  "rules": {
-    "objective":      { "title": "…", "body": ["…"], "sections": [{ "heading": "…", "items": ["…"] }] },
-    "setup":          { "title": "…", "items": ["…"] },
-    "turn":           { "title": "…", "items": ["…"] },
-    "glossary":       { "title": "…", "entries": [{ "term": "…", "icon": "advance", "text": "…" }] },
-    "clarifications": { "title": "…", "items": ["…"] }
-  }
-}
-```
-
-All 22 effect keys are required — a missing one is a hard error:
-
-```
-1.a  1.b  2.a  3.a  4.a  4.b  5.a  6.a  6.b  7.a  7.b  7.c
-8.a  8.b  9.a  10.a  11.a  11.b  12.a  13.a  13.b  14.a
-```
-
-Two things to watch while translating:
-
-- **Card 5 reads "up to 2 spaces"** (`bis zu 2 Felder`). Per the clarifications,
-  effect numbers are exact *unless* preceded by "up to", so this changes play.
-- **Cards 6 and 11 reference other cards.** `{card:2}` is Grudge, `{card:0}` is
-  the Apprentice. Keep them as tokens.
-
-### 3.5 Point the deck at the new theme and language
-
-Edit `data/deck.json`:
-
-```json
-{ "theme": "<theme>", "locale": "de", "profile": "mpc" }
-```
-
-Or override per command without editing anything:
-
-```sh
-npm run build -- --theme <theme> --locale de
-```
+| **Per-card accent colour** (Wizard purple, Cleric gold, …) | Rejected 2026-09-15: all cards should use the same colours. It would also have put the faction coding at risk, which is load-bearing — the whole player turn is "choose any Ally". |
+| **Number track on the Apprentice** (`FM 1 2 3 4 6 11` / `TM 5 7 …`) | Playtesting showed cards leave the Path quickly, so a fixed list stops matching the board and stops being useful. |
+| **Flavour text** | No room on cards 6, 7 and 11; the `flavor` field was removed from the model. |
+| **`{icon:adjacent}` and `{icon:send}`** | `adjacent` appeared on nearly every line and added nothing; `send` was misleading, since a one-way arrow contradicts an effect that can move a card either direction. Both removed from the vocabulary; the glossary keeps the terms without glyphs. |
+| **Bilingual cards** | Each language is a complete, separate deck, built from one theme via `localeOverrides`. |
 
 ---
 
-## Part 4 — Commands to check the output
+## If you add photographic or painted artwork to `dungeon-bright` later
 
-### One-time setup
-
-```sh
-npm install
-npx playwright install chromium
-```
-
-### Day-to-day
-
-```sh
-npm run validate            # data checks: names, tokens, fonts, deck composition
-npm run validate -- --deep  # ...plus live layout: overflow, safe zone, headroom
-npm run preview             # out/preview/index.html — open in a browser
-npm run build               # renders everything; refuses if the layout fails
-```
-
-Every command accepts `--theme <name>`, `--locale <code>`, `--profile <name>`.
-Note the `--` when passing flags through npm:
-
-```sh
-npm run validate -- --deep --theme <theme> --locale de
-npm run build -- --profile drivethru
-```
-
-### The suggested order when checking new content
-
-1. **`npm run validate`** — catches missing names, untranslated keys, typos in
-   tokens, an unvendored font, a missing `ATTRIBUTION.md`. Fast, no browser.
-2. **`npm run preview`**, then open `out/preview/index.html`. The toolbar has a
-   zoom control and a **trim & safe guide** overlay (red = trim, blue = safe
-   zone). Each card reports how full its text box is and **how many spare lines
-   remain** — the number that predicts whether a longer translation still fits.
-   - Inspect one card full size: `out/preview/index.html?scale=1&only=7,11&guides=1`
-3. **`npm run stress`** — re-renders the preview with every string inflated,
-   to see which cards are near their limit. A card whose fill does not move
-   under stress is normal: text height changes in whole lines, not smoothly.
-4. **`npm run build`** — the real output. It audits the page it is about to
-   print and **writes nothing at all if any card fails**.
-
-### What `npm run build` produces
-
-| Path | What it is |
-|---|---|
-| `out/cards/*.png` | 16 cards, 816 × 1110 px, bleed included — **the print deliverable** |
-| `out/cards/manifest.json` | SHA-256 per card, plus canvas, dpi, trim and bleed |
-| `out/<title>-<locale>-<profile>.pdf` | 16 pages at true physical size — for proofing |
-| `out/proof-sheet.png` | The whole deck on one sheet, for review at a glance |
-| `out/preview/index.html` | Interactive review page (from `npm run preview`) |
-
-`out/` is gitignored; everything in it is reproducible from a clean checkout.
-
-### Verifying reproducibility
-
-Output is byte-identical across machines because fonts and artwork are inlined
-rather than loaded. To confirm after any change:
-
-```sh
-npm run build && cp out/cards/manifest.json out/r1.json && npm run build
-node -e "const a=require('./out/r1.json').cards,b=require('./out/cards/manifest.json').cards; console.log(a.every((x,i)=>x.sha256===b[i].sha256)?'identical':'MISMATCH')"
-```
-
-### Escape hatches
-
-```sh
-npm run build -- --no-pdf      # skip the PDF
-npm run build -- --no-proof    # skip the proof sheet
-npm run build -- --no-audit    # render even if the layout audit fails
-npm run build -- --out out/de  # write PNGs elsewhere
-npm run fonts                  # re-vendor the OFL files
-npm run model -- --out out/model.json   # dump the merged render model
-```
-
----
-
-## Themes
-
-| Theme | Style | Artwork |
-|---|---|---|
-| `dungeon` | 19th-century engraving, sepia monochrome | 15 sourced + 1 drawn motif |
-| `dungeon-bright` | Bright fantasy-anime: flat colour, thick outlines, rounded shapes | **drawn motifs on all 16 cards** — placeholders until you source images |
-
-`dungeon-bright` uses `extends: "dungeon"`, so it shares every card name,
-faction label and world term and overrides only palette, typography and decor.
-Renaming a card in `dungeon` renames it in both.
-
-Every card in the bright theme carries a drawn motif from `src/template/motifs.js`,
-stroked in `currentColor` so it takes the card's palette. Adding an `art` file to
-a card replaces its motif — `renderArt()` prefers a file when one is present, so
-you can swap them in one at a time and the rest stay presentable.
-
-To add artwork, drop files in `themes/dungeon-bright/art/` and point each card
-at one:
+A card's `art` file takes precedence over its `motif`, so images can be swapped in
+one at a time while the rest of the deck stays presentable:
 
 ```json
 "cards": { "6": { "art": "minotaur.png", "focus": [0.5, 0.35] } }
 ```
 
-Colour illustration is kept as-is there (`artTreatment: "none"`); the sepia
-unification is specific to the engraving theme.
+Minimum sizes: **816 × 470** for the 14 Masters, **816 × 1110** for Apprentice and
+Deity. Formats `.png`, `.jpg`, `.jpeg`, `.webp`. Colour is kept as-is on this
+theme (`artTreatment: "none"`); the sepia unification belongs to the engraving
+deck.
 
-## Part 5 — Definition of done
-
-- [ ] `npm run validate -- --deep` reports **0 errors and 0 warnings**
-      (the current single warning is "16 of 16 cards have no artwork yet")
-- [ ] Every card has a name in `theme.json` and a `{card:…}` reference resolves
-- [ ] All 16 art files present; `ATTRIBUTION.md` complete
-- [ ] No card below **1 spare line** in the preview, in German
-- [ ] Rules cards and the 3 card backs render (M7)
-- [ ] The 14 Masters share one back — the validator enforces this, because a
-      distinguishable back makes the setup shuffle meaningless
-- [ ] `out/proof-sheet.png` reviewed at full size
-- [ ] A physical proof printed and cut before ordering a full run
+Note that doing so gives up the set's main advantage — being wholly first-party
+and free of any copyright question.
