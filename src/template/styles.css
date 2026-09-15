@@ -306,6 +306,63 @@
   bottom: calc(140 * var(--u));
 }
 
+/* --- card backs -----------------------------------------------------------
+ *
+ * One design, shared by all 14 Masters. Nothing here may vary per card: the
+ * Masters are shuffled face down, so any difference would leak information.
+ */
+
+.back__field {
+  position: absolute;
+  inset: 0;
+  /* Drawn in the back's own ink colour — see decor.js. */
+  background-image: var(--decor-back);
+  background-size: calc(480 * var(--u)) calc(480 * var(--u));
+  background-repeat: repeat;
+}
+
+/* Inset well inside the trim line — a frame that ends near the cut is the
+   classic way to make a deck look crooked once it comes back from the printer. */
+.back__frame {
+  position: absolute;
+  inset: var(--safe-y) var(--safe-x);
+  border: calc(3 * var(--u)) solid color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
+.back__emblem {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--accent);
+  /* Calms the coursing behind the emblem and title so neither has to compete
+     with the pattern. */
+  background: radial-gradient(
+    ellipse 52% 60% at 50% 52%,
+    var(--paper) 0 40%,
+    transparent 78%
+  );
+}
+
+.back__emblem svg {
+  width: calc(330 * var(--u));
+  height: calc(330 * var(--u));
+}
+
+.back__title {
+  position: absolute;
+  left: var(--safe-x);
+  right: var(--safe-x);
+  bottom: calc(150 * var(--u));
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: calc(46 * var(--u));
+  letter-spacing: calc(6 * var(--u));
+  text-transform: uppercase;
+  color: var(--ink);
+  opacity: 0.85;
+}
+
 /* --- procedural decoration ------------------------------------------------
  *
  * Selected by the theme through `theme.decor`; see src/template/decor.js.

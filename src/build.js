@@ -149,7 +149,10 @@ async function cmdBuild(flags) {
     console.log(`  pruned ${stale} (stale — card renamed or removed)`);
   }
 
-  console.log(`\n  ${result.written.length} cards -> ${path.relative(ROOT, result.outDir)}`);
+  console.log(
+    `\n  ${result.written.length} cards + ${result.backs?.length ?? 0} backs -> ` +
+      `${path.relative(ROOT, result.outDir)}`,
+  );
   if (result.pdfFile) console.log(`  pdf   -> ${path.relative(ROOT, result.pdfFile)}`);
   if (result.proofFile) console.log(`  proof -> ${path.relative(ROOT, result.proofFile)}`);
   return 0;

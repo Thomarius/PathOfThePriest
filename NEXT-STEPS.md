@@ -83,7 +83,7 @@ The seven wording choices below were reviewed and approved.
 
 Manual per-card sourcing, 16 images. The pipeline cannot shorten this.
 
-### M7 — Rules cards and card backs *(needs decisions 1, 3, 6)*
+### M7 — Rules cards *(card backs are done)*
 
 Two templates are not yet written:
 
@@ -91,8 +91,8 @@ Two templates are not yet written:
   already exist (`data/deck.json` → `rulesCards`, `locales/*.json` → `rules`),
   and the model already builds them into normalised blocks. Only the template is
   missing.
-- `src/template/back.js` — the three card backs. `data/deck.json` → `backs`
-  already defines them and the validator already enforces the shared-Master rule.
+- ~~`src/template/back.js`~~ — **done.** All three backs render; Apprentice and
+  Deity are byte-identical copies of their own fronts.
 
 The glossary rules card must be generated from `src/icons/`, so the legend
 cannot drift from the glyphs printed on the cards.

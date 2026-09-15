@@ -41,6 +41,11 @@
       "ink": "#f6f2e8",
       "paper": "#1b2333",
       "accent": "#c9a227"
+    },
+    "master": {
+      "ink": "#e9e3d6",
+      "paper": "#282430",
+      "accent": "#c9a227"
     }
   },
   "typography": {

@@ -281,7 +281,12 @@ drift from the output, and it **writes nothing at all** when a card fails.
   verified against deliberately broken input.
 - **M6 — Art integration.** Source public-domain images, set focal crops, fill
   `ATTRIBUTION.md`. *Long pole — manual per-card work the pipeline cannot shortcut.*
-- **M7 — Rules cards, 3 card backs, final print package.**
+- **M7 — Card backs DONE; rules cards remain.** `src/template/back.js` draws the
+  shared Masters back (stone coursing, neutral emblem, deck title); the Apprentice
+  and Deity backs are *copied* from their own front renders, so the two files are
+  guaranteed identical rather than merely similar. Which backs copy a front is
+  declared by `reuseFront` in `data/deck.json`. Still to do: the five rules
+  cards (`src/template/rules-card.js`).
 
 Optional M8: a rules simulator to verify the deck stays winnable — only needed if
 effects are ever altered, which is currently out of scope.
@@ -332,6 +337,12 @@ effects are ever altered, which is currently out of scope.
   fallback face, card 7 read as 73% full; with Alegreya Sans it was 47%, because
   the fallback was considerably wider.
 - Art bleeds past trim; all text stays inside the safe zone.
+- **Never pre-encode `#` as `%23` inside a procedural SVG.** `encodeURIComponent`
+  escapes the `%` again into `%2523`, which silently corrupted every colour and
+  the grain filter's reference — the textures rendered as nothing at all and
+  looked merely "subtle". Write plain `#` and let the encoder handle it.
+- Decor data URIs go into a `style="..."` attribute, so they must be
+  single-quoted; `renderCard`/`renderBack` throw if one contains a double quote.
 - **Never use `transform: rotate()` for a badge or panel shape.** It keeps the
   layout box but grows the *painted* bounding box by up to sqrt(2), which put
   the Fake Master diamond 21.6px outside the safe zone on all six cards — inside

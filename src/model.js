@@ -203,6 +203,7 @@ export function buildModel(overrides = {}) {
     id: back.id,
     design: back.design,
     appliesTo: back.appliesTo,
+    reuseFront: back.reuseFront ?? null,
     palette: theme.palette?.[back.design] ?? null,
   }));
 

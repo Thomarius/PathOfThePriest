@@ -37,6 +37,9 @@ export function seeded(seedText) {
  * vanished and every Hazard card rendered in the Ally palette while otherwise
  * looking entirely plausible.
  */
+/* NOTE: write plain '#' in the SVG above. Pre-encoding it as %23 here would be
+   double-escaped by encodeURIComponent into %2523, which silently corrupted
+   every colour and the grain's filter reference. */
 const svgUrl = (svg) =>
   `url('data:image/svg+xml,${encodeURIComponent(svg.replace(/\s+/g, ' ').trim()).replace(/'/g, '%27')}')`;
 
@@ -52,12 +55,12 @@ export function grain({ frequency = 0.9, octaves = 4, seed = 3, opacity = 0.42 }
                       numOctaves="${octaves}" seed="${seed}" stitchTiles="stitch"/>
         <feColorMatrix type="saturate" values="0"/>
       </filter>
-      <rect width="180" height="180" filter="url(%23g)" opacity="${opacity}"/>
+      <rect width="180" height="180" filter="url(#g)" opacity="${opacity}"/>
     </svg>`);
 }
 
 /** Diagonal hatch used behind cards that have no artwork yet. */
-export function hatch({ size = 16, width = 6, color = '%23000', opacity = 0.16 } = {}) {
+export function hatch({ size = 16, width = 6, color = '#000', opacity = 0.16 } = {}) {
   return svgUrl(`
     <svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
       <path d="M-${width} ${width} l${size} -${size} M0 ${size} l${size} -${size} M${size - width} ${size + width} l${size} -${size}"
@@ -70,7 +73,7 @@ export function hatch({ size = 16, width = 6, color = '%23000', opacity = 0.16 }
  * Offsets come from the seeded generator so the coursing is irregular but
  * identical on every run.
  */
-export function stone({ seed = 'stone', cols = 4, rows = 6, color = '%23000', opacity = 0.2 } = {}) {
+export function stone({ seed = 'stone', cols = 4, rows = 6, color = '#000', opacity = 0.2 } = {}) {
   const rand = seeded(seed);
   const w = 120;
   const h = 120;
@@ -93,6 +96,33 @@ export function stone({ seed = 'stone', cols = 4, rows = 6, color = '%23000', op
     <svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">
       <g fill="none" stroke="${color}" stroke-width="2" opacity="${opacity}">${blocks.join('')}</g>
     </svg>`);
+}
+
+/**
+ * Central emblem for the shared card back.
+ *
+ * Deliberately abstract. The 14 Masters are shuffled face down, so this mark
+ * must give away nothing — it cannot hint at True versus Fake, and it must be
+ * identical on all fourteen.
+ */
+export function emblem(kind = 'lozenge') {
+  const shapes = {
+    lozenge: `
+      <path d="M50 3 L97 50 L50 97 L3 50 Z" stroke-width="2.5"/>
+      <path d="M50 15 L85 50 L50 85 L15 50 Z" stroke-width="1.2" opacity="0.7"/>
+      <path d="M50 28 L59 44 L75 50 L59 56 L50 72 L41 56 L25 50 L41 44 Z"
+            fill="currentColor" stroke="none"/>`,
+    ring: `
+      <circle cx="50" cy="50" r="46" stroke-width="2.5"/>
+      <circle cx="50" cy="50" r="34" stroke-width="1.2" opacity="0.7"/>
+      <path d="M50 26 L57 43 L74 50 L57 57 L50 74 L43 57 L26 50 L43 43 Z"
+            fill="currentColor" stroke="none"/>`,
+  };
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none"
+               stroke="currentColor" stroke-linejoin="round" aria-hidden="true">
+            ${shapes[kind] ?? shapes.lozenge}
+          </svg>`;
 }
 
 /**
@@ -122,6 +152,11 @@ export function decorFor(theme) {
     vars.push(`--decor-texture:${stone({ seed: `${seed}-stone` })}`);
   }
   vars.push(`--decor-hatch:${hatch({})}`);
+  // Coloured from the back's own ink at generation time. Painting it black
+  // made it invisible on dark stock, and a CSS mask did not survive the data
+  // URI reliably; the theme already knows the colour, so use it directly.
+  const backInk = (theme.palette?.master?.ink ?? '#000000');
+  vars.push(`--decor-back:${stone({ seed: `${seed}-back`, color: backInk, opacity: 0.13 })}`);
 
-  return { classes, vars };
+  return { classes, vars, emblem: decor.emblem ?? 'lozenge' };
 }

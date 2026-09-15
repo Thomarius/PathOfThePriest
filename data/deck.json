@@ -75,14 +75,16 @@
       "design": "apprentice",
       "appliesTo": [
         "0"
-      ]
+      ],
+      "reuseFront": "0"
     },
     {
       "id": "back-deity",
       "design": "deity",
       "appliesTo": [
         "D"
-      ]
+      ],
+      "reuseFront": "D"
     }
   ]
 }

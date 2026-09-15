@@ -50,6 +50,11 @@
       "ink": "#f9f1d9",
       "paper": "#1b2133",
       "accent": "#d8ad33"
+    },
+    "master": {
+      "ink": "#e8ddc6",
+      "paper": "#2b2721",
+      "accent": "#b8862b"
     }
   },
   "typography": {

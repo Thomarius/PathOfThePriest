@@ -9,6 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { renderCard, escapeHtml } from './card.js';
+import { renderBack } from './back.js';
 import { baseStyles } from './page.js';
 import { ROOT } from '../model.js';
 
@@ -55,6 +56,31 @@ html, body { margin: 0; padding: 0; background: #fff; }
 </head>
 <body>
 ${cards.map((card) => renderCard(card, model, { unit })).join('\n')}
+</body>
+</html>
+`;
+}
+
+/** Backs that are drawn rather than copied from a front render. */
+export function drawnBacks(model) {
+  return model.backs.filter((back) => !back.reuseFront);
+}
+
+export function buildBacksHtml(model, unit) {
+  return `<!doctype html>
+<html lang="${escapeHtml(model.meta.htmlLang)}">
+<head>
+<meta charset="utf-8">
+<style>
+${baseStyles(model)}
+html, body { margin: 0; padding: 0; background: #fff; }
+.card { display: block; }
+</style>
+</head>
+<body>
+${drawnBacks(model)
+  .map((back) => renderBack(back, model, { unit }))
+  .join('\n')}
 </body>
 </html>
 `;

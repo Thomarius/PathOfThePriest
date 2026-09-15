@@ -14,7 +14,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { chromium } from 'playwright';
-import { buildCardsHtml, buildProofHtml, embedArt, settlePage } from './template/document.js';
+import {
+  buildBacksHtml,
+  buildCardsHtml,
+  buildProofHtml,
+  drawnBacks,
+  embedArt,
+  settlePage,
+} from './template/document.js';
 import { auditPage, classify } from './audit.js';
 import { ROOT } from './model.js';
 
@@ -73,6 +80,37 @@ export async function renderAll(model, options) {
       written.push({ id: card.id, file: name, sha256: sha256(file) });
     }
 
+    // --- card backs ---------------------------------------------------------
+    // Drawn backs are rendered; the Apprentice and Deity backs are copies of
+    // their own fronts, so they are copied rather than re-rendered — that way
+    // the two files are guaranteed identical rather than merely similar.
+    const backs = [];
+    const toDraw = drawnBacks(model);
+    if (toDraw.length) {
+      const backPage = await browser.newPage({
+        viewport: { width: g.widthPx, height: g.heightPx },
+        deviceScaleFactor: 1,
+      });
+      await settlePage(backPage, buildBacksHtml(model, 'px'));
+      for (const back of toDraw) {
+        const name = `${back.id}.png`;
+        const file = path.join(outDir, name);
+        await backPage.locator(`[data-back-id="${back.id}"]`).screenshot({ path: file });
+        backs.push({ id: back.id, file: name, sha256: sha256(file) });
+      }
+      await backPage.close();
+    }
+
+    for (const back of model.backs.filter((b) => b.reuseFront)) {
+      const front = written.find((w) => w.id === back.reuseFront);
+      if (!front) {
+        throw new Error(`back ${back.id}: reuseFront "${back.reuseFront}" is not a rendered card`);
+      }
+      const name = `${back.id}.png`;
+      fs.copyFileSync(path.join(outDir, front.file), path.join(outDir, name));
+      backs.push({ id: back.id, file: name, sha256: front.sha256, copiedFrom: front.file });
+    }
+
     let pdfFile = null;
     if (options.pdf !== false) {
       const name = `${slug(model.meta.title ?? 'cards')}-${model.meta.locale}-${g.profile}.pdf`;
@@ -110,7 +148,7 @@ export async function renderAll(model, options) {
     // orphan that still looks like a finished card is exactly the kind of thing
     // that reaches a printer by accident, so the output directory is pruned to
     // the cards actually rendered this run.
-    const keep = new Set([...written.map((w) => w.file), 'manifest.json']);
+    const keep = new Set([...written.map((w) => w.file), ...backs.map((b) => b.file), 'manifest.json']);
     const removed = [];
     for (const entry of fs.readdirSync(outDir)) {
       if (keep.has(entry) || !entry.toLowerCase().endsWith('.png')) continue;
@@ -127,6 +165,7 @@ export async function renderAll(model, options) {
       trimMm: g.trimMm,
       bleedMm: g.bleedMm,
       cards: written,
+      backs,
     };
     fs.writeFileSync(
       path.join(outDir, 'manifest.json'),
@@ -134,7 +173,7 @@ export async function renderAll(model, options) {
       'utf8',
     );
 
-    return { audit, written, pdfFile, proofFile, outDir, removed };
+    return { audit, written, backs, pdfFile, proofFile, outDir, removed };
   } finally {
     await browser.close();
   }
