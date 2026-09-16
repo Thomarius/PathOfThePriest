@@ -31,10 +31,11 @@ npm run build -- --locale en
 third-party artwork at all. Its only external assets are two OFL fonts, licensed
 for exactly this use — which is what makes it safe to print and share.
 
-`mittagspause` is first-party **except card 0**, which uses a supplied
-illustration (`themes/mittagspause/art/0-michi.png`). Its provenance is not yet
-recorded — see that theme's `ATTRIBUTION.md`. The validator checks only that an
-attribution file exists, never that it is correct.
+`mittagspause` is first-party too, but card 0 is the one image not drawn by
+`motifs.js` — it is an illustration the project owner generated
+(`themes/mittagspause/art/0-michi.png`), recorded in that theme's
+`ATTRIBUTION.md`. Note the validator checks only that an attribution file
+exists, never that it is correct.
 
 All four theme × locale combinations validate with **0 errors and 0 warnings**,
 and consecutive builds are byte-identical.
