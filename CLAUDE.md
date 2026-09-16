@@ -177,6 +177,12 @@ Effect text keyed by effect key, containing tokens. The locale layer holds **no
 card names and no faction names** — all three token types resolve against the
 active theme, so re-theming can never break text on another card.
 
+`meta.hyphenate` lists the card ids this language may break words on. It lives
+here rather than in the stylesheet because the need is language-specific: German
+requires it on card 7 and English requires it nowhere. `validate` errors if the
+list names a card that does not exist, since a stale id silently leaves the card
+it was meant to protect unprotected.
+
 | Token | Resolves to | Notes |
 |---|---|---|
 | `{icon:<name>}` | inline glyph | valid names: `advance` `moveBack` `move` `swap` `destroy` `lowest` |
@@ -314,6 +320,7 @@ Two layers. Both must pass before anything is sent to a printer.
   one design (anything else makes a shuffled card identifiable).
 - **Fonts** — every family a theme names is vendored.
 - **Attribution** — every art file has an entry in `ATTRIBUTION.md`.
+- **Hyphenation** — every card id in a locale's `meta.hyphenate` is a real card.
 
 **Layout** (`npm run validate -- --deep`, and always inside `npm run build`) —
 `src/audit.js`, measured in a live page:
@@ -469,9 +476,18 @@ winnable, only needed if the effects themselves are ever altered.
   German.** There is no gradual warning: at 38u two of its three effects wrap
   from two lines to three at once and the card jumps from 79% to 101% full.
   Widening the text box buys exactly one step (38u fits at 16u frame padding,
-  with 1 spare line) and nothing beyond it. Hyphenation is already load-bearing —
-  `hyphens: none` overflows card 7 even at 37u — and `text-wrap` makes no
-  difference either way. Re-measure card 7 in German before touching this.
+  with 1 spare line) and nothing beyond it. `text-wrap` makes no difference
+  either way. Re-measure card 7 in German before touching this.
+- **Hyphenation is opt-in per card, from the locale** (`meta.hyphenate`, a list of
+  card ids). Left on globally the browser breaks words wherever it tidies the
+  ragged edge rather than only where it must, so cards with five spare lines were
+  splitting words for nothing. Measured across the deck: card 7 in German is the
+  *only* thing that needs it — without it card 7 overflows to 109%, card 6 gives
+  up one of five spare lines, and every other card in both languages is unchanged
+  to the pixel. Rules cards need it nowhere, the German glossary included.
+  Note the break card 7 depends on is "ent-fernt", 3 characters before the
+  hyphen, so `hyphenate-limit-chars` cannot be used to keep the tidy breaks and
+  drop the ugly ones — the ugly one is the load-bearing one.
 - Flex items must carry `flex: 0 0 auto` inside the text box. As shrinkable flex
   items they compress to fit instead of overflowing, which would hide exactly the
   defect the overflow check exists to catch.

@@ -3,7 +3,10 @@
   "meta": {
     "code": "de",
     "label": "Deutsch",
-    "htmlLang": "de"
+    "htmlLang": "de",
+    "hyphenate": [
+      "7"
+    ]
   },
   "ui": {
     "fallbackLabel": "Falls nicht möglich:",

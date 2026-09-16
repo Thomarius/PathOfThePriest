@@ -106,6 +106,14 @@ export function validate(overrides = {}) {
 
   // --- locale completeness --------------------------------------------------
 
+  // A stale id here silently leaves the card it was meant to protect without
+  // hyphenation, which shows up as an overflow error somewhere else entirely.
+  for (const id of sources.locale.meta?.hyphenate ?? []) {
+    if (!knownIds.has(id)) {
+      errors.push(`locale ${localeName}: meta.hyphenate lists "${id}", which is not a card`);
+    }
+  }
+
   const usedKeys = new Set(cardData.cards.flatMap((c) => c.effects.map((e) => e.key)));
   const localeKeys = Object.keys(sources.locale.effects ?? {});
   for (const key of localeKeys) {

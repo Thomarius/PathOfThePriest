@@ -205,6 +205,15 @@ export function buildModel(overrides = {}) {
   const errors = [];
   const byId = new Map(cardData.cards.map((c) => [c.id, c]));
 
+  /*
+   * Cards this language is allowed to hyphenate. Breaking a word across lines is
+   * a last resort, not a default: the browser will do it wherever it tidies the
+   * ragged edge, which on a card with five spare lines just costs legibility for
+   * nothing. It belongs to the locale because the need is language-specific —
+   * German requires it on card 7 and English requires it nowhere.
+   */
+  const hyphenate = new Set(locale.meta?.hyphenate ?? []);
+
   const ctx = {
     // `inline` is the name as it reads *inside a sentence*; `name` is what is
     // printed on the card. Only cards 0 and 2 are ever referenced by token, and
@@ -251,6 +260,7 @@ export function buildModel(overrides = {}) {
       motif: themeCard.motif ?? null,
       artFocus: themeCard.focus ?? [0.5, 0.5],
       palette: theme.palette?.[card.faction] ?? null,
+      hyphenate: hyphenate.has(card.id),
       effects,
     };
   });

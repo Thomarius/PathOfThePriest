@@ -230,11 +230,25 @@
   flex: 0 0 auto;
 }
 
+/*
+ * Hyphenation is off by default and opted into per card by the locale — see
+ * `meta.hyphenate` in locales/<code>.json.
+ *
+ * Left on globally the browser hyphenates wherever it tidies the ragged edge,
+ * not only where it must, so cards with five spare lines were still splitting
+ * words across lines and paying legibility for nothing. Measured: with it off,
+ * only card 7 in German fails (109%, overflow); card 6 gives up one of five
+ * spare lines; every other card in both languages is unchanged to the pixel.
+ */
 .effect {
   margin: 0;
   text-wrap: pretty;
-  hyphens: auto;
+  hyphens: none;
   flex: 0 0 auto; /* see .card__text-inner — flex items must not absorb overflow */
+}
+
+.card--hyphenate .effect {
+  hyphens: auto;
 }
 
 /* "If unable:" — the alternative a Fake Master falls back to. */
@@ -611,9 +625,13 @@
   gap: calc(11 * var(--u));
 }
 
+/* No hyphenation here either, for the reason given on .effect. Measured: every
+   German rules card is unchanged without it, the glossary — the densest card in
+   the deck at 85% — included. Only the English turn card gives up 2 of its 11
+   spare lines. */
 .rules__list li {
   text-wrap: pretty;
-  hyphens: auto;
+  hyphens: none;
 }
 
 .rules__list--ordered {

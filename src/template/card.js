@@ -152,6 +152,7 @@ export function renderCard(card, model, options = {}) {
     'card',
     `card--${card.faction}`,
     plain ? 'card--plain' : '',
+    card.hyphenate ? 'card--hyphenate' : '',
     ...decor.classes,
   ].filter(Boolean);
 
