@@ -1,0 +1,221 @@
+{
+  "$comment": "Michi, an accelerator physicist who never takes a break, walks her working day from morning to lunch. Extends dungeon-bright for palette, typography and decor; overrides naming, motifs and the back emblem. German names live under localeOverrides.de because the parent sets German names there too.",
+  "extends": "dungeon-bright",
+  "id": "mittagspause",
+  "title": "Michi, Take Your Break!",
+  "subtitle": "A solo workday",
+  "terms": {
+    "path": {
+      "def": "the workday",
+      "indef": "a workday",
+      "in": "in the workday",
+      "of": "of the workday",
+      "from": "from the workday"
+    }
+  },
+  "factions": {
+    "true": {
+      "one": "Support",
+      "other": "Supports",
+      "genPl": "Supports",
+      "anyAkk": "any Support",
+      "indefAkk": "a Support",
+      "eachNom": "Each Support",
+      "sameAkk": "the same Support",
+      "negAkk": "any Support",
+      "negNom": "no Support"
+    },
+    "fake": {
+      "one": "Stressor",
+      "other": "Stressors",
+      "genPl": "Stressors",
+      "anyAkk": "any Stressor",
+      "indefAkk": "a Stressor",
+      "eachNom": "Each Stressor",
+      "sameAkk": "the same Stressor",
+      "negAkk": "any Stressor",
+      "negNom": "no Stressor"
+    },
+    "apprentice": {
+      "one": "Physicist",
+      "other": "Physicists"
+    },
+    "deity": {
+      "one": "Break",
+      "other": "Breaks"
+    }
+  },
+  "cards": {
+    "0": {
+      "name": "Michi",
+      "motif": "michi",
+      "inline": "Michi"
+    },
+    "1": {
+      "name": "Chaos",
+      "motif": "crossedArrows"
+    },
+    "2": {
+      "name": "Stress",
+      "motif": "bolt",
+      "inline": "Stress"
+    },
+    "3": {
+      "name": "Machine Failure",
+      "motif": "cog"
+    },
+    "4": {
+      "name": "Setback",
+      "motif": "backArrow"
+    },
+    "5": {
+      "name": "Good Idea",
+      "motif": "bulb"
+    },
+    "6": {
+      "name": "The Boss",
+      "motif": "necktie"
+    },
+    "7": {
+      "name": "Sweetheart",
+      "motif": "heart"
+    },
+    "8": {
+      "name": "Meditation",
+      "motif": "lotus"
+    },
+    "9": {
+      "name": "A Walk",
+      "motif": "boot"
+    },
+    "10": {
+      "name": "Nice Colleague",
+      "motif": "bubble"
+    },
+    "11": {
+      "name": "Deadline",
+      "motif": "alarm"
+    },
+    "12": {
+      "name": "Priorities",
+      "motif": "bars"
+    },
+    "13": {
+      "name": "Focus",
+      "motif": "reticle"
+    },
+    "14": {
+      "name": "Delegate",
+      "motif": "hand"
+    },
+    "D": {
+      "name": "Lunch Break",
+      "motif": "bowl"
+    }
+  },
+  "decor": {
+    "seed": "mittagspause",
+    "emblem": "clock"
+  },
+  "localeOverrides": {
+    "de": {
+      "title": "Michi, mach mal Mittag!",
+      "subtitle": "Ein Solo-Arbeitstag",
+      "terms": {
+        "path": {
+          "def": "den Arbeitstag",
+          "indef": "einen Arbeitstag",
+          "in": "im Arbeitstag",
+          "of": "des Arbeitstages",
+          "from": "aus dem Arbeitstag"
+        }
+      },
+      "factions": {
+        "true": {
+          "one": "Kraftquelle",
+          "akk": "Kraftquelle",
+          "other": "Kraftquellen",
+          "genPl": "Kraftquellen",
+          "anyAkk": "eine beliebige Kraftquelle",
+          "indefAkk": "eine Kraftquelle",
+          "eachNom": "Jede Kraftquelle",
+          "sameAkk": "dieselbe Kraftquelle",
+          "negAkk": "keine Kraftquelle",
+          "negNom": "keine Kraftquelle"
+        },
+        "fake": {
+          "one": "Stressfaktor",
+          "akk": "Stressfaktor",
+          "other": "Stressfaktoren",
+          "genPl": "Stressfaktoren",
+          "anyAkk": "einen beliebigen Stressfaktor",
+          "indefAkk": "einen Stressfaktor",
+          "eachNom": "Jeder Stressfaktor",
+          "sameAkk": "denselben Stressfaktor",
+          "negAkk": "keinen Stressfaktor",
+          "negNom": "kein Stressfaktor"
+        },
+        "apprentice": {
+          "one": "Physikerin",
+          "other": "Physikerinnen"
+        },
+        "deity": {
+          "one": "Pause",
+          "other": "Pausen"
+        }
+      },
+      "cards": {
+        "0": {
+          "name": "Michi",
+          "inline": "Michi"
+        },
+        "1": {
+          "name": "Chaos"
+        },
+        "2": {
+          "name": "Stress",
+          "inline": "Stress"
+        },
+        "3": {
+          "name": "Maschinenausfall"
+        },
+        "4": {
+          "name": "Rückschlag"
+        },
+        "5": {
+          "name": "Gute Idee"
+        },
+        "6": {
+          "name": "Der Chef"
+        },
+        "7": {
+          "name": "Schatz"
+        },
+        "8": {
+          "name": "Meditation"
+        },
+        "9": {
+          "name": "Spaziergang"
+        },
+        "10": {
+          "name": "Netter Kollege"
+        },
+        "11": {
+          "name": "Deadline"
+        },
+        "12": {
+          "name": "Prioritäten"
+        },
+        "13": {
+          "name": "Fokus"
+        },
+        "14": {
+          "name": "Delegieren"
+        },
+        "D": {
+          "name": "Mittagspause"
+        }
+      }
+    }
+  }
+}

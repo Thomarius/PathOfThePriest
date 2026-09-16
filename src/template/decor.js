@@ -186,6 +186,19 @@ export function emblem(kind = 'lozenge') {
       <circle cx="50" cy="50" r="34" stroke-width="1.2" opacity="0.7"/>
       <path d="M50 26 L57 43 L74 50 L57 57 L50 74 L43 57 L26 50 L43 43 Z"
             fill="currentColor" stroke="none"/>`,
+    /*
+     * Noon. Both hands point straight up, so the mark is symmetric about the
+     * vertical and cannot be read as pointing at any card. At 12:00 the hands
+     * coincide, so they are told apart by weight and reach rather than angle —
+     * drawn at one width they read as a single line.
+     */
+    clock: `
+      <circle cx="50" cy="50" r="44" stroke-width="4"/>
+      <path d="M50 12 v7 M50 81 v7 M12 50 h7 M81 50 h7" stroke-width="4"
+            stroke-linecap="round"/>
+      <path d="M50 50 V30" stroke-width="8" stroke-linecap="round"/>
+      <path d="M50 50 V21" stroke-width="4.5" stroke-linecap="round"/>
+      <circle cx="50" cy="50" r="5.5" fill="currentColor" stroke="none"/>`,
   };
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none"
@@ -199,6 +212,20 @@ export function emblem(kind = 'lozenge') {
  * Unknown values fall back to nothing rather than throwing, so a half-written
  * theme still renders and the validator reports the problem.
  */
+/**
+ * The motifs a theme actually puts on its cards, in card order, deduplicated.
+ *
+ * Falls back to every known motif so a theme that draws none still gets a
+ * pattern rather than an empty tile.
+ */
+function themeMotifs(theme) {
+  const used = [];
+  for (const card of Object.values(theme.cards ?? {})) {
+    if (card.motif && MOTIFS[card.motif] && !used.includes(card.motif)) used.push(card.motif);
+  }
+  return used.length ? used : Object.keys(MOTIFS);
+}
+
 export function decorFor(theme) {
   const decor = theme.decor ?? {};
   const seed = decor.seed ?? theme.id ?? 'seed';
@@ -234,7 +261,10 @@ export function decorFor(theme) {
     dots: () => dots({ color: backInk, opacity: 0.22 }),
     motifs: () =>
       motifPattern({
-        names: Object.keys(MOTIFS),
+        // The theme's own motifs, not every motif in the module. MOTIFS is
+        // shared by every theme, so tiling all of it would put one deck's
+        // drawings on another deck's back as soon as a second theme exists.
+        names: themeMotifs(theme),
         ink: backInk,
         // Tone-on-tone: dark ink on a mid field needs far more than the 0.17
         // used for the stone texture, or the pattern simply is not there.

@@ -52,10 +52,12 @@ Locale files contain no card or faction names; they reference them through
 This is what lets a card be renamed without breaking the text printed on other
 cards — cards 6 and 11 both name card 2.
 
-`themes/dungeon-bright/` is the one theme and the base for any other: a new theme
-sets `"extends": "dungeon-bright"` and overrides only what differs, inheriting
-fonts, palette, decor, card names and all sixteen motifs. Motifs live in
-`src/template/motifs.js`, not in a theme, so every theme can draw on them.
+`themes/dungeon-bright/` is the base theme and `themes/mittagspause/` the first
+built on it. A new theme sets `"extends": "dungeon-bright"` and overrides only
+what differs, inheriting fonts, palette, decor, card names and motifs. Motifs
+live in `src/template/motifs.js` rather than in a theme, so every theme can draw
+on all of them — and the tiled card back uses only the ones that theme's own
+cards name.
 
 Fonts are committed under `assets/fonts` and inlined into the page as data URIs,
 so rendering is identical on every machine. Each deck's `manifest.json` records a

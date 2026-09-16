@@ -50,6 +50,23 @@ const solidCircle = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill=
 /** Outline only. */
 const line = (d, w) => `<path d="${d}"${w ? ` stroke-width="${w}"` : ''}/>`;
 
+/**
+ * A gear outline, plotted so every tooth is identical. Hand-placing teeth gave
+ * a shape that read as a splat rather than a cog.
+ */
+const gearPath = (cx, cy, rOut, rIn, teeth) => {
+  const step = (Math.PI * 2) / teeth;
+  const at = (r, a) => `${(cx + Math.cos(a) * r).toFixed(1)} ${(cy + Math.sin(a) * r).toFixed(1)}`;
+  const pts = [];
+  for (let i = 0; i < teeth; i += 1) {
+    const a = i * step - Math.PI / 2;
+    const w = step * 0.3;
+    const g = step * 0.2;
+    pts.push(at(rIn, a - w - g), at(rOut, a - w), at(rOut, a + w), at(rIn, a + w + g));
+  }
+  return `M${pts.join(' L')} Z`;
+};
+
 /** Solid detail in the outline colour — eyes, locks, sparkles. */
 const dot = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${LINE}" stroke="none"/>`;
 const spark = (x, y, r) =>
@@ -277,5 +294,167 @@ export const MOTIFS = {
         spark(44, 56, 15) +
         spark(160, 42, 12) +
         spark(152, 78, 9),
+    ),
+
+  /* ---- "Michi, mach mal Mittag!" -----------------------------------------
+   * A working day rather than a dungeon. Motifs are shared by every theme, so
+   * these sit alongside the dungeon set; a theme only draws the ones its cards
+   * name, and the card back tiles only those.
+   */
+
+  /** 0 — Michi: shoulder-length hair, which is the whole silhouette. The locks
+   *  flare outward at the ends; drawn straight they read as a helmet. */
+  michi: () =>
+    svg(
+      solid(
+        'M38 104 C38 44 162 44 162 104 C162 128 168 148 158 164 L126 164 ' +
+          'C134 140 130 116 130 96 L70 96 C70 116 66 140 74 164 L42 164 C32 148 38 128 38 104 Z',
+      ) +
+        solid('M100 68 a30 36 0 0 1 0 72 a30 36 0 0 1 0 -72 Z') +
+        dot(88, 104, 7) +
+        dot(112, 104, 7),
+      8,
+      [100, 112],
+    ),
+
+  /** 1 — Chaos: two arrows crossing, for the card that swaps its neighbours. */
+  crossedArrows: () =>
+    svg(
+      line('M44 56 L156 144', 10) +
+        line('M156 56 L44 144', 10) +
+        line('M156 144 l-2 -26 M156 144 l-26 2', 9) +
+        line('M44 144 l2 -26 M44 144 l26 2', 9),
+    ),
+
+  /** 2 — Stress: the deck's antagonist, and the only card that destroys. */
+  bolt: () => svg(solid('M112 22 L60 108 L94 108 L84 178 L140 88 L104 88 Z')),
+
+  /** 3 — Machine failure: a cog with a crack through it. */
+  cog: () =>
+    svg(
+      solid(gearPath(100, 100, 82, 58, 8)) +
+        solidCircle(100, 100, 24) +
+        line('M100 44 l-16 40 l24 12 l-16 38', 8),
+    ),
+
+  /** 4 — Setback: an arrow curving back on itself. */
+  backArrow: () =>
+    svg(
+      line('M150 58 C150 120 110 142 62 142', 12) + line('M62 142 l34 -26 M62 142 l34 26', 12),
+      8,
+      [106, 113],
+    ),
+
+  /** 5 — Good idea. */
+  bulb: () =>
+    svg(
+      solid('M100 24 a46 46 0 0 1 28 82 l0 20 h-56 l0 -20 a46 46 0 0 1 28 -82 Z') +
+        line('M76 140 h48', 10) +
+        line('M84 158 h32', 9) +
+        spark(164, 44, 12) +
+        spark(38, 52, 10),
+      8,
+      [102, 91],
+    ),
+
+  /** 6 — The boss. A necktie needs no face to be read as one. */
+  necktie: () =>
+    svg(solid('M80 26 h40 l14 20 l-20 22 h-28 l-20 -22 Z') + solid('M86 74 h28 l14 62 l-28 42 l-28 -42 Z'), 8, [100, 102]),
+
+  /** 7 — Sweetheart. */
+  heart: () =>
+    svg(solid('M100 172 C30 126 26 82 50 62 C72 44 94 56 100 74 C106 56 128 44 150 62 C174 82 170 126 100 172 Z'), 8, [100, 113]),
+
+  /** 8 — Meditation: a seated figure. */
+  lotus: () =>
+    svg(
+      solidCircle(100, 48, 22) +
+        solid('M100 78 C126 78 142 96 146 124 C150 150 130 158 100 158 C70 158 50 150 54 124 C58 96 74 78 100 78 Z') +
+        line('M40 140 q20 -18 46 -10', 8) +
+        line('M160 140 q-20 -18 -46 -10', 8),
+      8,
+      [100, 92],
+    ),
+
+  /** 9 — A walk. */
+  boot: () =>
+    svg(
+      solid(
+        'M66 34 h40 a8 8 0 0 1 8 8 v68 l44 20 a28 28 0 0 1 16 25 v7 ' +
+          'a8 8 0 0 1 -8 8 H66 a8 8 0 0 1 -8 -8 V42 a8 8 0 0 1 8 -8 Z',
+      ) + line('M58 152 h116', 9),
+      8,
+      [116, 102],
+    ),
+
+  /** 10 — The nice colleague: someone talking to you. */
+  bubble: () =>
+    svg(
+      solid(
+        'M40 44 h120 a14 14 0 0 1 14 14 v66 a14 14 0 0 1 -14 14 h-56 l-32 28 v-28 ' +
+          'h-32 a14 14 0 0 1 -14 -14 v-66 a14 14 0 0 1 14 -14 Z',
+      ) +
+        dot(74, 90, 8) +
+        dot(100, 90, 8) +
+        dot(126, 90, 8),
+      8,
+      [100, 105],
+    ),
+
+  /** 11 — Deadline. */
+  alarm: () =>
+    svg(
+      solidCircle(100, 112, 58) +
+        solid('M48 46 a26 26 0 0 0 -18 30 Z') +
+        solid('M152 46 a26 26 0 0 1 18 30 Z') +
+        line('M100 112 V72', 9) +
+        line('M100 112 l28 18', 9) +
+        line('M62 162 l-14 18', 9) +
+        line('M138 162 l14 18', 9),
+      8,
+      [100, 113],
+    ),
+
+  /** 12 — Priorities: a stack, longest first. */
+  bars: () =>
+    svg(
+      solid('M36 48 h96 v26 h-96 Z') +
+        solid('M36 88 h68 v26 h-68 Z') +
+        solid('M36 128 h44 v26 h-44 Z') +
+        spark(158, 61, 16),
+      8,
+      [103, 101],
+    ),
+
+  /** 13 — Focus: a target reticle. */
+  reticle: () =>
+    svg(
+      line('M100 100 m-54 0 a54 54 0 1 0 108 0 a54 54 0 1 0 -108 0', 9) +
+        solidCircle(100, 100, 24) +
+        dot(100, 100, 9) +
+        line('M100 18 v22 M100 160 v22 M18 100 h22 M160 100 h22', 9),
+    ),
+
+  /** 14 — Delegate: a hand pointing away. Pointing up reads as a thumbs-up. */
+  hand: () =>
+    svg(
+      solid(
+        'M64 72 H100 V86 H150 a15 15 0 0 1 0 30 H100 V144 a24 24 0 0 1 -24 24 ' +
+          'H64 a24 24 0 0 1 -24 -24 V96 a24 24 0 0 1 24 -24 Z',
+      ),
+      8,
+      [103, 120],
+    ),
+
+  /** D — the lunch break, and the goal of the whole deck. */
+  bowl: () =>
+    svg(
+      solid('M30 100 h140 a70 62 0 0 1 -140 0 Z') +
+        line('M22 100 h156', 10) +
+        line('M74 66 q-12 -18 0 -34', 8) +
+        line('M100 60 q-12 -20 0 -38', 8) +
+        line('M126 66 q-12 -18 0 -34', 8),
+      8,
+      [100, 92],
     ),
 };

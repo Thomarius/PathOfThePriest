@@ -11,9 +11,14 @@ design are re-themed.
 M12).** Remaining: **M10** (art-window composition) and **M13** (greyscale and
 physical proofs), both tracked in **`NEXT-STEPS.md`**.
 
-**`dungeon-bright` is the one theme, and the base every other theme should
-extend.** It builds **16 cards + 6 rules cards + 3 backs** in `de` and `en`:
-fantasy-anime — flat colour, thick outlines, rounded shapes.
+**`dungeon-bright` is the base theme every other theme extends.** Each theme
+builds **16 cards + 6 rules cards + 3 backs** in `de` and `en`, in one visual
+register: flat colour, thick outlines, rounded shapes.
+
+| Theme | Setting |
+|---|---|
+| `dungeon-bright` | An underlevelled adventurer delving for treasure. The base. |
+| `mittagspause` | Michi, an accelerator physicist who never stops, walking her working day to lunch. Extends the base. |
 
 ```sh
 npm install && npx playwright install chromium
@@ -21,13 +26,13 @@ npm run validate -- --deep        # defaults to dungeon-bright / de
 npm run build -- --locale en
 ```
 
-It is **entirely first-party**: every image is drawn by `src/template/motifs.js`
-and `src/template/decor.js`, so the deck carries no third-party artwork at all.
-Its only external assets are two OFL fonts, licensed for exactly this use — which
-is what makes it safe to print and to share.
+Both are **entirely first-party**: every image is drawn by
+`src/template/motifs.js` and `src/template/decor.js`, so the decks carry no
+third-party artwork at all. Their only external assets are two OFL fonts,
+licensed for exactly this use — which is what makes them safe to print and share.
 
-Both locales validate with **0 errors and 0 warnings**, and consecutive builds
-are byte-identical.
+All four theme × locale combinations validate with **0 errors and 0 warnings**,
+and consecutive builds are byte-identical.
 
 Every output path carries the theme and locale — `out/<theme>-<locale>/` for the
 cards, `out/proof-<theme>-<locale>.png`, and the theme in the PDF name — so
@@ -56,9 +61,11 @@ Create `themes/<name>/theme.json` and inherit:
 
 Everything not named is inherited: fonts, palette, decor vocabulary, card names,
 faction labels, world terms and motifs. Motifs live in `src/template/motifs.js`
-rather than in a theme, so every theme can draw on all sixteen by name.
+rather than in a theme, so every theme can draw on all of them by name — and the
+motif-tiled card back uses only the ones the theme's own cards name, so one
+deck's drawings never leak onto another's back.
 
-Two things to know:
+Three things to know:
 
 - **Artwork is not inherited**, by design — art belongs to a visual style, and a
   child pointing at a parent's files would reference images absent from its own
@@ -68,6 +75,12 @@ Two things to know:
   by whatever the parent's `localeOverrides` says for the locale being built —
   the rename silently does nothing, and only in some languages. `validate` warns
   when a child is shadowed this way.
+- **Check `{term:}` forms against the case they are used in.** `path.def` and
+  `path.indef` both sit in **accusative** slots in the rules text ("bilde …",
+  "Gehe … entlang"). The base theme's "Verlies" is neuter, where nominative and
+  accusative are identical, so this never showed; `mittagspause` uses the
+  masculine "Arbeitstag" and must write "**den** Arbeitstag" and "**einen**
+  Arbeitstag". Same trap as faction determiners — forms carry their article.
 
 ## Deck composition
 
@@ -113,7 +126,7 @@ must be achievable by adding one locale file.
 | Cards are monolingual | One language per deck. Two languages = two complete card and rules sets from one theme via `localeOverrides`. |
 | Flavour text | None. The `flavor` field was removed. |
 | Card backs | One neutral shared back for the 14 Masters; Apprentice and Deity reuse their own front as their back. |
-| Themes | One: `dungeon-bright` (fantasy-anime), self-contained and the base for all others. Follow-ups set `extends: "dungeon-bright"` and override only what differs. |
+| Themes | `dungeon-bright` is self-contained and the base; every other theme sets `extends: "dungeon-bright"` and overrides only what differs. `mittagspause` is the first of those. |
 
 ## Print geometry
 
@@ -237,8 +250,10 @@ PathOfThePriest/
 │  ├─ de.json                # primary
 │  └─ en.json
 ├─ themes/
-│  └─ dungeon-bright/        # the base theme; extend this
-│     └─ theme.json          # self-contained: no `extends` of its own
+│  ├─ dungeon-bright/        # the base theme; extend this
+│  │  └─ theme.json          # self-contained: no `extends` of its own
+│  └─ mittagspause/          # extends dungeon-bright
+│     └─ theme.json
 │                            # a theme using art adds art/, art-selection.json
 │                            # and a generated ATTRIBUTION.md alongside it
 ├─ src/
