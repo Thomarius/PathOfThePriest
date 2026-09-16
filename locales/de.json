@@ -42,7 +42,7 @@
       "title": "Ziel",
       "body": [
         "Gehe {term:path.indef} aus 14 Karten entlang, bestehend aus 8 {faction:true.other} und 6 {faction:fake.other}.",
-        "Bringe {card:0} vom Anfang {term:path.of} ans Ende und verbinde dich mit {card:D}."
+        "Bringe {card:0} vom Anfang {term:path.of} ans Ende zur {card:D}."
       ],
       "sections": [
         {
