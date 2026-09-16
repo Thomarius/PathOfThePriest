@@ -624,6 +624,9 @@ winnable, only needed if the effects themselves are ever altered.
 
 ## Open items
 
+A third theme is agreed but not built: **`THEME-SUMMA-CUM-LAUDE.md`** holds the
+settled card names, the title, and the steps still to do.
+
 See **`NEXT-STEPS.md`** — **M10** (art-window composition on `dungeon-bright`) and
 **M13** (greyscale and physical proofs), plus a list of ideas already rejected and
 why, so they are not re-proposed.

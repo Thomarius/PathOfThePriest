@@ -1,5 +1,9 @@
 # Next Steps
 
+> A third theme, *Summa Cum Laude*, is agreed but not built — its card names
+> and remaining steps live in **`THEME-SUMMA-CUM-LAUDE.md`**. The milestones
+> below are art direction on the existing decks and are independent of it.
+
 The pipeline is finished (M0–M7 — see `CLAUDE.md` for architecture and the
 reasoning behind past decisions). What remains is **art direction on the
 `dungeon-bright` set**, which is now the only theme and the base every other one
