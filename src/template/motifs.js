@@ -21,13 +21,6 @@
 
 const LINE = 'var(--motif-line, currentColor)';
 const FILL = 'var(--motif-fill, none)';
-/*
- * A mid-tone between the two, for the rare motif that needs one shape to sit
- * visibly *behind* another rather than beside it. Defaults to `none` for the
- * same reason FILL does, and motifPattern blanks it the same way, so a shaded
- * shape stays outline-only on the tiled card back instead of turning solid.
- */
-const SHADE = 'var(--motif-shade, none)';
 
 /**
  * Motifs are drawn to fill roughly a 150x150 area inside the 200x200 box, and
@@ -52,8 +45,6 @@ const svg = (body, stroke = 8, centre = [100, 100]) => {
 
 /** Filled silhouette with an outline. */
 const solid = (d) => `<path d="${d}" fill="${FILL}"/>`;
-/** Same, in the mid-tone — for a shape that reads as being behind another. */
-const shaded = (d) => `<path d="${d}" fill="${SHADE}"/>`;
 const solidCircle = (cx, cy, r) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${FILL}"/>`;
 
 /** Outline only. */
@@ -324,38 +315,18 @@ export const MOTIFS = {
    * name, and the card back tiles only those.
    */
 
-  /** 0 — Michi.
-   *  Layered rather than one silhouette: hair behind in the mid-tone, face and
-   *  neck in front in the fill. A single-colour silhouette read as a featureless
-   *  blob, and a face outlined *against* outlined hair reads as two competing
-   *  shapes — giving the hair its own tone is what separates them.
-   *
-   *  The hair is open at the bottom centre so the jaw is free. Closed across the
-   *  whole bottom it reads as a hood, and the neck — which is what stops the
-   *  head looking squashed onto the collar — has nowhere to show. The hair's inner
-   *  edge has to follow the face's curve inward as it narrows, and reach the
-   *  neck at the bottom. Left running straight down it cleared the cheeks but
-   *  not the jaw, leaving two slivers of background below them — a gap between
-   *  two filled shapes reads as a tear in the drawing, not as shading.
-   *
-   *  Tried and rejected: a fringe shape and a parting line. Every shape here
-   *  carries its own outline, so an internal hair detail becomes a separate
-   *  outlined object sitting on the hair — the fringe read as a headband and the
-   *  parting as a scratch. Same failure as the cog's crack and the dwarf's
-   *  moustache. Detail inside a silhouette has to be a *tone* change, not a line.
-   */
+  /** 0 — Michi. A silhouette portrait: head and hair are one mass with no face
+   *  in it at all, which is what every avatar icon does and what three earlier
+   *  attempts at drawing a face kept failing to do. Two things carry the read —
+   *  the hair kicking *outward* at the jaw, without which it is an egg, and the
+   *  V of the collar notched out of shoulders wider than the hair. */
   michi: () =>
     svg(
-      solid('M18 196 C20 172 44 158 74 154 L100 184 L126 154 C156 158 180 172 182 196 Z') +
-        shaded(
-          'M100 22 C60 22 34 52 34 94 C34 120 28 142 24 158 L90 162 ' +
-            'C90 134 84 110 64 98 L136 98 C116 110 110 134 110 162 L176 158 ' +
-            'C172 142 166 120 166 94 C166 52 140 22 100 22 Z',
-        ) +
-        solid('M86 118 h28 v42 h-28 Z') +
-        solid('M100 50 a34 40 0 0 1 0 80 a34 40 0 0 1 0 -80 Z') +
-        dot(86, 98, 6) +
-        dot(114, 98, 6),
+      solid('M14 196 C16 168 42 148 72 142 L100 182 L128 142 C158 148 184 168 186 196 Z') +
+        solid(
+          'M100 26 C66 26 44 50 44 84 C44 104 36 120 32 134 C52 142 72 146 100 146 ' +
+            'C128 146 148 142 168 134 C164 120 156 104 156 84 C156 50 134 26 100 26 Z',
+        ),
       8,
       [100, 110],
     ),

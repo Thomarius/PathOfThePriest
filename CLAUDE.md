@@ -413,9 +413,7 @@ drift from the output, and it **writes nothing at all** when a card fails.
 
 - **M8 — Two-tone motifs. DONE.** Motifs are filled silhouettes with a darker
   outline, both colours driven by `--motif-fill` / `--motif-line`, which inline
-  SVG inherits from the card's palette. A third tone, `--motif-shade`, was added
-  later for motifs that need one shape to read as being *behind* another rather
-  than beside it — see the gotcha on layering below. `golem` and `minotaur` were redrawn and
+  SVG inherits from the card's palette. `golem` and `minotaur` were redrawn and
   the set's optical weight evened out. **A motif's silhouette decides what it
   reads as**; detail inside it barely matters at 63 mm, and no amount of it fixes
   a wrong outline — `minotaur` took three attempts to stop reading as a rabbit.
@@ -557,21 +555,6 @@ winnable, only needed if the effects themselves are ever altered.
   the trim line, so invisible on screen, but within the range a cut can drift.
   Use `clip-path` instead: the painted shape stays inside the same box and the
   numeral stays upright. The audit catches this class of error.
-- **Depth inside a motif is a third tone, not a line.** Every shape carries its
-  own outline, so an internal detail drawn as a path becomes a separate outlined
-  *object* sitting on top: a fringe read as a headband, a parting as a scratch,
-  the cog's crack as an unrelated mark, the dwarf's moustache as a smile. To put
-  one shape behind another, fill it with `--motif-shade` (mid-way between fill
-  and line, derived from the pair so it follows any palette — a literal "hair
-  colour" would be wrong on a pink card). `motifPattern` blanks it exactly as it
-  blanks `--motif-fill`, so a shaded shape stays outline-only on the tiled card
-  back instead of turning into a solid blob; filling with `--motif-line` would
-  not, since the pattern paints that in ink.
-- **Two filled shapes that nearly meet leave a tear, not a shadow.** Wherever a
-  layered motif has one shape ending near another, their edges have to overlap,
-  not approach. Michi's hair had to follow the face's curve inward as it narrows
-  *and* reach the neck at the bottom; straight-down locks cleared the cheeks but
-  not the jaw, and the slivers of background below them read as damage.
 - **Plot regular shapes, do not hand-write their vertices.** The back emblem's
   star had its five outer points spread across radii 42 to 46, and the two
   bottom ones crossed the ring drawn around them. An off-centre vertex is

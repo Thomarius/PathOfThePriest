@@ -127,8 +127,6 @@ export function motifPattern({ names, ink = '#000', opacity = 0.16, cols = 4 } =
       .replace(/<\/svg>\s*$/, '')
       .split('var(--motif-fill, none)')
       .join('none')
-      .split('var(--motif-shade, none)')
-      .join('none')
       .split('var(--motif-line, currentColor)')
       .join(ink);
     const x = (i % cols) * cell;
