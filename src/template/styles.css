@@ -45,10 +45,15 @@
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
-  /* ~8.4 pt at 300 dpi. Sized with the vendored Alegreya Sans, not a fallback:
-     the fallback face was noticeably wider and made the box look much tighter
-     than it is. Re-measure with `npm run preview` after any font change. */
-  font-size: calc(35 * var(--u));
+  /* ~8.9 pt at 300 dpi. Sized with the vendored body face, not a fallback: the
+     fallback was noticeably wider and made the box look much tighter than it is.
+     Re-measure with `npm run preview` after any font change.
+
+     37u is the ceiling, set by card 7 in German. At 38u two of its three effects
+     wrap from two lines to three at once and the card overflows by 101% — there
+     is no gradual warning, so raising this without re-measuring card 7 breaks
+     the deck. */
+  font-size: calc(37 * var(--u));
   line-height: 1.34;
   /* Effect text is full of counts ("2 spaces"); oldstyle figures that dip below
      the baseline read as letters at this size. */
@@ -186,11 +191,17 @@
   letter-spacing: calc(1 * var(--u));
 }
 
+/*
+ * The Ally/Hazard label. At 20u this was 4.8pt — below the 6.2pt that a physical
+ * proof already showed to be too small to read, on the one line that carries the
+ * distinction the whole player turn depends on. There is no width pressure here:
+ * even the longest label ("Verbündeter") clears the safe zone by 216px.
+ */
 .card__faction {
-  font-size: calc(20 * var(--u));
-  letter-spacing: calc(4 * var(--u));
+  font-size: calc(25 * var(--u));
+  letter-spacing: calc(3.5 * var(--u));
   text-transform: uppercase;
-  opacity: 0.72;
+  opacity: 0.85;
 }
 
 /* --- effect text ---------------------------------------------------------- */
@@ -235,13 +246,13 @@
 /* "If it is X, ..." — a clause qualifying the effect above it, not a choice. */
 .effect--conditional {
   padding-left: calc(22 * var(--u));
-  font-size: calc(28 * var(--u));
+  font-size: calc(30 * var(--u));
   opacity: 0.92;
 }
 
 .effect__label {
   display: block;
-  font-size: calc(20 * var(--u));
+  font-size: calc(22 * var(--u));
   letter-spacing: calc(2.5 * var(--u));
   text-transform: uppercase;
   opacity: 0.6;
@@ -255,7 +266,7 @@
   align-items: center;
   flex: 0 0 auto;
   gap: calc(14 * var(--u));
-  font-size: calc(20 * var(--u));
+  font-size: calc(22 * var(--u));
   letter-spacing: calc(4 * var(--u));
   text-transform: uppercase;
   opacity: 0.55;
@@ -512,7 +523,7 @@
 
 /* --- rules cards ----------------------------------------------------------
  *
- * Five cards replacing the original rulebook sheet. Much denser than a card
+ * Six cards replacing the original rulebook sheet. Much denser than a card
  * face, so the type is smaller and the body is top-aligned rather than centred.
  * The body reuses .card__text/.card__text-inner so the M5 overflow audit
  * measures these too — the clarifications card needs it most.
@@ -521,10 +532,9 @@
 .rules {
   /*
    * ~7.7 pt at 300 dpi, up from 6.2 pt which a physical proof showed was too
-   * small to read. The glossary is the binding card: it sits at 80% here, and
-   * at 34u it drops to a single spare line. Re-measure with `npm run preview`
-   * against the German deck, which is the longer of the two, after any change
-   * to rules text.
+   * small to read. The glossary is the binding card: 85% full in German with 3
+   * spare lines (80% in English — measure German, it is the longer of the two).
+   * At 40u it overflows by 286px. Re-measure after any change to rules text.
    */
   font-size: calc(32 * var(--u));
   line-height: 1.3;

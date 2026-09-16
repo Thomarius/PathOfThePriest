@@ -14,7 +14,7 @@
  */
 
 import { chromium } from 'playwright';
-import { buildCardsHtml, embedArt, settlePage } from './template/document.js';
+import { buildCardsHtml, buildRulesHtml, embedArt, settlePage } from './template/document.js';
 
 /** Elements that must stay inside the safe zone. Art deliberately bleeds. */
 const TEXT_SELECTOR =
@@ -46,7 +46,7 @@ export async function auditPage(page, model) {
       const findings = [];
 
       for (const card of document.querySelectorAll('.card')) {
-        const id = card.dataset.cardId;
+        const id = card.dataset.cardId ?? card.dataset.rulesId;
         const cardRect = card.getBoundingClientRect();
         const safe = {
           left: cardRect.left + safeX,
@@ -57,14 +57,17 @@ export async function auditPage(page, model) {
 
         const box = card.querySelector('.card__text');
         const inner = card.querySelector('.card__text-inner');
-        const effect = card.querySelector('.effect');
+        // Only needed for its line height. A rules card reuses the same text box
+        // but has no .effect in it, so keying off that alone skipped every rules
+        // card silently — including the glossary, the densest card in the deck.
+        const probe = card.querySelector('.effect, .rules__para, .rules__term, .rules__list li');
 
-        if (box && inner && effect) {
+        if (box && inner && probe) {
           // offsetHeight, not getBoundingClientRect: it is unaffected by any
           // CSS zoom on an ancestor, which would otherwise scale the geometry
           // but not the computed lineHeight it is compared against.
           const overflow = inner.offsetHeight - box.offsetHeight;
-          const lineHeight = parseFloat(getComputedStyle(effect).lineHeight) || 0;
+          const lineHeight = parseFloat(getComputedStyle(probe).lineHeight) || 0;
           const spareLines = lineHeight
             ? Math.floor((box.offsetHeight - inner.offsetHeight) / lineHeight)
             : 0;
@@ -192,18 +195,32 @@ export function classify(findings, model) {
   return { errors, warnings };
 }
 
-/** Standalone audit: launches its own browser. Used by `validate --deep`. */
+/**
+ * Standalone audit: launches its own browser. Used by `validate --deep`.
+ *
+ * Audits the rules cards as well as the faces. They are laid out on a separate
+ * page, and checking only the faces here meant `validate --deep` quietly covered
+ * less than `build` did, despite being documented as the same checks.
+ */
 export async function auditModel(model, { themeName }) {
   const g = model.geometry;
   const cards = embedArt(model, themeName);
   const browser = await chromium.launch();
   try {
-    const page = await browser.newPage({
-      viewport: { width: g.widthPx, height: g.heightPx },
-      deviceScaleFactor: 1,
-    });
-    await settlePage(page, buildCardsHtml(model, cards, 'px'));
-    return classify(await auditPage(page, model), model);
+    const findings = [];
+    for (const html of [
+      buildCardsHtml(model, cards, 'px'),
+      ...(model.rulesCards.length ? [buildRulesHtml(model, 'px')] : []),
+    ]) {
+      const page = await browser.newPage({
+        viewport: { width: g.widthPx, height: g.heightPx },
+        deviceScaleFactor: 1,
+      });
+      await settlePage(page, html);
+      findings.push(...(await auditPage(page, model)));
+      await page.close();
+    }
+    return classify(findings, model);
   } finally {
     await browser.close();
   }

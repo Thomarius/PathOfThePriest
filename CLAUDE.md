@@ -318,9 +318,14 @@ Two layers. Both must pass before anything is sent to a printer.
 **Layout** (`npm run validate -- --deep`, and always inside `npm run build`) —
 `src/audit.js`, measured in a live page:
 
-- **Overflow** — effect text taller than its box; it would be clipped.
+- **Overflow** — text taller than its box; it would be clipped.
 - **Safe zone** — any text element crossing the safe inset; it could be cut off.
 - **Headroom** — fewer than 1 spare line, meaning a longer translation will not fit.
+- **Motif centring** — drawn art more than 4px off the centre of the visible
+  window, which catches a stale measured centre in `motifs.js`.
+
+Both card faces and rules cards are measured, on their own pages, by
+`validate --deep` and by `build` alike.
 
 `build` audits the same loaded page it is about to print, so the audit cannot
 drift from the output, and it **writes nothing at all** when a card fails.
@@ -333,7 +338,8 @@ drift from the output, and it **writes nothing at all** when a card fails.
   **"zurückbewegen", not "zurückziehen"** — in German game usage *ziehen* also
   means "draw a card", and the deck already has cards moving along a path.
   Measured: German runs **+32%** over English overall, and card 7 grows +40%
-  (145→203 chars) with its fill unchanged at 75% and 2 spare lines still free.
+  (145→203 chars) without costing a line — fill was unchanged at 75% then, and is
+  80% now that the type has been raised, with 2 spare lines free throughout.
   No card falls below 2 spare lines. The topic was open when this was written and
   did not block the file — names are tokens; it has since been settled.
 - **M1 — Data & model. DONE.** `data/cards.json`, `data/deck.json`,
@@ -347,8 +353,9 @@ drift from the output, and it **writes nothing at all** when a card fails.
   text (167 chars) but only 2 paragraphs and fills 40%, while card 7's 3 effects
   plus 2 "or" dividers fill 73%. Structure costs more height than length. Any
   future layout change must be checked against card 7. **Re-measured after
-  M8–M12:** card 7 still leads at **75% full, 2 spare lines** in both locales —
-  the frame changes cost it nothing.
+  M8–M12:** card 7 still leads in both locales, and after the type was raised to
+  37u it sits at **80% full with 2 spare lines** — the frame changes cost it
+  nothing, and the larger type spent the slack deliberately.
 - **M3 — Icon language. DONE.** **6** SVG glyphs live in `src/icons/`,
   are stroked in `currentColor` and sized in `em`, so they inherit the colour of
   whatever text they sit in, and the glossary rules card is generated from the
@@ -454,8 +461,17 @@ winnable, only needed if the effects themselves are ever altered.
   wording exists. Measured tolerance: the current layout holds to **~2.4x**
   English length; card 7 overflows at ~3.0x.
 - The preview reports a **fill percentage** per card (content height ÷ box
-  height). Keep the fullest card at or below ~75% in English — that is the
-  headroom German needs. M5 turns the same measurement into a hard failure.
+  height), but **spare lines are the number that matters** — text height moves in
+  whole lines, so fill can drift several points without anything changing. Card 7
+  now sits at 80% with 2 spare lines in both locales. M5 turns the same
+  measurement into a hard failure.
+- **Effect type is 37u (~8.9 pt) and that is the ceiling, set by card 7 in
+  German.** There is no gradual warning: at 38u two of its three effects wrap
+  from two lines to three at once and the card jumps from 79% to 101% full.
+  Widening the text box buys exactly one step (38u fits at 16u frame padding,
+  with 1 spare line) and nothing beyond it. Hyphenation is already load-bearing —
+  `hyphens: none` overflows card 7 even at 37u — and `text-wrap` makes no
+  difference either way. Re-measure card 7 in German before touching this.
 - Flex items must carry `flex: 0 0 auto` inside the text box. As shrinkable flex
   items they compress to fit instead of overflowing, which would hide exactly the
   defect the overflow check exists to catch.
@@ -474,8 +490,15 @@ winnable, only needed if the effects themselves are ever altered.
 - Art bleeds past trim; all text stays inside the safe zone.
 - **Rules-card type is 32u (~7.7 pt), and the glossary is what caps it.** A
   physical proof showed 26u (6.2 pt) was too small to read. The glossary sits at
-  80% at 32u and drops to a single spare line at 34u, so re-measure with
-  `npm run preview` against the *German* deck after any change to rules text.
+  85% in German (80% in English) with 3 spare lines, so re-measure against the
+  *German* deck after any change to rules text. Rules type is independent of the
+  face-card size — `.rules` sets its own, so raising one does not move the other.
+- **6.2 pt is the floor for anything a player has to read.** That came from a
+  physical proof of the rules cards, and it applies to small labels too: the
+  Ally/Hazard line sat at 20u (4.8 pt) for a long time — under the floor, on the
+  one line carrying the distinction the whole player turn depends on. It is 25u
+  now. There is no width pressure on it; the longest label clears the safe zone
+  by over 200px.
 - **Glyphs on rules cards need mixing toward the ink.** The rules palette is pale
   paper with a light accent, so an accent-coloured icon nearly vanishes in print
   even though it reads fine on a card face.
@@ -496,6 +519,13 @@ winnable, only needed if the effects themselves are ever altered.
   the trim line, so invisible on screen, but within the range a cut can drift.
   Use `clip-path` instead: the painted shape stays inside the same box and the
   numeral stays upright. The audit catches this class of error.
+- **An audit that keys off one page's markup silently covers only that page.**
+  The fill check required a `.effect` element for its line height, which no rules
+  card has, so every rules card was skipped — including the glossary, the densest
+  card in the deck — despite both `CLAUDE.md` and the CSS claiming they were
+  covered. Separately, `validate --deep` only loaded the faces page, so it
+  checked less than `build` did while documented as running the same checks. Both
+  are fixed; verified by inflating rules type to 40u and watching each path fail.
 - **Centre art in the field that survives the trim, not in its own box.** The top
   `--bleed-y` is cut off and the name plate covers `--art-foot` of the bottom, so
   a motif centred in the raw art window sits low — 11px on a face card, 115px on
