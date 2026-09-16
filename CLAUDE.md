@@ -568,6 +568,15 @@ winnable, only needed if the effects themselves are ever altered.
   the trim line, so invisible on screen, but within the range a cut can drift.
   Use `clip-path` instead: the painted shape stays inside the same box and the
   numeral stays upright. The audit catches this class of error.
+- **Centring a line box is not centring the ink.** `place-items: center` centres
+  the *line box*, and digits do not fill it symmetrically — there is more room
+  below the baseline than above the figures — so the badge numerals sat 2.3px
+  high on the 816 canvas. The offset is identical on every badge, because they
+  all set the same 56u size; it reads worst on the 104u Ally, Apprentice and
+  Deity badges simply because the same absolute error is a larger share of a
+  smaller badge, which is why it looked like a faction-specific bug and was not.
+  Corrected by nudging the span, never the box: the element's own rect is what
+  the safe-zone audit measures.
 - **Plot regular shapes, do not hand-write their vertices.** The back emblem's
   star had its five outer points spread across radii 42 to 46, and the two
   bottom ones crossed the ring drawn around them. An off-centre vertex is

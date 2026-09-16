@@ -137,6 +137,24 @@
   box-sizing: border-box;
 }
 
+/*
+ * Nudge the figures down onto the badge's optical centre.
+ *
+ * `place-items: center` centres the *line box*, and digits do not fill it
+ * symmetrically — there is more room below the baseline than above the figures —
+ * so the ink lands high. Measured at 2.3px on the 816 canvas, identical on every
+ * badge because they all set the same 56u size. It reads worst on the 104u
+ * Ally, Apprentice and Deity badges simply because the same absolute error is a
+ * larger share of a smaller badge; the 124u Hazard badge hides it.
+ *
+ * Applied to the span, not the box: the element's own rect is what the
+ * safe-zone audit measures, and that must not move.
+ */
+.card__number > span {
+  position: relative;
+  top: calc(2.3 * var(--u));
+}
+
 /* Faction is carried by badge shape as well as colour, so the distinction
    survives greyscale printing and colour blindness. */
 .card--true .card__number {
