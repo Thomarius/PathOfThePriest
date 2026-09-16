@@ -9,9 +9,10 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ICON_NAMES } from '../tokens.js';
 
-const DIR = import.meta.dirname;
+const DIR = path.dirname(fileURLToPath(import.meta.url));
 
 const cache = new Map();
 

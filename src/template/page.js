@@ -8,11 +8,13 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { renderCard, escapeHtml } from './card.js';
 import { renderRulesCard } from './rules-card.js';
 import { fontFaceCss } from './fonts.js';
 
-const STYLES = fs.readFileSync(path.join(import.meta.dirname, 'styles.css'), 'utf8');
+const DIR = path.dirname(fileURLToPath(import.meta.url));
+const STYLES = fs.readFileSync(path.join(DIR, 'styles.css'), 'utf8');
 
 /**
  * Stylesheet shared by the preview and the renderer, so what is reviewed on

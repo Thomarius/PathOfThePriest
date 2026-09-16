@@ -10,8 +10,15 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const DIR = path.resolve(import.meta.dirname, '..', '..', 'assets', 'fonts');
+const DIR = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '..',
+  '..',
+  'assets',
+  'fonts',
+);
 const MANIFEST = path.join(DIR, 'fonts.json');
 
 let cached = null;

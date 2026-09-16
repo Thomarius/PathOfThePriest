@@ -9,10 +9,11 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parseSegments, toPlain } from './tokens.js';
 import { decorFor } from './template/decor.js';
 
-export const ROOT = path.resolve(import.meta.dirname, '..');
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 export function loadJson(relPath) {
   const full = path.join(ROOT, relPath);
