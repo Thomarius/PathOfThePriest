@@ -315,22 +315,19 @@ export const MOTIFS = {
    * name, and the card back tiles only those.
    */
 
-  /** 0 — Michi.
-   *  The shoulders are load-bearing, not decoration. Hair drawn as two locks
-   *  hanging in open space reads as two separate strands with a face floating
-   *  between them; landing them on shoulders turns the same shapes into hair. */
+  /** 0 — Michi. A silhouette portrait: head and hair are one mass with no face
+   *  in it at all, which is what every avatar icon does and what three earlier
+   *  attempts at drawing a face kept failing to do. Two things carry the read —
+   *  the hair kicking *outward* at the jaw, without which it is an egg, and the
+   *  V of the collar notched out of shoulders wider than the hair. */
   michi: () =>
     svg(
       solid(
-        'M40 104 C40 40 160 40 160 104 C160 128 158 146 154 160 L124 160 ' +
-          'C128 142 128 120 128 102 L72 102 C72 120 72 142 76 160 L46 160 C42 146 40 128 40 104 Z',
-      ) +
-        solid('M50 188 C52 150 62 118 76 118 L124 118 C138 118 148 150 150 188 Z') +
-        solid('M100 58 a31 36 0 0 1 0 72 a31 36 0 0 1 0 -72 Z') +
-        dot(88, 92, 7) +
-        dot(112, 92, 7),
+        'M100 26 C66 26 44 50 44 84 C44 104 36 120 32 134 C52 142 72 146 100 146 ' +
+          'C128 146 148 142 168 134 C164 120 156 104 156 84 C156 50 134 26 100 26 Z',
+      ) + solid('M14 196 C16 168 42 148 72 142 L100 182 L128 142 C158 148 184 168 186 196 Z'),
       8,
-      [100, 122],
+      [100, 110],
     ),
 
   /** 1 — Chaos: two arrows crossing, for the card that swaps its neighbours. */
