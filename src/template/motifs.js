@@ -53,8 +53,11 @@ const line = (d, w) => `<path d="${d}"${w ? ` stroke-width="${w}"` : ''}/>`;
 /**
  * A gear outline, plotted so every tooth is identical. Hand-placing teeth gave
  * a shape that read as a splat rather than a cog.
+ *
+ * `broken` replaces one tooth with a ragged bite. A crack drawn across the hub
+ * instead just read as a second, unrelated mark sitting on top of the gear.
  */
-const gearPath = (cx, cy, rOut, rIn, teeth) => {
+const gearPath = (cx, cy, rOut, rIn, teeth, broken = -1) => {
   const step = (Math.PI * 2) / teeth;
   const at = (r, a) => `${(cx + Math.cos(a) * r).toFixed(1)} ${(cy + Math.sin(a) * r).toFixed(1)}`;
   const pts = [];
@@ -62,7 +65,17 @@ const gearPath = (cx, cy, rOut, rIn, teeth) => {
     const a = i * step - Math.PI / 2;
     const w = step * 0.3;
     const g = step * 0.2;
-    pts.push(at(rIn, a - w - g), at(rOut, a - w), at(rOut, a + w), at(rIn, a + w + g));
+    if (i === broken) {
+      pts.push(
+        at(rIn, a - w - g),
+        at(rIn * 0.72, a - w * 0.5),
+        at(rIn * 0.95, a),
+        at(rIn * 0.66, a + w * 0.6),
+        at(rIn, a + w + g),
+      );
+    } else {
+      pts.push(at(rIn, a - w - g), at(rOut, a - w), at(rOut, a + w), at(rIn, a + w + g));
+    }
   }
   return `M${pts.join(' L')} Z`;
 };
@@ -302,19 +315,22 @@ export const MOTIFS = {
    * name, and the card back tiles only those.
    */
 
-  /** 0 — Michi: shoulder-length hair, which is the whole silhouette. The locks
-   *  flare outward at the ends; drawn straight they read as a helmet. */
+  /** 0 — Michi.
+   *  The shoulders are load-bearing, not decoration. Hair drawn as two locks
+   *  hanging in open space reads as two separate strands with a face floating
+   *  between them; landing them on shoulders turns the same shapes into hair. */
   michi: () =>
     svg(
       solid(
-        'M38 104 C38 44 162 44 162 104 C162 128 168 148 158 164 L126 164 ' +
-          'C134 140 130 116 130 96 L70 96 C70 116 66 140 74 164 L42 164 C32 148 38 128 38 104 Z',
+        'M40 104 C40 40 160 40 160 104 C160 128 158 146 154 160 L124 160 ' +
+          'C128 142 128 120 128 102 L72 102 C72 120 72 142 76 160 L46 160 C42 146 40 128 40 104 Z',
       ) +
-        solid('M100 68 a30 36 0 0 1 0 72 a30 36 0 0 1 0 -72 Z') +
-        dot(88, 104, 7) +
-        dot(112, 104, 7),
+        solid('M50 188 C52 150 62 118 76 118 L124 118 C138 118 148 150 150 188 Z') +
+        solid('M100 58 a31 36 0 0 1 0 72 a31 36 0 0 1 0 -72 Z') +
+        dot(88, 92, 7) +
+        dot(112, 92, 7),
       8,
-      [100, 112],
+      [100, 122],
     ),
 
   /** 1 — Chaos: two arrows crossing, for the card that swaps its neighbours. */
@@ -329,20 +345,16 @@ export const MOTIFS = {
   /** 2 — Stress: the deck's antagonist, and the only card that destroys. */
   bolt: () => svg(solid('M112 22 L60 108 L94 108 L84 178 L140 88 L104 88 Z')),
 
-  /** 3 — Machine failure: a cog with a crack through it. */
-  cog: () =>
-    svg(
-      solid(gearPath(100, 100, 82, 58, 8)) +
-        solidCircle(100, 100, 24) +
-        line('M100 44 l-16 40 l24 12 l-16 38', 8),
-    ),
+  /** 3 — Machine failure: a cog with a tooth broken out of it. */
+  cog: () => svg(solid(gearPath(100, 100, 82, 58, 8, 2)) + solidCircle(100, 100, 24), 8, [95, 100]),
 
-  /** 4 — Setback: an arrow curving back on itself. */
+  /** 4 — Setback: an arrow turning a full 180 and heading back. */
   backArrow: () =>
     svg(
-      line('M150 58 C150 120 110 142 62 142', 12) + line('M62 142 l34 -26 M62 142 l34 26', 12),
+      line('M56 66 h50 a36 36 0 0 1 0 72 h-50', 12) +
+        line('M56 138 l30 -24 M56 138 l30 24', 12),
       8,
-      [106, 113],
+      [99, 114],
     ),
 
   /** 5 — Good idea. */
@@ -435,26 +447,24 @@ export const MOTIFS = {
         line('M100 18 v22 M100 160 v22 M18 100 h22 M160 100 h22', 9),
     ),
 
-  /** 14 — Delegate: a hand pointing away. Pointing up reads as a thumbs-up. */
-  hand: () =>
-    svg(
-      solid(
-        'M64 72 H100 V86 H150 a15 15 0 0 1 0 30 H100 V144 a24 24 0 0 1 -24 24 ' +
-          'H64 a24 24 0 0 1 -24 -24 V96 a24 24 0 0 1 24 -24 Z',
-      ),
-      8,
-      [103, 120],
-    ),
+  /** 14 — Delegate: a paper plane, sending the task to someone else.
+   *  A pointing hand was tried six ways and failed every time. A hand needs a
+   *  separated finger, folded knuckles and a thumb to read as one, and none of
+   *  that survives an 8-unit stroke at 63 mm — it came out as a pipe fitting, a
+   *  pot and a mitten. The fold line is what stops the plane reading as a plain
+   *  triangle or a cursor. */
+  plane: () =>
+    svg(solid('M26 92 L174 36 L106 112 Z') + solid('M106 112 L174 36 L138 168 Z'), 8, [100, 102]),
 
   /** D — the lunch break, and the goal of the whole deck. */
-  bowl: () =>
+  mug: () =>
     svg(
-      solid('M30 100 h140 a70 62 0 0 1 -140 0 Z') +
-        line('M22 100 h156', 10) +
-        line('M74 66 q-12 -18 0 -34', 8) +
-        line('M100 60 q-12 -20 0 -38', 8) +
-        line('M126 66 q-12 -18 0 -34', 8),
+      solid('M46 70 h80 v56 a28 28 0 0 1 -28 28 h-24 a28 28 0 0 1 -28 -28 Z') +
+        line('M128 86 a24 24 0 0 1 0 40', 11) +
+        line('M66 50 q-10 -16 0 -30', 8) +
+        line('M90 44 q-10 -18 0 -32', 8) +
+        line('M114 50 q-10 -16 0 -30', 8),
       8,
-      [100, 92],
+      [93, 83],
     ),
 };

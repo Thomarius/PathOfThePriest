@@ -2,7 +2,7 @@
   "$comment": "Michi, an accelerator physicist who never takes a break, walks her working day from morning to lunch. Extends dungeon-bright for palette, typography and decor; overrides naming, motifs and the back emblem. German names live under localeOverrides.de because the parent sets German names there too.",
   "extends": "dungeon-bright",
   "id": "mittagspause",
-  "title": "Michi, Take Your Break!",
+  "title": "Michi,\nTake Your Break!",
   "subtitle": "A solo workday",
   "terms": {
     "path": {
@@ -106,11 +106,11 @@
     },
     "14": {
       "name": "Delegate",
-      "motif": "hand"
+      "motif": "plane"
     },
     "D": {
       "name": "Lunch Break",
-      "motif": "bowl"
+      "motif": "mug"
     }
   },
   "decor": {
@@ -119,7 +119,7 @@
   },
   "localeOverrides": {
     "de": {
-      "title": "Michi, mach mal Mittag!",
+      "title": "Michi,\nmach mal Mittag!",
       "subtitle": "Ein Solo-Arbeitstag",
       "terms": {
         "path": {
