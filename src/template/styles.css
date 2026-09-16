@@ -773,6 +773,10 @@
   --motif-sky: color-mix(in srgb, var(--accent) 14%, var(--paper));
   --motif-line: color-mix(in srgb, var(--ink) 86%, var(--accent));
   --motif-fill: color-mix(in srgb, var(--accent) 78%, var(--paper));
+  /* A third tone, between the other two, so a motif can put one shape behind
+     another. Derived from the pair rather than named, so it follows any palette
+     — a literal "hair colour" would be wrong on a pink or blue card. */
+  --motif-shade: color-mix(in srgb, var(--motif-line) 55%, var(--motif-fill));
   color: var(--motif-line);
 }
 
