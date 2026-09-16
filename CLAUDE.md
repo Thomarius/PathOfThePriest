@@ -504,11 +504,16 @@ winnable, only needed if the effects themselves are ever altered.
   fallback face, card 7 read as 73% full; with Alegreya Sans it was 47%, because
   the fallback was considerably wider.
 - Art bleeds past trim; all text stays inside the safe zone.
-- **Rules-card type is 32u (~7.7 pt), and the glossary is what caps it.** A
-  physical proof showed 26u (6.2 pt) was too small to read. The glossary sits at
-  85% in German (80% in English) with 3 spare lines, so re-measure against the
-  *German* deck after any change to rules text. Rules type is independent of the
-  face-card size — `.rules` sets its own, so raising one does not move the other.
+- **Rules-card type is 33u (~7.9 pt), and the glossary is what caps it.** A
+  physical proof showed 26u (6.2 pt) was too small to read. The glossary and the
+  second clarifications card bind together and hold 2 spare lines in German —
+  the same standard the faces are held to. 34u drops both to 1 and 35u overflows.
+  Widening the text box does not help: the glossary is 8 short definitions, so it
+  needs height, not measure. Getting to 33u meant reclaiming the text box's
+  wasted 26u top padding (the frame already pads 22u above the first line) and
+  one unit off the glossary's entry gap. Re-measure against the *German* deck
+  after any change to rules text. Rules type is independent of the face-card
+  size — `.rules` sets its own, so raising one does not move the other.
 - **6.2 pt is the floor for anything a player has to read.** That came from a
   physical proof of the rules cards, and it applies to small labels too: the
   Ally/Hazard line sat at 20u (4.8 pt) for a long time — under the floor, on the
