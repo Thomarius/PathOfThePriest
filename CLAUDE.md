@@ -26,10 +26,15 @@ npm run validate -- --deep        # defaults to dungeon-bright / de
 npm run build -- --locale en
 ```
 
-Both are **entirely first-party**: every image is drawn by
-`src/template/motifs.js` and `src/template/decor.js`, so the decks carry no
-third-party artwork at all. Their only external assets are two OFL fonts,
-licensed for exactly this use — which is what makes them safe to print and share.
+`dungeon-bright` is **entirely first-party**: every image is drawn by
+`src/template/motifs.js` and `src/template/decor.js`, so it carries no
+third-party artwork at all. Its only external assets are two OFL fonts, licensed
+for exactly this use — which is what makes it safe to print and share.
+
+`mittagspause` is first-party **except card 0**, which uses a supplied
+illustration (`themes/mittagspause/art/0-michi.png`). Its provenance is not yet
+recorded — see that theme's `ATTRIBUTION.md`. The validator checks only that an
+attribution file exists, never that it is correct.
 
 All four theme × locale combinations validate with **0 errors and 0 warnings**,
 and consecutive builds are byte-identical.
@@ -253,9 +258,9 @@ PathOfThePriest/
 │  ├─ dungeon-bright/        # the base theme; extend this
 │  │  └─ theme.json          # self-contained: no `extends` of its own
 │  └─ mittagspause/          # extends dungeon-bright
-│     └─ theme.json
-│                            # a theme using art adds art/, art-selection.json
-│                            # and a generated ATTRIBUTION.md alongside it
+│     ├─ theme.json
+│     ├─ art/                # only card 0; everything else is drawn
+│     └─ ATTRIBUTION.md      # hand-written here; generated when art is sourced
 ├─ src/
 │  ├─ build.js               # CLI: validate | model | preview | build
 │  ├─ model.js               # cards + theme + locale -> render model
@@ -519,6 +524,13 @@ winnable, only needed if the effects themselves are ever altered.
   fallback face, card 7 read as 73% full; with Alegreya Sans it was 47%, because
   the fallback was considerably wider.
 - Art bleeds past trim; all text stays inside the safe zone.
+- **Pre-composite art to the card's aspect; `cover` will not frame it for you.**
+  `.card__art` scales art to cover the window, so a square 544 x 539 source in an
+  816 x 1110 window is blown up 2x and cropped at the sides. Card 0's image is
+  therefore composited onto an 816 x 1110 transparent canvas at 500 px wide — a
+  downscale, so nothing softens — centred in the post-trim field, which is the
+  framing the drawn motifs already get. The unframed original is kept beside it
+  as `*-source.png` so the composition can be redone.
 - **Rules-card type is 33u (~7.9 pt), and the glossary is what caps it.** A
   physical proof showed 26u (6.2 pt) was too small to read. The glossary and the
   second clarifications card bind together and hold 2 spare lines in German —
