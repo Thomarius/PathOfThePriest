@@ -139,21 +139,3 @@ No new locale file. Effect text, rules cards and the glossary live in
 names, terms and faction labels change, and those resolve through tokens. The
 `meta.hyphenate` list also stays as it is, since the effect sentences do not
 change.
-
----
-
-## One thing to decide before building
-
-Three cards share **both their name and their slot** with the Michi deck:
-
-| Slot | `mittagspause` | `summa-cum-laude` |
-|---|---|---|
-| 1 | Chaos | Chaos |
-| 11 | Deadline | Deadline |
-| 13 | Fokus / Focus | Fokus / Focus |
-
-That is not automatically wrong — the two decks are both about work pressure, the
-effects are identical, and a name that fits one fits the other. But if the decks
-are ever shown or sold together, three identical cards in identical positions may
-read as thin rather than as a deliberate echo. Worth a deliberate decision either
-way rather than discovering it at print time.
