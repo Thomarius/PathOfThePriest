@@ -540,6 +540,11 @@ winnable, only needed if the effects themselves are ever altered.
   the trim line, so invisible on screen, but within the range a cut can drift.
   Use `clip-path` instead: the painted shape stays inside the same box and the
   numeral stays upright. The audit catches this class of error.
+- **Plot regular shapes, do not hand-write their vertices.** The back emblem's
+  star had its five outer points spread across radii 42 to 46, and the two
+  bottom ones crossed the ring drawn around them. An off-centre vertex is
+  invisible on its own and obvious the moment a circle is drawn around it — the
+  same lesson the vortex taught when chained arcs produced a crescent.
 - **An audit that keys off one page's markup silently covers only that page.**
   The fill check required a `.effect` element for its line height, which no rules
   card has, so every rules card was skipped — including the glossary, the densest

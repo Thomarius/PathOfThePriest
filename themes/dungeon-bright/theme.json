@@ -145,8 +145,8 @@
       "motif": "coin"
     },
     "12": {
-      "name": "Pack Mule",
-      "motif": "sack"
+      "name": "Dwarf",
+      "motif": "dwarf"
     },
     "13": {
       "name": "Staff of Power",
@@ -248,7 +248,7 @@
           "name": "Verfluchte Münze"
         },
         "12": {
-          "name": "Lastesel"
+          "name": "Zwerg"
         },
         "13": {
           "name": "Stab der Macht"

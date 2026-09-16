@@ -214,12 +214,19 @@ export const MOTIFS = {
         line('M100 56 l-16 30 l20 16 l-14 42', 7),
     ),
 
-  /** 12 — the pack mule: a laden sack. */
-  sack: () =>
+  /** 12 — the dwarf: a helmet and a beard, which is the whole silhouette.
+   *  Nothing below the brim but beard — a face drawn in proportion disappears at
+   *  63 mm and leaves an outline that could be any helmeted head. */
+  dwarf: () =>
     svg(
-      solid('M88 42 q12 -6 24 0 l-6 34 q28 16 36 46 q10 40 -42 40 q-52 0 -42 -40 q8 -30 36 -46 Z') +
-        line('M82 78 q18 12 36 0', 7) +
-        line('M68 132 q32 14 64 0', 6),
+      solid('M64 104 C46 134 44 158 100 184 C156 158 154 134 136 104 Z') +
+        solid('M62 74 a38 38 0 0 1 76 0 Z') +
+        line('M48 74 h104', 9) +
+        line('M100 78 v26', 8) +
+        dot(80, 92, 7) +
+        dot(120, 92, 7),
+      8,
+      [100, 110],
     ),
 
   /** 13 — the staff of power: a gem on a shaft. */

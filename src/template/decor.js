@@ -149,6 +149,24 @@ export function motifPattern({ names, ink = '#000', opacity = 0.16, cols = 4 } =
  * must give away nothing — it cannot hint at True versus Fake, and it must be
  * identical on all fourteen.
  */
+/**
+ * A regular n-pointed star, centred and with every outer point at one radius.
+ *
+ * Plotted rather than hand-written: the hand-written star had its outer vertices
+ * spread across radii 42 to 46 and its two bottom points crossing the ring that
+ * surrounds it. An off-centre point is invisible in isolation and obvious once a
+ * circle is drawn around it.
+ */
+function starPath(cx, cy, outer, innerRatio = 0.42, points = 5) {
+  const pts = [];
+  for (let i = 0; i < points * 2; i += 1) {
+    const r = i % 2 ? outer * innerRatio : outer;
+    const a = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
+    pts.push(`${(cx + Math.cos(a) * r).toFixed(1)} ${(cy + Math.sin(a) * r).toFixed(1)}`);
+  }
+  return `M${pts.join(' L')} Z`;
+}
+
 export function emblem(kind = 'lozenge') {
   const shapes = {
     lozenge: `
@@ -156,9 +174,12 @@ export function emblem(kind = 'lozenge') {
       <path d="M50 15 L85 50 L50 85 L15 50 Z" stroke-width="1.2" opacity="0.7"/>
       <path d="M50 28 L59 44 L75 50 L59 56 L50 72 L41 56 L25 50 L41 44 Z"
             fill="currentColor" stroke="none"/>`,
+    /* Outer radius 37 plus the 5-wide stroke paints to 39.5, inside the ring's
+       own inner edge at 42, so the star sits within the circle instead of
+       breaking out of it. */
     star: `
       <circle cx="50" cy="50" r="44" stroke-width="4"/>
-      <path d="M50 8 L61 38 L92 39 L67 57 L76 88 L50 70 L24 88 L33 57 L8 39 L39 38 Z"
+      <path d="${starPath(50, 50, 37)}"
             fill="currentColor" stroke="currentColor" stroke-width="5"/>`,
     ring: `
       <circle cx="50" cy="50" r="46" stroke-width="2.5"/>
