@@ -20,7 +20,7 @@ npx playwright install chromium
 npm run validate            # structural checks on the data layers
 npm run validate -- --deep  # ...plus live layout checks (overflow, safe zone)
 npm run preview             # out/preview/index.html — design review in a browser
-npm run build               # out/cards/*.png (816x1110) + print PDF + proof sheet
+npm run build               # out/<theme>-<locale>/*.png (816x1110) + PDF + proof
 npm run stress              # preview with text inflated, to test German fit
 npm run model               # dump the merged render model
 npm run fonts               # re-vendor the OFL font files
@@ -56,19 +56,25 @@ cards — Discord and Envy both name Grudge.
 reviewed before the real topic is chosen.
 
 Fonts are committed under `assets/fonts` and inlined into the page as data URIs,
-so rendering is identical on every machine. `out/cards/manifest.json` records a
+so rendering is identical on every machine. Each deck's `manifest.json` records a
 SHA-256 per card, so that claim can be checked rather than trusted.
 
 `npm run build` audits the page it is about to print — text overflow, safe-zone
 violations, and remaining headroom for translation — and writes nothing if a
-card fails. `out/proof-sheet.png` shows the whole deck on one sheet for review.
+card fails. `out/proof-<theme>-<locale>.png` shows the whole deck on one sheet
+for review. Cards, PDF and proof sheet are all named per theme and locale, so
+building every deck in turn leaves four complete sets rather than one.
 
 ## Status
 
-M1–M5 and M7 complete: data model, card template, icon glyphs, rendering to
-PNG/PDF, layout validation, procedural decor, rules cards and card backs.
-A build emits 16 cards + 5 rules cards + 3 backs.
+The pipeline is complete (M0–M7), as is the art direction tracked in
+`NEXT-STEPS.md` as M8, M9, M11 and M12. A build emits **16 cards + 6 rules cards
++ 3 backs**.
 
-**All milestones complete.** The `dungeon` sample theme renders finished decks in
-German and English: 16 cards, 5 rules cards and 3 backs each, with sourced
-public-domain artwork and generated attribution.
+Both themes render finished decks in German and English. `dungeon` uses sourced
+public-domain artwork with generated attribution; `dungeon-bright` is entirely
+first-party. All four theme × locale combinations validate with 0 errors and 0
+warnings, and consecutive builds are byte-identical.
+
+Remaining: **M10** (art-window composition) and **M13** (greyscale and physical
+proofs) — see `NEXT-STEPS.md`.

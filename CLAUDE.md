@@ -7,8 +7,9 @@ design are re-themed.
 
 ## Status
 
-**The pipeline is complete (M0–M7).** Remaining work is art direction, tracked in
-**`NEXT-STEPS.md`** as M8 onward.
+**The pipeline is complete (M0–M7), as is most of the art direction (M8, M9, M11,
+M12).** Remaining: **M10** (art-window composition) and **M13** (greyscale and
+physical proofs), both tracked in **`NEXT-STEPS.md`**.
 
 Four finished decks build today, each **16 cards + 6 rules cards + 3 backs**:
 
@@ -20,11 +21,15 @@ Four finished decks build today, each **16 cards + 6 rules cards + 3 backs**:
 ```sh
 npm install && npx playwright install chromium
 npm run validate -- --deep --theme dungeon-bright --locale de
-npm run build    -- --theme dungeon-bright --locale de --out out/bright-de
+npm run build    -- --theme dungeon-bright --locale de
 ```
 
 All four theme × locale combinations validate with **0 errors and 0 warnings**,
 and consecutive builds are byte-identical.
+
+Every output path carries the theme and locale — `out/<theme>-<locale>/` for the
+cards, `out/proof-<theme>-<locale>.png`, and the theme in the PDF name — so
+building all four decks in turn leaves four complete sets side by side.
 
 `dungeon-bright` is the one to print if copyright matters: every image on it is
 drawn by `src/template/motifs.js` and `src/template/decor.js`. Its only external
@@ -181,7 +186,7 @@ because public-domain scans have unpredictable aspect ratios.
 PathOfThePriest/
 ├─ RulesSummary.txt          # source of truth for mechanics
 ├─ CLAUDE.md                 # architecture + past decisions (this file)
-├─ NEXT-STEPS.md             # remaining work, M8 onward
+├─ NEXT-STEPS.md             # remaining work: M10 and M13
 ├─ README.md
 ├─ package.json              # dep: playwright
 ├─ config/
@@ -211,12 +216,12 @@ PathOfThePriest/
 │  ├─ icons/                 # 6 movement glyphs, one .svg each
 │  └─ template/
 │     ├─ card.js             # card face
-│     ├─ rules-card.js       # the 5 rules cards
+│     ├─ rules-card.js       # the 6 rules cards
 │     ├─ back.js             # shared Masters back
 │     ├─ document.js         # page assembly shared by render + audit
 │     ├─ page.js             # review preview (zoom, guides, fill metrics)
 │     ├─ decor.js            # procedural ornament vocabulary
-│     ├─ motifs.js           # 15 drawn card motifs
+│     ├─ motifs.js           # 16 drawn card motifs
 │     ├─ fonts.js            # vendored woff2 -> @font-face data URIs
 │     └─ styles.css          # single source of layout + print geometry
 ├─ scripts/
@@ -225,10 +230,10 @@ PathOfThePriest/
 │  └─ fetch-art.mjs          # download + wire in + write ATTRIBUTION.md
 ├─ assets/fonts/             # OFL woff2 + licences + fonts.json manifest
 └─ out/                      # gitignored; everything reproducible
-   ├─ <theme>-<locale>/      # 16 cards + 5 rules + 3 backs + manifest.json
+   ├─ <theme>-<locale>/      # 16 cards + 6 rules + 3 backs + manifest.json
    ├─ preview/index.html
-   ├─ proof-*.png
-   └─ <title>-<locale>-<profile>.pdf
+   ├─ proof-<theme>-<locale>.png
+   └─ <title>-<theme>-<locale>-<profile>.pdf
 ```
 
 ## Rendering pipeline
@@ -293,25 +298,29 @@ drift from the output, and it **writes nothing at all** when a card fails.
 
 ## Milestones
 
-- **M0 — Content lock. DRAFTED, awaiting review.** `locales/de.json` exists and
-  validates. Mechanical vocabulary as used: *vorrücken, zurückbewegen, bewegen,
-  tauschen, zerstören, senden, angrenzend, niedrigste, Feld/Felder, Pfad*.
+- **M0 — Content lock. DONE.** `locales/de.json` and `locales/en.json` validate.
+  Mechanical vocabulary as used: *vorrücken, zurückbewegen, bewegen, tauschen,
+  zerstören, senden, angrenzend, niedrigste, Feld/Felder, Pfad*.
   **"zurückbewegen", not "zurückziehen"** — in German game usage *ziehen* also
   means "draw a card", and the deck already has cards moving along a path.
   Measured: German runs **+32%** over English overall, and card 7 grows +40%
   (145→203 chars) with its fill unchanged at 75% and 2 spare lines still free.
-  No card falls below 2 spare lines. The topic is still open, but it does not
-  block this file — names are tokens.
+  No card falls below 2 spare lines. The topic was open when this was written and
+  did not block the file — names are tokens; it has since been settled.
 - **M1 — Data & model. DONE.** `data/cards.json`, `data/deck.json`,
   `config/print-profiles.json`, `locales/en.json`, `themes/placeholder/`,
   `src/tokens.js`, `src/model.js`, `src/validate.js`, `src/build.js`.
   `npm run validate` is green; `npm run model` dumps `out/model.json`.
 - **M2 — Card template & design system. DONE.** `src/template/{styles.css,card.js,page.js}`,
   `npm run preview` → `out/preview/index.html`.
-  **The binding card is 7 (Philosophy), not 11 (Envy).** Character count was the
-  wrong proxy: Envy has more text (167 chars) but only 2 paragraphs and fills 40%,
-  while Philosophy's 3 effects plus 2 "or" dividers fill 73%. Structure costs more
+  **The binding card is 7, not 11.** (Named Philosophy and Envy at the time; those
+  names survive only in the `placeholder` theme.) Character count was the wrong
+  proxy: card 11 has more text (167 chars) but only 2 paragraphs and fills 40%,
+  while card 7's 3 effects plus 2 "or" dividers fill 73%. Structure costs more
   height than length. Any future layout change must be checked against card 7.
+  **Re-measured after M8–M12:** card 7 still leads at **75% full, 2 spare lines**
+  in `dungeon/de`, `dungeon-bright/de` and `dungeon-bright/en` alike — the frame
+  changes cost it nothing.
 - **M3 — Icon language. DONE.** **6** SVG glyphs live in `src/icons/`,
   are stroked in `currentColor` and sized in `em`, so they inherit the colour of
   whatever text they sit in, and the glossary rules card is generated from the
@@ -325,7 +334,7 @@ drift from the output, and it **writes nothing at all** when a card fails.
 - **M5 — Validation & QA. DONE.** `src/audit.js` measures the live layout and
   promotes the findings to hard failures. `npm run build` audits the exact page
   it is about to print and **writes nothing if a card fails**; `npm run validate
-  -- --deep` runs the same checks standalone. `out/proof-sheet.png` is the
+  -- --deep` runs the same checks standalone. `out/proof-<theme>-<locale>.png` is the
   proofing contact sheet. Overflow, safe-zone and headroom checks were each
   verified against deliberately broken input.
 - **M6 — Art integration. DONE.** `scripts/find-art.mjs` shortlists Wikimedia
@@ -338,14 +347,44 @@ drift from the output, and it **writes nothing at all** when a card fails.
 - **M7 — DONE.** `src/template/back.js` draws the shared Masters back; the
   Apprentice and Deity backs are *copied* from their own front renders, so the
   files are identical rather than merely similar (declared by `reuseFront` in
-  `data/deck.json`). `src/template/rules-card.js` renders the five rules cards,
+  `data/deck.json`). `src/template/rules-card.js` renders the six rules cards,
   reusing `.card__text`/`.card__text-inner` so the M5 overflow audit covers them
   automatically — they carry far more text than a face. A build now emits
   **16 cards + 6 rules cards + 3 backs**, with rules cards included in the PDF
   and the proof sheet.
 
-**M0–M7 are complete.** Remaining work is art direction, tracked in
-**`NEXT-STEPS.md`** as M8 onward.
+- **M8 — Two-tone motifs. DONE.** Motifs are filled silhouettes with a darker
+  outline, both colours driven by `--motif-fill` / `--motif-line`, which inline
+  SVG inherits from the card's palette. `golem` and `minotaur` were redrawn and
+  the set's optical weight evened out. **A motif's silhouette decides what it
+  reads as**; detail inside it barely matters at 63 mm, and no amount of it fixes
+  a wrong outline — `minotaur` took three attempts to stop reading as a rabbit.
+- **M9 — Rules-card diagrams. DONE.** `src/template/diagrams.js` draws the setup
+  and turn-order diagrams. They are **language-neutral by construction** — no
+  words, only digits — so no diagram needs translating. A diagram is structure
+  rather than wording, so it is its own block type (`{ type: 'diagram', name }`)
+  attached via `"diagram": "setup"` in the locale; the validator fails on an
+  unknown name rather than rendering nothing.
+- **M11 — Motif-tiled card back. DONE.** `decor.backPattern: "motifs"` tiles all
+  sixteen motifs, outline-only at low opacity, under the star emblem. Colours are
+  baked in at generation time: a background-image data URI is a separate document
+  and does **not** inherit the page's CSS variables. No information leaks — all 14
+  Masters carry the identical tile, and the validator still enforces that.
+- **M12 — Faction shape language. DONE.** Text frame and name plate carry the same
+  rounded-vs-chamfered language as the badge. Implemented with `clip-path`, never
+  `transform`: it changes the painted shape without touching the layout box, so
+  the safe-zone audit is unaffected. Clipping runs along the border-box edge, so
+  each frame style compensates for antialiasing in proportion to its own weight —
+  one global value made the engraving theme's rule frame three times heavier on
+  Hazards than on Allies.
+- **M10 — Art-window composition. OPEN.** Every card shares an identical
+  composition: a 400 px motif centred in an 816 × 470 window, so about two-thirds
+  is flat colour. See `NEXT-STEPS.md` for the options.
+- **M13 — Pre-print checks. OPEN.** Greyscale proof (does the shape language carry
+  the faction distinction without colour?) and a physical proof on stock.
+
+**M0–M9, M11 and M12 are complete.** Remaining work is **M10** and **M13**,
+tracked in **`NEXT-STEPS.md`** along with a list of ideas already rejected.
 
 Still optional and out of scope: a rules simulator to verify the deck stays
 winnable, only needed if the effects themselves are ever altered.
@@ -420,11 +459,26 @@ winnable, only needed if the effects themselves are ever altered.
   the trim line, so invisible on screen, but within the range a cut can drift.
   Use `clip-path` instead: the painted shape stays inside the same box and the
   numeral stays upright. The audit catches this class of error.
+- **Every output path must carry both theme and locale.** All three once did not:
+  the cards defaulted to a shared `out/cards`, the proof sheet was a hardcoded
+  `out/proof-sheet.png`, and the PDF was named from the deck *title*, which
+  `dungeon-bright` inherits from `dungeon`. Building a second deck therefore
+  overwrote the first — and because the renderer prunes PNGs it did not write this
+  run, it deleted the first deck's cards outright. Nothing failed and nothing
+  warned; `out/` simply held one deck instead of four. Note that a title is not a
+  unique key when themes inherit.
 
 ## Open items
 
-See **`NEXT-STEPS.md`** — M8 onward, all art direction on `dungeon-bright`, plus
-a list of ideas already rejected and why, so they are not re-proposed.
+See **`NEXT-STEPS.md`** — **M10** (art-window composition on `dungeon-bright`) and
+**M13** (greyscale and physical proofs), plus a list of ideas already rejected and
+why, so they are not re-proposed.
 
 Nothing in the pipeline is blocked. The setting, both languages and both visual
 styles are settled.
+
+One observation not yet tracked as a milestone: the text frame is sized for card
+7's worst case, so on the short cards (5, 9, 10, 12, 14) two lines float in a
+frame built for six. The German headroom that M0 deliberately reserved is what
+reads as an empty box. Deciding whether the frame should shrink to its content
+would be a change to the design system, not to art direction.

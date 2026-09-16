@@ -50,7 +50,10 @@ const sha256 = (file) => crypto.createHash('sha256').update(fs.readFileSync(file
  */
 export async function renderAll(model, options) {
   const { themeName } = options;
-  const outDir = path.resolve(ROOT, options.outDir ?? 'out/cards');
+  const outDir = path.resolve(
+    ROOT,
+    options.outDir ?? `out/${slug(model.meta.theme)}-${model.meta.locale}`,
+  );
   const cards = embedArt(model, themeName);
   const g = model.geometry;
 
@@ -145,7 +148,9 @@ export async function renderAll(model, options) {
 
     let pdfFile = null;
     if (options.pdf !== false) {
-      const name = `${slug(model.meta.title ?? 'cards')}-${model.meta.locale}-${g.profile}.pdf`;
+      // Themes may share a title — dungeon-bright inherits dungeon's — so the
+      // theme is what keeps two decks from writing the same PDF.
+      const name = `${slug(model.meta.title ?? 'cards')}-${slug(model.meta.theme)}-${model.meta.locale}-${g.profile}.pdf`;
       pdfFile = path.resolve(ROOT, 'out', name);
       fs.mkdirSync(path.dirname(pdfFile), { recursive: true });
 
@@ -172,7 +177,11 @@ export async function renderAll(model, options) {
 
     let proofFile = null;
     if (options.proof !== false) {
-      proofFile = path.resolve(ROOT, 'out', 'proof-sheet.png');
+      proofFile = path.resolve(
+        ROOT,
+        'out',
+        `proof-${slug(model.meta.theme)}-${model.meta.locale}.png`,
+      );
       const proofPage = await browser.newPage({ deviceScaleFactor: 1 });
       await settlePage(proofPage, buildProofHtml(model, cards));
       await proofPage.locator('.sheet').screenshot({ path: proofFile });

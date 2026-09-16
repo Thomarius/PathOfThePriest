@@ -5,7 +5,7 @@
  *   node src/build.js validate [--theme x] [--locale de] [--profile mpc]
  *   node src/build.js model    [--out out/model.json]
  *   node src/build.js preview  [--out out/preview/index.html]
- *   node src/build.js build    [--out out/cards] [--no-pdf]
+ *   node src/build.js build    [--out out/<theme>-<locale>] [--no-pdf]
  */
 
 import fs from 'node:fs';
