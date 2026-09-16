@@ -68,6 +68,7 @@ function renderBlock(block) {
 export function renderRulesCard(rules, model, options = {}) {
   const g = model.geometry;
   const palette = model.rulesPalette ?? {};
+  const hazard = model.hazardPalette ?? {};
   const decor = model.decor ?? { classes: [], vars: [] };
 
   const vars = [
@@ -76,6 +77,10 @@ export function renderRulesCard(rules, model, options = {}) {
     palette.ink ? `--ink:${palette.ink}` : '',
     palette.paper ? `--paper:${palette.paper}` : '',
     palette.accent ? `--accent:${palette.accent}` : '',
+    // For the turn-order diagram, which draws real Hazard badges rather than
+    // neutral markers. Absent, the diagram falls back to the rules palette.
+    hazard.ink ? `--hazard-ink:${hazard.ink}` : '',
+    hazard.accent ? `--hazard-accent:${hazard.accent}` : '',
   ]
     .filter(Boolean)
     .join(';');

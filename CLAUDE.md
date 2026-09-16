@@ -428,7 +428,11 @@ drift from the output, and it **writes nothing at all** when a card fails.
   words, only digits — so no diagram needs translating. A diagram is structure
   rather than wording, so it is its own block type (`{ type: 'diagram', name }`)
   attached via `"diagram": "setup"` in the locale; the validator fails on an
-  unknown name rather than rendering nothing.
+  unknown name rather than rendering nothing. The turn-order diagram draws real
+  Hazard badges — same rounded-square shape, same colours — rather than neutral
+  tokens, so the picture and the cards agree. That needs the Hazard palette on
+  the rules card, which otherwise only carries its own: `model.hazardPalette`
+  feeds `--hazard-ink` / `--hazard-accent`, falling back to the rules palette.
 - **M11 — Motif-tiled card back. DONE.** `decor.backPattern: "motifs"` tiles all
   sixteen motifs, outline-only at low opacity, under the star emblem. Colours are
   baked in at generation time: a background-image data URI is a separate document

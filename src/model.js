@@ -301,6 +301,10 @@ export function buildModel(overrides = {}) {
       typography: theme.typography ?? {},
       decor: decorFor(theme),
       rulesPalette: theme.palette?.rules ?? theme.palette?.apprentice ?? null,
+      // The turn-order diagram draws the Hazards as they appear on their own
+      // cards, so it needs their palette rather than the rules card's.
+      // `fake` is a mechanical faction id from data/cards.json, not a topic.
+      hazardPalette: theme.palette?.fake ?? null,
       ui: locale.ui ?? {},
       cards: cards.filter(Boolean),
       rulesCards,

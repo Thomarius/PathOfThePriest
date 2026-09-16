@@ -17,6 +17,14 @@
 const INK = 'var(--ink, #222)';
 const ACCENT = 'var(--accent, #888)';
 const PAPER = 'var(--paper, #fff)';
+/*
+ * The Hazards' own colours, supplied by the rules card. The turn-order diagram
+ * draws the badges as a player sees them on the cards, not as neutral markers,
+ * so it cannot use the rules card's palette. Falls back to it if a theme
+ * defines no Hazard palette.
+ */
+const HAZARD_INK = 'var(--hazard-ink, var(--ink, #222))';
+const HAZARD_ACCENT = 'var(--hazard-accent, var(--accent, #888))';
 const FACE_DOWN = 'color-mix(in srgb, var(--ink) 30%, var(--paper))';
 
 const svg = (viewBox, body) =>
@@ -24,9 +32,9 @@ const svg = (viewBox, body) =>
         stroke="${INK}" stroke-linejoin="round" stroke-linecap="round"
         aria-hidden="true">${body}</svg>`;
 
-const label = (x, y, text, size = 30) =>
+const label = (x, y, text, size = 30, fill = INK) =>
   `<text x="${x}" y="${y}" font-family="var(--font-body)" font-size="${size}"
-         font-weight="700" fill="${INK}" stroke="none" text-anchor="middle"
+         font-weight="700" fill="${fill}" stroke="none" text-anchor="middle"
          dominant-baseline="central">${text}</text>`;
 
 export const DIAGRAMS = {
@@ -81,11 +89,21 @@ export const DIAGRAMS = {
     const y = 46;
     const parts = [];
 
+    /*
+     * Drawn as the Hazard badge itself rather than as a neutral token, so the
+     * picture and the cards agree. Proportions are taken from the badge: a
+     * 124u square with a 14u corner radius and a 6u border, which at this size
+     * is a 56px square, rx 6.3, stroke 2.7.
+     */
+    const side = r * 2;
+
     numbers.forEach((n, i) => {
       const cx = 40 + i * step;
       parts.push(
-        `<circle cx="${cx}" cy="${y}" r="${r}" fill="${ACCENT}" stroke-width="3"/>`,
-        label(cx, y + 1, String(n), 28),
+        `<rect x="${cx - r}" y="${y - r}" width="${side}" height="${side}"
+               rx="${(side * (14 / 124)).toFixed(1)}" fill="${HAZARD_ACCENT}"
+               stroke="${HAZARD_INK}" stroke-width="${(side * (6 / 124)).toFixed(1)}"/>`,
+        label(cx, y + 1, String(n), 28, HAZARD_INK),
       );
       if (i < numbers.length - 1) {
         const from = cx + r + 8;
