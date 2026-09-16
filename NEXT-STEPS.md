@@ -2,10 +2,15 @@
 
 The pipeline is finished (M0–M7 — see `CLAUDE.md` for architecture and the
 reasoning behind past decisions). What remains is **art direction on the
-`dungeon-bright` set**, which is entirely first-party: every image on it is drawn
-by `src/template/motifs.js` and `src/template/decor.js`, so that deck carries no
+`dungeon-bright` set**, which is now the only theme and the base every other one
+extends. It is entirely first-party: every image on it is drawn by
+`src/template/motifs.js` and `src/template/decor.js`, so the deck carries no
 third-party artwork at all. Its only external assets are two OFL fonts, licensed
 for exactly this use.
+
+The earlier `dungeon` (sepia engraving) and `placeholder` themes were removed
+once this one had been tuned past them. Entries below that compare the two are
+kept as a record of why a decision was made, not as a description of the repo.
 
 Milestones below continue the existing numbering. Each is independently
 shippable — the deck renders and validates after every one.
@@ -80,23 +85,85 @@ diagram now carries it — which was the point of drawing it.
 
 ---
 
-## M10 — Art-window composition
+## M10 — Art-window composition — **PARTLY DONE**
 
 *Affects `dungeon-bright`.*
 
-The art window is 816 × 470 and the motif occupies a 400 px square dead centre,
-so about two-thirds is flat colour. Apprentice and Deity are worse: a 560 px mark
-in a 1110 px full-card window. Every card shares an identical composition, which
-reads as a placeholder even when the drawing itself is good.
+The art window is 816 × 470 and the motif occupies a 400 px square dead centre.
+Measured rather than estimated, the motif's ink covers **11% of the window, so
+89% was flat colour** — not the two-thirds this note originally claimed.
+Apprentice and Deity were worse at 91%. Every card shared an identical
+composition, which reads as a placeholder even when the drawing itself is good.
 
-Options, cheapest first:
+**Done — placement, contrast and option 2.** Three defects turned out to sit
+underneath the composition problem, and were worth fixing before judging it:
 
-1. Scale motifs up and let them crop off the top edge.
-2. Add a ground line or horizon band so the subject sits *in* a space.
-3. Scatter sparkles and dots asymmetrically rather than symmetrically.
+- **Motifs were centred in the wrong box.** They were centred in the raw 470 px
+  art window, but the printer trims the top `--bleed-y` away and the name plate
+  covers the foot. Centred in what actually survives, they rise 11 px on a face
+  card and **115 px** on the Apprentice and Deity, where the plate floats far
+  above the bottom edge. This was most of why those two read as empty.
+- **Each motif was individually off-centre**, by −34 px (`wizardHat`) to +32 px
+  (`mimic`) — a 66 px spread that stopped the set sharing a baseline. Corrected
+  by shifting each motif's *viewBox*, so no path was touched.
+- **The two-tone fill from M8 was nearly invisible.** Fill-against-sky contrast
+  measured 1.09 on the Apprentice and 1.19 on an Ally, and a blanket
+  `opacity: 0.85` pulled both tones further toward the background. Widening the
+  sky/fill gap from 30% to 64% of (accent − paper) and dropping the wash takes
+  Ally to 1.44 and Hazard to 1.84.
 
-Do this after M8 — composition is far easier to judge once the drawings carry
-their final weight.
+Then **option 2**: `artBacking: "ground"` puts a horizon and ground band behind
+every motif, so the subject stands in a space instead of floating.
+
+**The horizon goes below every motif in the set, not at a fraction of the
+field.** Placed by proportion it cut straight through most of them, which reads
+as a mistake on any motif with open areas — the horizon showed through the gaps
+in card 1's spiral. It is therefore derived from the deepest ink in the whole set
+(`magicCircle`, 88 of 200 viewBox units below centre), so one line clears every
+card rather than only the one being looked at.
+
+**Consequence, and the open question.** On a face card the deepest motif bottoms
+out 12.3px above the name plate, so a line below all of them leaves no room for a
+band: cards 1–14 get a base line just above the plate and are otherwise flat
+again. Only the Apprentice and Deity, with 200px of clearance, still show real
+ground. Option 2 therefore only pays off on the two full-art cards as things
+stand. Getting the spatial effect back on the face cards needs one of:
+
+- shorter motifs (the reach is set by `magicCircle`, `staff` and `dagger` alone),
+- a shallower art window or a higher plate, to open up vertical room, or
+- accepting a horizon that crosses *filled* silhouettes but not open ones, which
+  means it can no longer be one line across the set.
+
+Two things worth keeping:
+
+- **`place-content`, not `place-items`.** On a face card the motif is taller than
+  its padded box, so the auto grid row grows to fit and pins to the box top —
+  centring the item within that row does nothing. Every motif sat 11.6 px low
+  until the *track* was centred instead. The audit caught this; the eye did not.
+- **The ground must fade to the panel's paper at the foot.** Ending the band at
+  full strength drew a second hard line across the card in the margins either
+  side of the name plate, which read as an unintended horizon.
+
+`src/audit.js` now measures where each motif's ink actually lands against the
+centre of the visible art and warns beyond 4 px, so the measured centres in
+`motifs.js` cannot quietly rot.
+
+**Still open — option 1, and option 3.** Scaling motifs up was *not* done, and
+should be judged now that the marks are centred, denser and sitting on ground:
+
+1. Scale motifs up and let them crop off the top edge. Note this cannot be
+   applied uniformly: `dagger` already bottoms out 5 px above the plate, so
+   nothing can scale about its centre, and cropping reads as deliberate on
+   elongated objects (staff, dagger, vortex) but simply wrong on a creature.
+   Anchoring motifs bottom-up is the mechanism if this is wanted.
+3. Scatter sparkles and dots asymmetrically. Related unevenness: sparkles
+   currently live *inside* 5 of the 16 motifs (`lute`, `wizardHat`, `hound`,
+   `chest`, `magicCircle`), so half the deck is decorated and half is not.
+
+Also still true, and still not evened out: **motif ink varies 4.4×** across the
+set (`staff` 5.9% of the window, `magicCircle` 25.5%). The four motifs M8 records
+as "weighted up afterwards" — `staff`, `dagger`, `trapdoor`, `chalice` — remain
+the four lightest, so that fix did not land.
 
 ---
 
@@ -143,11 +210,12 @@ Hazards than on Allies.
 
 ## M13 — Pre-print checks
 
-*Both themes, before any money is spent.*
+*Before any money is spent.*
 
-- **Greyscale proof.** The bright set leans on blue versus pink far more than the
-  engraving deck does. Render the proof sheet desaturated and confirm the shape
-  cues carry the faction distinction on their own.
+- **Greyscale proof.** The faction distinction leans heavily on blue versus pink.
+  Render the proof sheet desaturated and confirm the shape cues — rounded Ally
+  against chamfered Hazard, from M12 — carry it on their own. This matters more
+  now that the sky/ground and fill contrasts from M10 are also tonal.
 - **Physical proof.** Print one card at actual size, on stock, and cut it. Large
   flat areas of saturated pink and blue shift noticeably on card stock, and flat
   fills can band; the halftone helps but does not settle it. This is the one
@@ -179,9 +247,11 @@ one at a time while the rest of the deck stays presentable:
 ```
 
 Minimum sizes: **816 × 470** for the 14 Masters, **816 × 1110** for Apprentice and
-Deity. Formats `.png`, `.jpg`, `.jpeg`, `.webp`. Colour is kept as-is on this
-theme (`artTreatment: "none"`); the sepia unification belongs to the engraving
-deck.
+Deity. Formats `.png`, `.jpg`, `.jpeg`, `.webp`. Colour is kept as-is here
+(`artTreatment: "none"`); `"sepia"` and `"mono"` still exist and reduce mixed
+sources to one register, which is what made mixed-provenance sourcing practical.
 
-Note that doing so gives up the set's main advantage — being wholly first-party
-and free of any copyright question.
+Prefer doing this in a **child theme** rather than here: art is not inherited, so
+a child can carry images while `dungeon-bright` stays wholly first-party and free
+of any copyright question — which is its main advantage and the reason it is the
+base.

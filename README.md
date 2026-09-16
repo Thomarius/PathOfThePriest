@@ -50,10 +50,12 @@ Three independent data layers are merged into one render model:
 Locale files contain no card or faction names; they reference them through
 `{card:<id>}` and `{faction:<id>.<form>}` tokens resolved from the active theme.
 This is what lets a card be renamed without breaking the text printed on other
-cards — Discord and Envy both name Grudge.
+cards — cards 6 and 11 both name card 2.
 
-`themes/placeholder/` is a neutral stand-in so the pipeline can be built and
-reviewed before the real topic is chosen.
+`themes/dungeon-bright/` is the one theme and the base for any other: a new theme
+sets `"extends": "dungeon-bright"` and overrides only what differs, inheriting
+fonts, palette, decor, card names and all sixteen motifs. Motifs live in
+`src/template/motifs.js`, not in a theme, so every theme can draw on them.
 
 Fonts are committed under `assets/fonts` and inlined into the page as data URIs,
 so rendering is identical on every machine. Each deck's `manifest.json` records a
@@ -63,18 +65,18 @@ SHA-256 per card, so that claim can be checked rather than trusted.
 violations, and remaining headroom for translation — and writes nothing if a
 card fails. `out/proof-<theme>-<locale>.png` shows the whole deck on one sheet
 for review. Cards, PDF and proof sheet are all named per theme and locale, so
-building every deck in turn leaves four complete sets rather than one.
+building several themes in turn leaves complete sets side by side.
 
 ## Status
 
 The pipeline is complete (M0–M7), as is the art direction tracked in
-`NEXT-STEPS.md` as M8, M9, M11 and M12. A build emits **16 cards + 6 rules cards
-+ 3 backs**.
+`NEXT-STEPS.md` as M8, M9, M11 and M12, and most of M10. A build emits **16 cards
++ 6 rules cards + 3 backs**.
 
-Both themes render finished decks in German and English. `dungeon` uses sourced
-public-domain artwork with generated attribution; `dungeon-bright` is entirely
-first-party. All four theme × locale combinations validate with 0 errors and 0
-warnings, and consecutive builds are byte-identical.
+`dungeon-bright` renders finished decks in German and English and is **entirely
+first-party** — no sourced artwork at all. Both locales validate with 0 errors
+and 0 warnings, and consecutive builds are byte-identical.
 
-Remaining: **M10** (art-window composition) and **M13** (greyscale and physical
-proofs) — see `NEXT-STEPS.md`.
+Remaining: the rest of **M10** (scaling motifs up, winning back room for a ground
+band on the face cards) and **M13** (greyscale and physical proofs) — see
+`NEXT-STEPS.md`.

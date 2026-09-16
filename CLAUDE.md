@@ -11,30 +11,63 @@ design are re-themed.
 M12).** Remaining: **M10** (art-window composition) and **M13** (greyscale and
 physical proofs), both tracked in **`NEXT-STEPS.md`**.
 
-Four finished decks build today, each **16 cards + 6 rules cards + 3 backs**:
-
-| Theme | Locales | Style | Artwork |
-|---|---|---|---|
-| `dungeon` | `de`, `en` | 19th-century engraving, sepia monochrome | 15 public-domain images + 1 drawn motif |
-| `dungeon-bright` | `de`, `en` | Fantasy-anime: flat colour, thick outlines, rounded shapes | **entirely first-party** — 16 drawn motifs, no sourced images |
+**`dungeon-bright` is the one theme, and the base every other theme should
+extend.** It builds **16 cards + 6 rules cards + 3 backs** in `de` and `en`:
+fantasy-anime — flat colour, thick outlines, rounded shapes.
 
 ```sh
 npm install && npx playwright install chromium
-npm run validate -- --deep --theme dungeon-bright --locale de
-npm run build    -- --theme dungeon-bright --locale de
+npm run validate -- --deep        # defaults to dungeon-bright / de
+npm run build -- --locale en
 ```
 
-All four theme × locale combinations validate with **0 errors and 0 warnings**,
-and consecutive builds are byte-identical.
+It is **entirely first-party**: every image is drawn by `src/template/motifs.js`
+and `src/template/decor.js`, so the deck carries no third-party artwork at all.
+Its only external assets are two OFL fonts, licensed for exactly this use — which
+is what makes it safe to print and to share.
+
+Both locales validate with **0 errors and 0 warnings**, and consecutive builds
+are byte-identical.
 
 Every output path carries the theme and locale — `out/<theme>-<locale>/` for the
 cards, `out/proof-<theme>-<locale>.png`, and the theme in the PDF name — so
-building all four decks in turn leaves four complete sets side by side.
+building several themes in turn leaves complete sets side by side.
 
-`dungeon-bright` is the one to print if copyright matters: every image on it is
-drawn by `src/template/motifs.js` and `src/template/decor.js`. Its only external
-assets are two OFL fonts, licensed for exactly this use. The `placeholder` theme
-is a neutral fixture for pipeline work and is not meant for printing.
+The earlier `dungeon` (sepia engraving, sourced public-domain art) and
+`placeholder` themes were removed once `dungeon-bright` had been tuned past
+them. Sourced artwork is still *supported* — a card's `art` beats its `motif`,
+and `scripts/find-art.mjs` / `fetch-art.mjs` still shortlist and attribute
+Commons images — but nothing ships using it.
+
+## Adding a theme
+
+Create `themes/<name>/theme.json` and inherit:
+
+```json
+{
+  "extends": "dungeon-bright",
+  "id": "<name>",
+  "title": "...",
+  "cards": { "6": { "motif": "golem" } },
+  "palette": { "true": { "accent": "#7bdc8a" } },
+  "localeOverrides": { "de": { "cards": { "0": { "name": "..." } } } }
+}
+```
+
+Everything not named is inherited: fonts, palette, decor vocabulary, card names,
+faction labels, world terms and motifs. Motifs live in `src/template/motifs.js`
+rather than in a theme, so every theme can draw on all sixteen by name.
+
+Two things to know:
+
+- **Artwork is not inherited**, by design — art belongs to a visual style, and a
+  child pointing at a parent's files would reference images absent from its own
+  directory. Opt in with `inheritArt: true`.
+- **Rename cards under `localeOverrides`, not under `cards`.** Locale overrides
+  are folded in *after* inheritance, so a name set in plain `cards` is overruled
+  by whatever the parent's `localeOverrides` says for the locale being built —
+  the rename silently does nothing, and only in some languages. `validate` warns
+  when a child is shadowed this way.
 
 ## Deck composition
 
@@ -71,7 +104,7 @@ must be achievable by adding one locale file.
 | Decision | Choice |
 |---|---|
 | Rendering | HTML/CSS templates rendered headless via Playwright (Chromium) |
-| Artwork | Two approaches: `dungeon` uses public-domain / CC images with generated attribution; `dungeon-bright` is entirely drawn in-repo. Protected art is acceptable for this private print run, but print services screen uploads, so PD/CC or first-party stays the lower-risk path. |
+| Artwork | Drawn in-repo as motifs. Sourced public-domain / CC art with generated attribution is still supported but unused. Protected art is acceptable for this private print run, but print services screen uploads, so first-party stays the lower-risk path. |
 | Print target | Print-on-demand with bleed; MakePlayingCards as the default profile |
 | Effect text | Icon-augmented German sentences; glyphs follow the keyword they annotate |
 | Primary language | German (`de`); English (`en`) maintained as a fallback from `RulesSummary.txt` |
@@ -80,7 +113,7 @@ must be achievable by adding one locale file.
 | Cards are monolingual | One language per deck. Two languages = two complete card and rules sets from one theme via `localeOverrides`. |
 | Flavour text | None. The `flavor` field was removed. |
 | Card backs | One neutral shared back for the 14 Masters; Apprentice and Deity reuse their own front as their back. |
-| Themes | `dungeon` (sepia engraving) and `dungeon-bright` (fantasy-anime), the latter inheriting all naming from the former. |
+| Themes | One: `dungeon-bright` (fantasy-anime), self-contained and the base for all others. Follow-ups set `extends: "dungeon-bright"` and override only what differs. |
 
 ## Print geometry
 
@@ -198,14 +231,10 @@ PathOfThePriest/
 │  ├─ de.json                # primary
 │  └─ en.json
 ├─ themes/
-│  ├─ dungeon/               # sepia engraving; 15 sourced images + 1 motif
-│  │  ├─ theme.json
-│  │  ├─ art/                # public-domain / CC0 from Wikimedia Commons
-│  │  ├─ art-selection.json  # card id -> candidate index
-│  │  └─ ATTRIBUTION.md      # generated, never hand-written
-│  ├─ dungeon-bright/        # fantasy-anime; extends dungeon, all motifs
-│  │  └─ theme.json
-│  └─ placeholder/           # neutral fixture for pipeline work
+│  └─ dungeon-bright/        # the base theme; extend this
+│     └─ theme.json          # self-contained: no `extends` of its own
+│                            # a theme using art adds art/, art-selection.json
+│                            # and a generated ATTRIBUTION.md alongside it
 ├─ src/
 │  ├─ build.js               # CLI: validate | model | preview | build
 │  ├─ model.js               # cards + theme + locale -> render model
@@ -308,19 +337,18 @@ drift from the output, and it **writes nothing at all** when a card fails.
   No card falls below 2 spare lines. The topic was open when this was written and
   did not block the file — names are tokens; it has since been settled.
 - **M1 — Data & model. DONE.** `data/cards.json`, `data/deck.json`,
-  `config/print-profiles.json`, `locales/en.json`, `themes/placeholder/`,
-  `src/tokens.js`, `src/model.js`, `src/validate.js`, `src/build.js`.
+  `config/print-profiles.json`, `locales/en.json`, `themes/placeholder/` (since
+  removed), `src/tokens.js`, `src/model.js`, `src/validate.js`, `src/build.js`.
   `npm run validate` is green; `npm run model` dumps `out/model.json`.
 - **M2 — Card template & design system. DONE.** `src/template/{styles.css,card.js,page.js}`,
   `npm run preview` → `out/preview/index.html`.
-  **The binding card is 7, not 11.** (Named Philosophy and Envy at the time; those
-  names survive only in the `placeholder` theme.) Character count was the wrong
-  proxy: card 11 has more text (167 chars) but only 2 paragraphs and fills 40%,
-  while card 7's 3 effects plus 2 "or" dividers fill 73%. Structure costs more
-  height than length. Any future layout change must be checked against card 7.
-  **Re-measured after M8–M12:** card 7 still leads at **75% full, 2 spare lines**
-  in `dungeon/de`, `dungeon-bright/de` and `dungeon-bright/en` alike — the frame
-  changes cost it nothing.
+  **The binding card is 7, not 11.** (Named Philosophy and Envy at the time, in a
+  theme since deleted.) Character count was the wrong proxy: card 11 has more
+  text (167 chars) but only 2 paragraphs and fills 40%, while card 7's 3 effects
+  plus 2 "or" dividers fill 73%. Structure costs more height than length. Any
+  future layout change must be checked against card 7. **Re-measured after
+  M8–M12:** card 7 still leads at **75% full, 2 spare lines** in both locales —
+  the frame changes cost it nothing.
 - **M3 — Icon language. DONE.** **6** SVG glyphs live in `src/icons/`,
   are stroked in `currentColor` and sized in `em`, so they inherit the colour of
   whatever text they sit in, and the glossary rules card is generated from the
@@ -340,8 +368,9 @@ drift from the output, and it **writes nothing at all** when a card fails.
 - **M6 — Art integration. DONE.** `scripts/find-art.mjs` shortlists Wikimedia
   Commons candidates by licence metadata; `scripts/fetch-art.mjs` downloads them,
   wires them into `theme.json` and generates `ATTRIBUTION.md`, so provenance
-  cannot drift from the deck. 15 images for `dungeon`; card 14 uses a drawn motif
-  because no public-domain engraving depicts a teleportation circle.
+  cannot drift from the deck. Built for the sepia `dungeon` theme, which carried
+  15 sourced images; that theme is gone but the tooling and the `art` field
+  remain, so a future theme can use sourced art without rebuilding any of this.
   `decor.artTreatment` reduces mixed sources to one monochrome register — this is
   what made mixed-provenance sourcing practical instead of a re-sourcing exercise.
 - **M7 — DONE.** `src/template/back.js` draws the shared Masters back; the
@@ -377,14 +406,22 @@ drift from the output, and it **writes nothing at all** when a card fails.
   each frame style compensates for antialiasing in proportion to its own weight —
   one global value made the engraving theme's rule frame three times heavier on
   Hazards than on Allies.
-- **M10 — Art-window composition. OPEN.** Every card shares an identical
-  composition: a 400 px motif centred in an 816 × 470 window, so about two-thirds
-  is flat colour. See `NEXT-STEPS.md` for the options.
+- **M10 — Art-window composition. PARTLY DONE.** Motif ink was measured at 11% of
+  the art window, so 89% was flat — not the two-thirds first assumed. Motifs are
+  now centred in the field that survives trimming (which raised them 11 px on a
+  face card and 115 px on the full-art pair), each motif's own off-centre drift
+  is corrected through its viewBox, the two-tone fill carries real contrast, and
+  `artBacking: "ground"` puts a horizon behind every motif — below the deepest
+  ink in the set, so it never crosses a drawing. Scaling motifs up, evening out
+  their 4.4× ink spread, and winning back room for a real ground band on the face
+  cards are still open — see `NEXT-STEPS.md`.
 - **M13 — Pre-print checks. OPEN.** Greyscale proof (does the shape language carry
   the faction distinction without colour?) and a physical proof on stock.
 
-**M0–M9, M11 and M12 are complete.** Remaining work is **M10** and **M13**,
-tracked in **`NEXT-STEPS.md`** along with a list of ideas already rejected.
+**M0–M9, M11 and M12 are complete**, and M10's placement, contrast and ground
+band with them. Remaining work is the rest of **M10** (scaling motifs up, evening
+out their ink spread) and **M13**, tracked in **`NEXT-STEPS.md`** along with a
+list of ideas already rejected.
 
 Still optional and out of scope: a rules simulator to verify the deck stays
 winnable, only needed if the effects themselves are ever altered.
@@ -459,14 +496,34 @@ winnable, only needed if the effects themselves are ever altered.
   the trim line, so invisible on screen, but within the range a cut can drift.
   Use `clip-path` instead: the painted shape stays inside the same box and the
   numeral stays upright. The audit catches this class of error.
+- **Centre art in the field that survives the trim, not in its own box.** The top
+  `--bleed-y` is cut off and the name plate covers `--art-foot` of the bottom, so
+  a motif centred in the raw art window sits low — 11px on a face card, 115px on
+  the full-art Apprentice and Deity. The art itself must still bleed to all four
+  canvas edges; only its contents move.
+- **For a motif taller than its box, centre the track, not the item.** An auto
+  grid row grows to fit an oversized child and pins to the top of the padded box,
+  so `place-items: center` silently does nothing and the padding is ignored.
+  `place-content: center` overflows evenly in both directions. This was worth 11.6px
+  on every face card and is invisible without measuring.
+- **A horizon behind the art must clear the deepest motif in the whole set, not
+  the one on the card.** Placed at a fraction of the window it cut through most
+  of them; on any motif with open areas — a spiral, an outline — the line shows
+  through the gaps and reads as a mistake rather than as depth. Deriving it from
+  the deepest ink costs the band its width on face cards, where only 12.3px
+  separate the lowest motif from the name plate.
+- **A background band inside the art window has to end in the panel's paper.**
+  The art window stops at `--art-h` and the text panel starts; a band still at
+  full strength there draws a second hard line across the card in the margins
+  beside the name plate, reading as an unintended horizon.
 - **Every output path must carry both theme and locale.** All three once did not:
   the cards defaulted to a shared `out/cards`, the proof sheet was a hardcoded
   `out/proof-sheet.png`, and the PDF was named from the deck *title*, which
-  `dungeon-bright` inherits from `dungeon`. Building a second deck therefore
+  two themes then shared through inheritance. Building a second deck therefore
   overwrote the first — and because the renderer prunes PNGs it did not write this
   run, it deleted the first deck's cards outright. Nothing failed and nothing
   warned; `out/` simply held one deck instead of four. Note that a title is not a
-  unique key when themes inherit.
+  unique key when themes inherit, which is exactly what new themes will do.
 
 ## Open items
 

@@ -27,6 +27,14 @@ const TOLERANCE_PX = 1.5;
 const MIN_SPARE_LINES = 1;
 
 /**
+ * How far a motif may sit from the centre of the visible art before it is worth
+ * reporting. The measured centres in motifs.js are whole user units, and one
+ * unit paints as two pixels, so a correct motif still lands a pixel or so out.
+ * The drifts this exists to catch were 14 to 34 px.
+ */
+const MOTIF_TOLERANCE_PX = 4;
+
+/**
  * Measures one loaded page. Exported separately so the renderer can audit the
  * exact DOM it is about to print, without loading it a second time.
  */
@@ -34,7 +42,7 @@ export async function auditPage(page, model) {
   const g = model.geometry;
 
   return page.evaluate(
-    ({ safeX, safeY, selector, tolerance }) => {
+    ({ safeX, safeY, bleedY, selector, tolerance }) => {
       const findings = [];
 
       for (const card of document.querySelectorAll('.card')) {
@@ -88,6 +96,50 @@ export async function auditPage(page, model) {
             });
           }
         }
+
+        // Where the motif's ink actually lands, against where it should. The
+        // target is the field that survives trimming — below the bleed, above
+        // the name plate — because that is what a player sees.
+        const svg = card.querySelector('.card__art--motif > svg');
+        const plate = card.querySelector('.card__plate');
+        if (svg && plate) {
+          let x0 = Infinity;
+          let y0 = Infinity;
+          let x1 = -Infinity;
+          let y1 = -Infinity;
+          for (const el of svg.querySelectorAll('path,circle,rect')) {
+            const b = el.getBBox();
+            // getBBox is geometry only, so the stroke has to be added back or a
+            // heavily stroked shape measures as smaller than it paints.
+            const half =
+              el.getAttribute('stroke') === 'none'
+                ? 0
+                : parseFloat(
+                    el.getAttribute('stroke-width') ?? svg.getAttribute('stroke-width') ?? 0,
+                  ) / 2;
+            x0 = Math.min(x0, b.x - half);
+            y0 = Math.min(y0, b.y - half);
+            x1 = Math.max(x1, b.x + b.width + half);
+            y1 = Math.max(y1, b.y + b.height + half);
+          }
+
+          if (Number.isFinite(x0)) {
+            const vb = svg.viewBox.baseVal;
+            const r = svg.getBoundingClientRect();
+            const inkX = r.left + ((x0 + x1) / 2 - vb.x) * (r.width / vb.width);
+            const inkY = r.top + ((y0 + y1) / 2 - vb.y) * (r.height / vb.height);
+
+            const fieldTop = cardRect.top + bleedY;
+            const fieldBottom = plate.getBoundingClientRect().top;
+
+            findings.push({
+              id,
+              kind: 'motif',
+              dx: Math.round((inkX - (cardRect.left + cardRect.width / 2)) * 10) / 10,
+              dy: Math.round((inkY - (fieldTop + fieldBottom) / 2) * 10) / 10,
+            });
+          }
+        }
       }
 
       return findings;
@@ -95,6 +147,7 @@ export async function auditPage(page, model) {
     {
       safeX: g.safeInsetXPx,
       safeY: g.safeInsetYPx,
+      bleedY: g.bleedYPx,
       selector: TEXT_SELECTOR,
       tolerance: TOLERANCE_PX,
     },
@@ -128,6 +181,11 @@ export function classify(findings, model) {
             'a longer translation will not fit',
         );
       }
+    } else if (f.kind === 'motif' && Math.max(Math.abs(f.dx), Math.abs(f.dy)) > MOTIF_TOLERANCE_PX) {
+      warnings.push(
+        `card ${nameOf(f.id)}: motif sits ${f.dx}px across and ${f.dy}px down from the ` +
+          'centre of the visible art — check its measured centre in motifs.js',
+      );
     }
   }
 

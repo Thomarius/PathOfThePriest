@@ -17,6 +17,12 @@ const EXPECTED = {
   fake: [1, 2, 3, 4, 6, 11],
 };
 
+/** The theme exactly as written, before inheritance and locale folding. */
+function loadRawTheme(name) {
+  const file = path.join(ROOT, 'themes', name, 'theme.json');
+  return fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : null;
+}
+
 export function validate(overrides = {}) {
   const errors = [];
   const warnings = [];
@@ -75,6 +81,26 @@ export function validate(overrides = {}) {
   for (const id of themeCardIds) {
     if (!knownIds.has(id)) {
       warnings.push(`theme ${themeName}: card "${id}" is not part of the game`);
+    }
+  }
+
+  // Locale overrides are folded in *after* inheritance, so a child theme that
+  // renames a card in plain `cards` is silently overruled by a name the parent
+  // set in localeOverrides for the locale being built — the rename appears to do
+  // nothing, and only for some languages. Renaming there as well is the fix.
+  const raw = loadRawTheme(themeName);
+  if (raw?.extends) {
+    const inherited = theme.localeOverrides?.[localeName]?.cards ?? {};
+    const ownOverride = raw.localeOverrides?.[localeName]?.cards ?? {};
+    for (const [id, card] of Object.entries(raw.cards ?? {})) {
+      const shadow = inherited[id]?.name;
+      if (card.name && shadow && shadow !== card.name && !ownOverride[id]?.name) {
+        warnings.push(
+          `theme ${themeName}: card "${id}" is named "${card.name}", but the inherited ` +
+            `localeOverrides.${localeName} renames it to "${shadow}" — set the name under ` +
+            `localeOverrides.${localeName}.cards instead`,
+        );
+      }
     }
   }
 

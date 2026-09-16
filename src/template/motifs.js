@@ -27,11 +27,21 @@ const FILL = 'var(--motif-fill, none)';
  * share one stroke weight. Both matter more than they sound: uneven coverage and
  * uneven stroke weight are what made the first set look like fifteen different
  * hands rather than one.
+ *
+ * `centre` is where the drawn ink actually sits, measured from the rendered
+ * page. Drawn by hand, most motifs land a few units off — the worst were
+ * wizardHat 17 units high and mimic 16 low, a 66 px spread once rendered, which
+ * is what stopped the set sharing a baseline on the proof sheet. Shifting the
+ * *viewBox* recentres the drawing without touching a single path. The deep audit
+ * re-measures these on the real page, so a value that goes stale fails the build
+ * rather than quietly tilting the set.
  */
-const svg = (body, stroke = 8) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none"
+const svg = (body, stroke = 8, centre = [100, 100]) => {
+  const [cx, cy] = centre;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${cx - 100} ${cy - 100} 200 200" fill="none"
         stroke="${LINE}" stroke-width="${stroke}" stroke-linecap="round"
         stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+};
 
 /** Filled silhouette with an outline. */
 const solid = (d) => `<path d="${d}" fill="${FILL}"/>`;
@@ -58,6 +68,8 @@ export const MOTIFS = {
         line('M150 52 l14 -14', 7) +
         line('M164 66 l12 -12', 7) +
         spark(150, 126, 13),
+      8,
+      [101, 107],
     ),
 
   /** 1 — the teleporter trap: a vortex. Plotted, because chained SVG arcs
@@ -72,7 +84,7 @@ export const MOTIFS = {
         `${(100 + Math.cos(angle) * radius).toFixed(1)} ${(100 + Math.sin(angle) * radius).toFixed(1)}`,
       );
     }
-    return svg(solidCircle(100, 100, 22) + line(`M${points.join(' L')}`, 9));
+    return svg(solidCircle(100, 100, 22) + line(`M${points.join(' L')}`, 9), 8, [107, 107]);
   },
 
   /** 2 — the mimic: a chest that bites. */
@@ -83,6 +95,8 @@ export const MOTIFS = {
         line('M50 116 l12 20 l12 -20 l12 20 l12 -20 l12 20 l12 -20 l12 20 l12 -20', 6) +
         dot(76, 88, 8) +
         dot(124, 88, 8),
+      8,
+      [100, 116],
     ),
 
   /** 3 — the trapdoor: a floor giving way. */
@@ -93,6 +107,8 @@ export const MOTIFS = {
         line('M24 100 h152', 9) +
         line('M100 20 v48') +
         line('M80 54 l20 22 l20 -22'),
+      8,
+      [100, 93],
     ),
 
   /** 4 — the golem: a slab of animated stone.
@@ -107,6 +123,8 @@ export const MOTIFS = {
         line('M100 106 l-14 22 l20 10 l-10 26', 6) +
         line('M62 122 h-16', 7) +
         line('M138 122 h16', 7),
+      8,
+      [100, 102],
     ),
 
   /** 5 — the rogue: a dagger. */
@@ -134,6 +152,8 @@ export const MOTIFS = {
         dot(92, 132, 5) +
         dot(108, 132, 5) +
         line('M100 146 a13 13 0 1 0 0.1 0', 6),
+      8,
+      [100, 107],
     ),
 
   /** 7 — the wizard: a pointed hat. */
@@ -144,6 +164,8 @@ export const MOTIFS = {
         line('M74 98 h52', 7) +
         spark(150, 58, 15) +
         spark(52, 84, 11),
+      8,
+      [100, 83],
     ),
 
   /** 8 — the cleric: a chalice. */
@@ -155,6 +177,8 @@ export const MOTIFS = {
         line('M100 22 v20') +
         line('M60 38 l14 16') +
         line('M140 38 l-14 16'),
+      8,
+      [100, 89],
     ),
 
   /** 9 — the blink dog: a hound, half here. */
@@ -168,6 +192,8 @@ export const MOTIFS = {
         line('M92 136 h16', 8) +
         spark(164, 128, 14) +
         spark(38, 144, 11),
+      8,
+      [103, 100],
     ),
 
   /** 10 — the fighter: a shield. */
@@ -176,6 +202,8 @@ export const MOTIFS = {
       solid('M100 28 l50 20 v42 q0 46 -50 68 q-50 -22 -50 -68 v-42 Z') +
         line('M100 62 v78', 8) +
         line('M70 94 h60', 8),
+      8,
+      [100, 93],
     ),
 
   /** 11 — the cursed coin: cracked gold. */
@@ -203,6 +231,8 @@ export const MOTIFS = {
         line('M52 54 l-16 -10') +
         line('M152 92 l18 4') +
         line('M48 92 l-18 4'),
+      8,
+      [100, 96],
     ),
 
   /** 14 — the teleportation circle.

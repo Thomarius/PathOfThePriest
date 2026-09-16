@@ -32,6 +32,9 @@
    */
   --art-h: calc(470 * var(--u));
   --plate-h: calc(116 * var(--u));
+  /* How much of the art window's foot the name plate covers. The plate is hung
+     half its declared height below the art edge, so it hides that much art. */
+  --art-foot: calc(var(--plate-h) * 0.5);
   --badge: calc(104 * var(--u));
 
   position: relative;
@@ -161,7 +164,9 @@
   right: 0;
   top: calc(var(--art-h) - var(--plate-h) * 0.5);
   z-index: 2;
-  height: var(--plate-h);
+  /* Painted height may differ from --plate-h, which positions the plate. A
+     decor style that changes one must not silently move the other. */
+  height: var(--plate-box-h, var(--plate-h));
   display: grid;
   place-items: center;
   gap: calc(2 * var(--u));
@@ -295,6 +300,9 @@
  */
 .card--plain {
   --art-h: var(--card-h);
+  /* The plate floats above the foot here rather than straddling the art edge,
+     so it hides its own height plus the gap below it. */
+  --art-foot: calc(140 * var(--u) + var(--plate-box-h, var(--plate-h)));
 }
 
 .card--plain .card__panel {
@@ -686,9 +694,42 @@
  */
 .card__art--motif {
   display: grid;
-  place-items: center;
+  /*
+   * place-content, not place-items. On a face card the motif is taller than the
+   * padded box, so the auto row grows to fit it and pins to the box top —
+   * centring the item inside that row then does nothing, leaving every motif
+   * 11.6px low. Centring the *track* overflows evenly in both directions.
+   */
+  place-content: center;
+  /*
+   * Centre the motif in what survives the trim, not in the raw art window. The
+   * top --bleed-y is cut off by the printer and the name plate covers the last
+   * --art-foot, so centring in the full window sat every motif low: 11px on a
+   * face card, 115px on the full-art Apprentice and Deity, where the plate
+   * floats far above the bottom edge. The art itself still bleeds to all four
+   * canvas edges — only the motif inside it moves.
+   */
+  padding: var(--bleed-y) 0 var(--art-foot);
+  box-sizing: border-box;
+  /*
+   * Sky is pulled back from the shared 22% and the fill pushed up from 52%, so
+   * the gap between them widens from 30% of (accent - paper) to 64% without the
+   * fill going anywhere near the ink. Mixing toward the ink was tried before and
+   * rejected — see the note below.
+   */
+  background-color: var(--motif-sky);
+  --motif-size: calc(400 * var(--u));
+  /*
+   * Where the motif is centred, and how far the deepest one reaches below that.
+   * The deepest drawn ink in the set is magicCircle's, 88 of the 200 viewBox
+   * units below centre — so anything placed below --motif-reach clears every
+   * motif, not just the one on the card being looked at.
+   */
+  --motif-centre: calc((var(--bleed-y) + var(--art-h) - var(--art-foot)) / 2);
+  --motif-reach: calc(var(--motif-size) * 88 / 200);
+  --motif-sky: color-mix(in srgb, var(--accent) 14%, var(--paper));
   --motif-line: color-mix(in srgb, var(--ink) 86%, var(--accent));
-  --motif-fill: color-mix(in srgb, var(--accent) 52%, var(--paper));
+  --motif-fill: color-mix(in srgb, var(--accent) 78%, var(--paper));
   color: var(--motif-line);
 }
 
@@ -703,17 +744,20 @@
  * ink, which is the contrasting colour by definition.
  */
 
+/*
+ * No opacity here. An 0.85 wash pulled both motif tones toward the background
+ * and cost most of what the two-tone fill was for: measured fill-against-sky
+ * contrast was 1.09 on the Apprentice and 1.18 on an Ally, so the drawing was
+ * carried almost entirely by its outline.
+ */
 .card__art--motif svg {
-  width: calc(400 * var(--u));
-  height: calc(400 * var(--u));
-  opacity: 0.85;
+  width: var(--motif-size);
+  height: var(--motif-size);
 }
 
-/* Apprentice and Deity are full-art, so their window is the whole card and a
-   400u mark floats in it. */
-.card--plain .card__art--motif svg {
-  width: calc(560 * var(--u));
-  height: calc(560 * var(--u));
+/* Apprentice and Deity are full-art, so their window is the whole card. */
+.card--plain .card__art--motif {
+  --motif-size: calc(560 * var(--u));
 }
 
 /* --- bright / anime decor -------------------------------------------------
@@ -723,11 +767,16 @@
  * the medieval set, so both live in the same vocabulary.
  */
 
-/* Chunky outlined name plate with rounded ends, sitting inside the trim. */
+/* Chunky outlined name plate with rounded ends, sitting inside the trim. Its
+   painted height is declared on the card, not the plate, so --art-foot can
+   reach it: the motif needs to know where the art stops being visible. */
+.decor-plate--banner {
+  --plate-box-h: calc(126 * var(--u));
+}
+
 .decor-plate--banner .card__plate {
   left: calc(34 * var(--u));
   right: calc(34 * var(--u));
-  height: calc(126 * var(--u));
   border: calc(6 * var(--u)) solid var(--ink);
   border-radius: calc(26 * var(--u));
   background: var(--accent);
@@ -804,14 +853,68 @@
   filter: none;
 }
 
-/* A sunburst behind the art window, so a placeholder still reads as deliberate. */
-.decor-artBacking--rays .card__art--placeholder {
+/* A sunburst behind the art window, so a placeholder still reads as deliberate.
+   Motifs are included: scoped to placeholders alone, a theme could declare an
+   artBacking and silently get nothing, which is exactly what dungeon-bright did
+   for four milestones. */
+.decor-artBacking--rays .card__art--placeholder,
+.decor-artBacking--rays .card__art--motif {
   /* Oversized on purpose: a square sunburst must overflow the wide art window
      or its corners show as hard edges. */
   background-image: var(--decor-back);
   background-size: calc(1150 * var(--u)) calc(1150 * var(--u));
   background-position: center center;
   background-repeat: no-repeat;
+}
+
+/*
+ * A ground band, so the subject stands in a space rather than floating on a
+ * flat field. Every motif shared one composition — a small mark dead centre,
+ * with measured ink covering only 11% of the window — and that reads as a
+ * placeholder however good the drawing is.
+ *
+ * The horizon is placed in the *visible* field (below the bleed, above the
+ * plate) for the same reason the motif is centred there: a fraction of the raw
+ * window would drift once the card is trimmed.
+ *
+ * Painted edge to edge and all the way down, so the band bleeds off the left,
+ * right and bottom of the canvas. A band inset to the trim box would show a
+ * hairline of sky along the cut.
+ */
+.decor-artBacking--ground .card__art--motif {
+  /*
+   * Below every motif in the set, not at a fraction of the field. Placed by
+   * proportion the line cut straight through most of them, which reads as a
+   * mistake on any motif with open areas — the vortex on card 1 showed the
+   * horizon through the gaps in its spiral.
+   */
+  --horizon: calc(var(--motif-centre) + var(--motif-reach) + 6 * var(--u));
+  --ground: color-mix(in srgb, var(--accent) 30%, var(--paper));
+  --ground-line: color-mix(in srgb, var(--accent) 58%, var(--paper));
+  /*
+   * The foot fades to the panel's own paper, because on a face card the art
+   * window stops at --art-h and the text panel starts. Ending the band on its
+   * full strength drew a second hard line across the card in the margins either
+   * side of the name plate, which read as an unintended horizon.
+   */
+  --ground-foot: var(--paper);
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0 var(--horizon),
+    var(--ground-line) var(--horizon) calc(var(--horizon) + 5 * var(--u)),
+    var(--ground) calc(var(--horizon) + 5 * var(--u))
+      calc(var(--art-h) - var(--art-foot)),
+    var(--ground-foot) 100%
+  );
+  background-size: 100% 100%;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+}
+
+/* Full-art cards have no panel below the art, so there is no seam to hide and
+   the ground runs at full strength off the bottom of the canvas. */
+.decor-artBacking--ground.card--plain .card__art--motif {
+  --ground-foot: var(--ground);
 }
 
 /* Terms without a glyph keep the column aligned — "Adjacent" and "Send" have no

@@ -96,7 +96,11 @@ async function search(query, limit = 8) {
 const wanted = process.argv.slice(2);
 const ids = Object.keys(QUERIES).filter((id) => !wanted.length || wanted.includes(id));
 
-const theme = JSON.parse(fs.readFileSync(path.join(ROOT, 'themes/dungeon/theme.json'), 'utf8'));
+// Card names only, to label the shortlist. Any theme will do; the base one is
+// the only one that ships.
+const theme = JSON.parse(
+  fs.readFileSync(path.join(ROOT, 'themes/dungeon-bright/theme.json'), 'utf8'),
+);
 
 // Commons rate-limits aggressively, so runs accumulate into one file rather
 // than starting over. Re-running fills in whatever is still missing.

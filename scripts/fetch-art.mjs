@@ -20,7 +20,12 @@ import path from 'node:path';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const UA = 'PathOfThePriest/0.1 (private print-and-play card project)';
-const themeName = process.argv[2] ?? 'dungeon';
+const themeName = process.argv[2];
+if (!themeName) {
+  console.error('usage: node scripts/fetch-art.mjs <theme>');
+  console.error('No theme ships with sourced art — dungeon-bright is drawn entirely in-repo.');
+  process.exit(1);
+}
 
 const themeDir = path.join(ROOT, 'themes', themeName);
 const artDir = path.join(themeDir, 'art');

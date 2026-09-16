@@ -1,8 +1,49 @@
 {
-  "$comment": "Bright fantasy-anime treatment of the same setting — think Super Dungeon Explore or Delicious in Dungeon. Inherits every card name, faction label and world term from the `dungeon` theme via `extends`, and overrides only presentation: palette, typography and decor. Artwork is deliberately NOT inherited; this style wants colour illustration, not sepia engravings, and the art files will be sourced separately.",
-  "extends": "dungeon",
+  "$comment": "Base theme for the deck: an underlevelled adventurer delving for treasure, drawn in a flat fantasy-anime register. Entirely first-party — every image is drawn by src/template/motifs.js and src/template/decor.js, so the deck carries no third-party artwork. New themes should set \"extends\": \"dungeon-bright\" and override only what differs.",
   "id": "dungeon-bright",
+  "title": "Underleveled",
   "subtitle": "A solo dungeon delve",
+  "terms": {
+    "path": {
+      "def": "the dungeon",
+      "indef": "a dungeon",
+      "in": "in the dungeon",
+      "of": "of the dungeon",
+      "from": "from the dungeon"
+    }
+  },
+  "factions": {
+    "true": {
+      "one": "Ally",
+      "other": "Allies",
+      "genPl": "Allies",
+      "anyAkk": "any Ally",
+      "indefAkk": "an Ally",
+      "eachNom": "Each Ally",
+      "sameAkk": "the same Ally",
+      "negAkk": "any Ally",
+      "negNom": "no Ally"
+    },
+    "fake": {
+      "one": "Hazard",
+      "other": "Hazards",
+      "genPl": "Hazards",
+      "anyAkk": "any Hazard",
+      "indefAkk": "a Hazard",
+      "eachNom": "Each Hazard",
+      "sameAkk": "the same Hazard",
+      "negAkk": "any Hazard",
+      "negNom": "no Hazard"
+    },
+    "apprentice": {
+      "one": "Adventurer",
+      "other": "Adventurers"
+    },
+    "deity": {
+      "one": "Treasure",
+      "other": "Treasures"
+    }
+  },
   "palette": {
     "true": {
       "ink": "#1d3557",
@@ -47,59 +88,178 @@
     "plate": "banner",
     "badge": "sticker",
     "divider": "star",
+    "artTreatment": "none",
     "emblem": "star",
     "backPattern": "motifs",
-    "artTreatment": "none",
-    "artBacking": "rays"
+    "artBacking": "ground"
   },
   "cards": {
     "0": {
+      "name": "Level 1 Bard",
+      "inline": "the Bard",
       "motif": "lute"
     },
     "1": {
+      "name": "Teleporter Trap",
       "motif": "vortex"
     },
     "2": {
+      "name": "Hungry Mimic",
+      "inline": "the Mimic",
       "motif": "mimic"
     },
     "3": {
+      "name": "Trapdoor",
       "motif": "trapdoor"
     },
     "4": {
+      "name": "Golem",
       "motif": "golem"
     },
     "5": {
+      "name": "Rogue",
       "motif": "dagger"
     },
     "6": {
+      "name": "Minotaur",
       "motif": "minotaur"
     },
     "7": {
+      "name": "Wizard",
       "motif": "wizardHat"
     },
     "8": {
+      "name": "Cleric",
       "motif": "chalice"
     },
     "9": {
+      "name": "Blink Dog",
       "motif": "hound"
     },
     "10": {
+      "name": "Fighter",
       "motif": "shield"
     },
     "11": {
+      "name": "Cursed Coin",
       "motif": "coin"
     },
     "12": {
+      "name": "Pack Mule",
       "motif": "sack"
     },
     "13": {
+      "name": "Staff of Power",
       "motif": "staff"
     },
     "14": {
+      "name": "Teleportation Circle",
       "motif": "magicCircle"
     },
     "D": {
+      "name": "Treasure Chest",
       "motif": "chest"
+    }
+  },
+  "localeOverrides": {
+    "de": {
+      "title": "Unterlevelt",
+      "subtitle": "Ein Solo-Verlies",
+      "terms": {
+        "path": {
+          "def": "das Verlies",
+          "indef": "ein Verlies",
+          "in": "im Verlies",
+          "of": "des Verlieses",
+          "from": "aus dem Verlies"
+        }
+      },
+      "factions": {
+        "true": {
+          "one": "Verbündeter",
+          "akk": "Verbündeten",
+          "other": "Verbündete",
+          "genPl": "Verbündeten",
+          "anyAkk": "einen beliebigen Verbündeten",
+          "indefAkk": "einen Verbündeten",
+          "eachNom": "Jeder Verbündete",
+          "sameAkk": "denselben Verbündeten",
+          "negAkk": "keinen Verbündeten",
+          "negNom": "kein Verbündeter"
+        },
+        "fake": {
+          "one": "Gefahr",
+          "akk": "Gefahr",
+          "other": "Gefahren",
+          "genPl": "Gefahren",
+          "anyAkk": "eine beliebige Gefahr",
+          "indefAkk": "eine Gefahr",
+          "eachNom": "Jede Gefahr",
+          "sameAkk": "dieselbe Gefahr",
+          "negAkk": "keine Gefahr",
+          "negNom": "keine Gefahr"
+        },
+        "apprentice": {
+          "one": "Abenteurer",
+          "other": "Abenteurer"
+        },
+        "deity": {
+          "one": "Schatz",
+          "other": "Schätze"
+        }
+      },
+      "cards": {
+        "0": {
+          "name": "Barde (Stufe 1)",
+          "inline": "Barde"
+        },
+        "1": {
+          "name": "Teleportfalle"
+        },
+        "2": {
+          "name": "Hungrige Mimik",
+          "inline": "Mimik"
+        },
+        "3": {
+          "name": "Falltür"
+        },
+        "4": {
+          "name": "Golem"
+        },
+        "5": {
+          "name": "Schurke"
+        },
+        "6": {
+          "name": "Minotaurus"
+        },
+        "7": {
+          "name": "Magier"
+        },
+        "8": {
+          "name": "Kleriker"
+        },
+        "9": {
+          "name": "Blinkhund"
+        },
+        "10": {
+          "name": "Kämpfer"
+        },
+        "11": {
+          "name": "Verfluchte Münze"
+        },
+        "12": {
+          "name": "Lastesel"
+        },
+        "13": {
+          "name": "Stab der Macht"
+        },
+        "14": {
+          "name": "Teleportkreis"
+        },
+        "D": {
+          "name": "Schatztruhe"
+        }
+      }
     }
   }
 }

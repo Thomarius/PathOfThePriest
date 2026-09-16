@@ -1,6 +1,6 @@
 {
   "$comment": "Defines one print run: which faces are printed, which rules cards accompany them, and which back each card gets. Theme, locale and print profile are defaults here and can be overridden from the CLI.",
-  "theme": "dungeon",
+  "theme": "dungeon-bright",
   "locale": "de",
   "profile": "mpc",
   "faces": [
