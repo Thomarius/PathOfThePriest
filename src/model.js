@@ -298,19 +298,30 @@ export function buildModel(overrides = {}) {
         `title card: "${deck.titleCard.key}" missing from locale ${localeName}`,
       );
     }
-    const credit = content?.credit
-      ? parse(content.credit, 'title card credit').segments
-      : [];
+    const colophon = (content?.colophon ?? []).map(
+      (line, i) => parse(line, `title card colophon line ${i + 1}`).segments,
+    );
     titleCard = {
       id: deck.titleCard.id,
       title: theme.title ?? null,
       subtitle: theme.subtitle ?? null,
-      credit,
+      colophon,
       motif: theme.titleMotif ?? null,
       // The goal card's palette, not the master back's: a title card in the
       // back's colours reads as a back, which is the thing this layout exists
       // to avoid.
       palette: theme.palette?.title ?? theme.palette?.deity ?? null,
+      /*
+       * The back is the deck's blue instead, so front and back read as two
+       * sides rather than two cards, and it carries the Apprentice, the
+       * antagonist and the Deity — the three fixed points of the Path, in the
+       * order they stand on it, with the antagonist between them.
+       */
+      back: {
+        id: `${deck.titleCard.id}-back`,
+        palette: theme.palette?.master ?? null,
+        motifs: ['0', '2', 'D'].map((id) => theme.cards?.[id]?.motif ?? null),
+      },
     };
   }
 

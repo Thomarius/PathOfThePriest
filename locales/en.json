@@ -35,7 +35,11 @@
     "14.a": "Swap {icon:swap} this card with a card 4 spaces away."
   },
   "titleCard": {
-    "credit": "A fan re-theme of the solo microgame “The Path of the Priest”. Rules unchanged. Not for sale."
+    "colophon": [
+      "A fan re-theme of the solo microgame “The Path of the Priest”. Rules unchanged. Not for sale.",
+      "Vibe-coded by Thomas Arnold with Claude Opus 5.",
+      "All artwork drawn for this deck. Type: Baloo 2 and Nunito, SIL Open Font License."
+    ]
   },
   "rules": {
     "objective": {

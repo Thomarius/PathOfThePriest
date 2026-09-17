@@ -893,23 +893,106 @@
   opacity: 0.85;
 }
 
-/*
- * Between the plate and the safe line. 26u is ~6.2pt, the floor a physical proof
- * set for anything a player has to read — a credit is read once, but it is still
- * read, so it does not go below it.
+/* --- title card back: the colophon -----------------------------------------
+ *
+ * Reuses .back__field and .back__frame from the Masters back, so it carries the
+ * same tiled motifs and the same inset rule and belongs to the deck from behind.
+ * What it adds is the three fixed points of the Path across the top and the
+ * credit below them.
  */
-.card__credit {
-  position: absolute;
-  left: var(--safe-x);
-  right: var(--safe-x);
-  bottom: calc(var(--safe-y) + 2 * var(--u));
-  margin: 0;
+/*
+ * One centred stack, not a row pinned to the top and a block pinned to the foot.
+ * Pinned to the edges the two left a void through the middle of the card, which
+ * is the usual result of positioning against a box rather than composing within
+ * it.
+ */
+/* Specificity raised deliberately: every page that renders cards re-declares
+   `.card { display: block; }` in its own head, after this stylesheet, so a bare
+   .card--title-back loses the layout and the stack silently collapses to the
+   top of the card. */
+.card.card--title-back {
+  background: var(--paper);
+  color: var(--accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(96 * var(--u));
+  padding: var(--safe-y) var(--safe-x);
+  box-sizing: border-box;
+}
+
+/*
+ * Lifted above the field and the frame. .back__field and .back__frame are
+ * absolutely positioned, and a positioned element paints over static in-flow
+ * content in the same stacking context — so without this the tiled pattern and
+ * the gold rule were drawn *on top of* the motifs, and the frame cut across the
+ * Apprentice's shoulder. The Masters back never showed it because everything on
+ * it is positioned too.
+ */
+.colophon__figures,
+.colophon__text {
+  position: relative;
+  z-index: 1;
+}
+
+.colophon__figures {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(20 * var(--u));
+  /* Gold on the deck's blue, the same pairing the emblem and frame already use.
+     Set here rather than inherited: this is not an art window, so the sky/fill
+     derivation that .card__art--motif does would be wrong. */
+  --motif-fill: var(--accent);
+  --motif-line: var(--ink);
+}
+
+.colophon__motif svg {
+  display: block;
+}
+
+/*
+ * All three at one size. Drawing the antagonist larger was the first idea and it
+ * backfired: card 2's motif is the widest in the set, so scaling it up made the
+ * row lopsided and pulled its two halves apart until they read as separate
+ * objects. Standing in the middle is enough to say which one it is.
+ */
+.colophon__motif--flank svg,
+.colophon__motif--antagonist svg {
+  /*
+   * Sized so the whole row fits inside the frame: 3 x 205u + 2 x 20u = 655u
+   * against 673u of safe measure. At 230u the row came to 750u and the two outer
+   * motifs' ink crossed the gold rule. Nothing catches this — the safe-zone
+   * audit measures text elements only, so artwork over the line is invisible to
+   * it.
+   */
+  width: calc(205 * var(--u));
+  height: calc(205 * var(--u));
+}
+
+/*
+ * 28u is ~6.7pt, above the 6.2pt floor a physical proof set. A credit is read
+ * once, but it is still read — and on the front it had been 26u squeezed under
+ * the plate, which is half of why it moved here.
+ */
+.colophon__text {
+  /* Just inside the safe measure. At 600u the German credit line broke at the
+     hyphen in "vibe-codet" and split the word across two lines. */
+  max-width: calc(664 * var(--u));
   text-align: center;
   font-family: var(--font-body);
-  font-size: calc(26 * var(--u));
-  line-height: 1.3;
-  color: var(--ink);
-  opacity: 0.75;
+  font-size: calc(28 * var(--u));
+  line-height: 1.45;
+  color: var(--accent);
+}
+
+.colophon__text p {
+  margin: 0 0 calc(22 * var(--u));
+}
+
+.colophon__text p:last-child {
+  margin-bottom: 0;
 }
 
 /* --- bright / anime decor -------------------------------------------------

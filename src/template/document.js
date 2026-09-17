@@ -11,7 +11,7 @@ import path from 'node:path';
 import { renderCard, escapeHtml } from './card.js';
 import { renderBack } from './back.js';
 import { renderRulesCard } from './rules-card.js';
-import { renderTitleCard } from './title-card.js';
+import { renderTitleCard, renderTitleBack } from './title-card.js';
 import { baseStyles } from './page.js';
 import { ROOT } from '../model.js';
 
@@ -71,7 +71,15 @@ ${extras.join('\n')}
  */
 export function nonPlayingCards(model, unit) {
   return [
-    ...(model.titleCard ? [renderTitleCard(model.titleCard, model, { unit })] : []),
+    ...(model.titleCard
+      ? [
+          renderTitleCard(model.titleCard, model, { unit }),
+          // Rendered on this page rather than with the drawn backs, because this
+          // page is the audited one: the colophon is the most text a back
+          // carries anywhere in the deck and it has to stay inside the safe zone.
+          renderTitleBack(model.titleCard, model, { unit }),
+        ]
+      : []),
     ...model.rulesCards.map((rules) => renderRulesCard(rules, model, { unit })),
   ];
 }
@@ -113,6 +121,9 @@ export function buildProofHtml(model, cards, { scale = 0.34, columns = 4 } = {})
       ? [
           `<figure>${renderTitleCard(model.titleCard, model, { unit: 'px' })}
   <figcaption>${escapeHtml(model.titleCard.title ?? 'title')}</figcaption>
+</figure>`,
+          `<figure>${renderTitleBack(model.titleCard, model, { unit: 'px' })}
+  <figcaption>${escapeHtml(model.titleCard.back.id)}</figcaption>
 </figure>`,
         ]
       : []),

@@ -105,8 +105,8 @@ Three things to know:
 | True Masters | 8 | numbers 5, 7, 8, 9, 10, 12, 13, 14 — choose-one effects |
 | Fake Masters | 6 | numbers 1, 2, 3, 4, 6, 11 — forced effect + fallback/conditional |
 | **Playing cards total** | **16** | |
-| Title card | 1 | deck title, subtitle and the credit to the original game |
-| Rules cards | 6 | objective+endgame / setup / turn order / glossary / clarifications 1 / clarifications 2 |
+| Title card | 1 | deck title and subtitle on the front, colophon on the back |
+| Rules cards | 6 | objective+endgame / setup / turn order / glossary / clarifications 1 / clarifications 2 — **printed back-to-back, so 3 physical cards** |
 | Card backs | 3 designs | shared back for the **14 Masters**, plus distinct backs for Apprentice and Deity |
 
 The 14 Masters are shuffled during setup, so their back must be identical.
@@ -137,13 +137,30 @@ Two things to know:
   motif in the field that survives trimming, so the motif would sit differently
   on a two-line title than on a one-line one. A short title therefore sits with
   air around it. If a title outgrows the box, the plate-overflow audit fails.
-- **It has no card back**, exactly like the six rules cards. It also shares their
-  render page and their `manifest.rules` key, because both are non-playing cards
-  that are audited, printed and proofed together — the key is named for what was
-  there first.
+- **Its back is a colophon**, and it is the only non-playing card with one: the
+  six rules cards are printed back-to-back, so they come to 3 physical cards and
+  need none. The back shares the title card's render page and their
+  `manifest.rules` key, because everything non-playing is audited, printed and
+  proofed together — the key is named for what was there first.
 
 This is also the first template to print `subtitle`. Every theme has carried one
 from the beginning and nothing had ever rendered it.
+
+**The back is a colophon**, in the deck's blue rather than the front's gold, so
+the two read as two sides of one card rather than as two cards. It reuses the
+Masters back's `.back__field` and `.back__frame` — the same tiled motifs and
+inset rule — and above the text it stands the three fixed points of the Path in
+the order they occupy it: the Apprentice, the antagonist (card 2), the Deity. All
+three come from the theme's own `cards`, so it re-themes for free.
+
+The credit lives here rather than on the front, where it was 26u type squeezed
+under the plate with room for one sentence. It now carries the original game, the
+authorship, the artwork and the font licence.
+
+Drawing the antagonist larger was the first idea and it backfired: card 2's motif
+is the widest in the set, so scaling it up made the row lopsided and pulled the
+two halves of `evilEyes` apart until they read as separate objects. Standing in
+the middle is enough.
 
 ## Core architecture principle
 
@@ -650,6 +667,24 @@ Ideas already rejected, kept so they are not re-proposed:
   reading "einen {faction:fake.akk}" produced "einen Gefahr" once a theme used a
   feminine noun. Forms like `indefAkk`, `negAkk`, `eachNom` and `sameAkk` carry
   their determiner, exactly as `{term:}` forms carry their article.
+- **A positioned element paints over static in-flow content**, whatever the DOM
+  order. `.back__field` and `.back__frame` are `position: absolute`, so on the
+  title card's colophon back they were drawn *on top of* the motifs and the gold
+  rule cut across the Apprentice's shoulder. The Masters back never showed it
+  because everything on it is positioned too. The fix is `position: relative`
+  plus a `z-index` on the in-flow content, not reordering the markup.
+- **Every page re-declares `.card { display: block; }` in its own head**, after
+  the stylesheet and at the same specificity, so it wins. A rule in `styles.css`
+  giving a card a different `display` silently does nothing and the layout
+  collapses to the top of the card. The same trap caught `--plate-box-h`, which
+  `.decor-plate--banner` sets later in the file. When a card-level rule appears
+  to be ignored, look for what else sets that property further down, or in the
+  page head.
+- **Artwork crossing the safe line is invisible to the audit.** The safe-zone
+  check runs over a text-element selector only, so the title back's motif row
+  overflowed the frame by 13px with a clean `validate --deep`. A row of drawings
+  has to be sized by arithmetic against the safe measure instead: the colophon
+  row is 3 x 205u + 2 x 20u = 655u against 673u.
 - Decor data URIs go into a `style="..."` attribute, so they must be
   single-quoted; `renderCard`/`renderBack` throw if one contains a double quote.
 - **Never use `transform: rotate()` for a badge or panel shape.** It keeps the

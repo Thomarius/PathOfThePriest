@@ -140,6 +140,13 @@ export async function renderAll(model, options) {
           const file = path.join(outDir, name);
           await rulesPage.locator(`[data-title-id="${model.titleCard.id}"]`).screenshot({ path: file });
           rules.push({ id: model.titleCard.id, file: name, sha256: sha256(file) });
+
+          const backName = `${model.titleCard.back.id}.png`;
+          const backFile = path.join(outDir, backName);
+          await rulesPage
+            .locator(`[data-title-back-id="${model.titleCard.back.id}"]`)
+            .screenshot({ path: backFile });
+          rules.push({ id: model.titleCard.back.id, file: backName, sha256: sha256(backFile) });
         }
         for (const card of model.rulesCards) {
           const name = `${card.id}.png`;
