@@ -19,6 +19,7 @@ register: flat colour, thick outlines, rounded shapes.
 |---|---|
 | `dungeon-bright` | An underlevelled adventurer delving for treasure. The base. |
 | `mittagspause` | Michi, an accelerator physicist who never stops, walking her working day to lunch. Extends the base. |
+| `rejection-cum-laude` | A doctoral student walking a manuscript to a defence, with Reviewer 2 in the middle of the path. Extends the base. |
 
 ```sh
 npm install && npx playwright install chromium
@@ -37,7 +38,13 @@ for exactly this use — which is what makes it safe to print and share.
 `ATTRIBUTION.md`. Note the validator checks only that an attribution file
 exists, never that it is correct.
 
-All four theme × locale combinations validate with **0 errors and 0 warnings**,
+`rejection-cum-laude` is first-party and fully drawn, like the base. **Ten of
+its sixteen motifs are reused** from `mittagspause`, two of them on the same card
+number under the same name (Chaos on 1, Fokus on 13). The family resemblance is a
+decision, not an oversight: motifs live in `motifs.js` rather than in a theme
+precisely so any theme can name any of them.
+
+All six theme × locale combinations validate with **0 errors and 0 warnings**,
 and consecutive builds are byte-identical.
 
 Every output path carries the theme and locale — `out/<theme>-<locale>/` for the
@@ -132,7 +139,7 @@ must be achievable by adding one locale file.
 | Cards are monolingual | One language per deck. Two languages = two complete card and rules sets from one theme via `localeOverrides`. |
 | Flavour text | None. The `flavor` field was removed. |
 | Card backs | One neutral shared back for the 14 Masters; Apprentice and Deity reuse their own front as their back. |
-| Themes | `dungeon-bright` is self-contained and the base; every other theme sets `extends: "dungeon-bright"` and overrides only what differs. `mittagspause` is the first of those. |
+| Themes | `dungeon-bright` is self-contained and the base; every other theme sets `extends: "dungeon-bright"` and overrides only what differs. `mittagspause` and `rejection-cum-laude` are both of those. |
 
 ## Print geometry
 
@@ -258,10 +265,12 @@ PathOfThePriest/
 ├─ themes/
 │  ├─ dungeon-bright/        # the base theme; extend this
 │  │  └─ theme.json          # self-contained: no `extends` of its own
-│  └─ mittagspause/          # extends dungeon-bright
-│     ├─ theme.json
-│     ├─ art/                # only card 0; everything else is drawn
-│     └─ ATTRIBUTION.md      # hand-written here; generated when art is sourced
+│  ├─ mittagspause/          # extends dungeon-bright
+│  │  ├─ theme.json
+│  │  ├─ art/                # only card 0; everything else is drawn
+│  │  └─ ATTRIBUTION.md      # hand-written here; generated when art is sourced
+│  └─ rejection-cum-laude/   # extends dungeon-bright; wholly drawn
+│     └─ theme.json
 ├─ src/
 │  ├─ build.js               # CLI: validate | model | preview | build
 │  ├─ model.js               # cards + theme + locale -> render model
@@ -342,6 +351,9 @@ Two layers. Both must pass before anything is sent to a printer.
 - **Fonts** — every family a theme names is vendored.
 - **Attribution** — every art file has an entry in `ATTRIBUTION.md`.
 - **Hyphenation** — every card id in a locale's `meta.hyphenate` is a real card.
+- **Motifs** — every `motif` a theme names exists in `motifs.js`. `card.js` and
+  `decor.js` both test `MOTIFS[card.motif]` and fall through, so a typo produced
+  a blank art window, a gap in the back tile, and no warning anywhere.
 
 **Layout** (`npm run validate -- --deep`, and always inside `npm run build`) —
 `src/audit.js`, measured in a live page:
@@ -349,6 +361,10 @@ Two layers. Both must pass before anything is sent to a printer.
 - **Overflow** — text taller than its box; it would be clipped.
 - **Safe zone** — any text element crossing the safe inset; it could be cut off.
 - **Headroom** — fewer than 1 spare line, meaning a longer translation will not fit.
+- **Name plate** — a card name that wraps to a second line. The plate is a fixed
+  height, so the name does not grow it, it pushes the faction label out of the
+  bottom of the banner. Nothing else catches this: a wrapped name overflows no
+  text box and crosses no safe zone.
 - **Motif centring** — drawn art more than 4px off the centre of the visible
   window, which catches a stale measured centre in `motifs.js`.
 
@@ -552,6 +568,15 @@ winnable, only needed if the effects themselves are ever altered.
   one line carrying the distinction the whole player turn depends on. It is 25u
   now. There is no width pressure on it; the longest label clears the safe zone
   by over 200px.
+- **A card name gets 593px, not the 673px the safe zone suggests.** The banner
+  plate insets itself 34u on each side and adds a 6u border on top of that, so
+  the usable measure is `816 - 2*(34+6) - 2*safe-x`. Measured against the safe
+  width instead, "Konstruktives Feedback" looked like it fitted with 10% to
+  spare; on the real page it wrapped, and because the plate height is fixed the
+  second line pushed the HILFE label clean out of the banner. The audit now
+  checks this directly — the general lesson is that a decor style can change the
+  box a piece of text actually lives in, so measure the rendered element, never
+  the geometry it nominally sits in.
 - **Glyphs on rules cards need mixing toward the ink.** The rules palette is pale
   paper with a light accent, so an accent-coloured icon nearly vanishes in print
   even though it reads fine on a card face.
@@ -624,8 +649,10 @@ winnable, only needed if the effects themselves are ever altered.
 
 ## Open items
 
-A third theme is agreed but not built: **`THEME-SUMMA-CUM-LAUDE.md`** holds the
-settled card names, the title, and the steps still to do.
+The third theme, **`rejection-cum-laude`**, is **built** and validates in both
+languages. `THEME-REJECTION-CUM-LAUDE.md` records its naming decisions, the
+German gender traps it had to clear, and the two points still awaiting a call —
+the German name for card 8, and the physical proof.
 
 See **`NEXT-STEPS.md`** — **M10** (art-window composition on `dungeon-bright`) and
 **M13** (greyscale and physical proofs), plus a list of ideas already rejected and

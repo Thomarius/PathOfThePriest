@@ -465,4 +465,114 @@ export const MOTIFS = {
       8,
       [93, 83],
     ),
+
+  /* ---- "Rejection Cum Laude" ----------------------------------------------
+   * A doctoral student walking a manuscript to a defence. Ten of that deck's
+   * sixteen cards reuse motifs drawn above — the overlap with the working-day
+   * set is accepted rather than avoided — so only these six are new.
+   *
+   * The setting is full of paper, and cards 0, 2, 6 and 8 could all have
+   * collapsed into "a rectangle". They are kept apart by silhouette: a bust, a
+   * downward point, a horizontal envelope and a diagonal tick.
+   */
+
+  /** 0 — the doctoral student. The same avatar logic as `michi`, with no hair
+   *  mass: a bare round head over shoulders, which is what reads as a *person*
+   *  without reading as a particular one. The mortarboard deliberately does not
+   *  appear here — you only get the hat once the defence is behind you, so it
+   *  belongs to card D. */
+  scholar: () =>
+    svg(
+      solidCircle(100, 74, 34) +
+        solid('M30 182 C32 148 62 126 100 126 C138 126 168 148 170 182 Z'),
+      8,
+      [100, 111],
+    ),
+
+  /** 2 — Reviewer 2, the card that destroys. A fountain-pen nib: a downward
+   *  point is the one silhouette in this deck that cannot be mistaken for a
+   *  sheet of paper. The slit is a filled sliver rather than a stroke — drawn
+   *  as a line it gains its own outline and becomes a second object lying on
+   *  top of the nib. */
+  penNib: () =>
+    svg(
+      solid(
+        'M100 178 C78 140 56 108 48 84 L48 42 Q100 34 152 42 L152 84 ' +
+          'C144 108 122 140 100 178 Z',
+      ) +
+        `<path d="M94 102 L106 102 L100 170 Z" fill="${LINE}" stroke="none"/>` +
+        dot(100, 92, 13),
+      8,
+      [100, 106],
+    ),
+
+  /** 2 — Reviewer 2, the card that destroys. A pair of narrowed eyes under heavy
+   *  angled brows. The brows are what make it read as a threat rather than as a
+   *  face: eyes alone, however they are shaped, read as neutral. Both halves are
+   *  exact mirrors about x=100, written out rather than transformed, so the
+   *  audit measures the same geometry it paints.
+   *
+   *  `penNib` below is kept as the alternative — it reads unmistakably as a pen,
+   *  but a pen is not menacing. */
+  evilEyes: () =>
+    svg(
+      solid('M28 68 L87 93 L81 109 L22 84 Z') +
+        solid('M172 68 L113 93 L119 109 L178 84 Z') +
+        solid('M28 106 L85 131 C72 179 34 166 28 106 Z') +
+        solid('M172 106 L115 131 C128 179 166 166 172 106 Z'),
+      8,
+      [100, 115.1],
+    ),
+
+  /** 6 — the submission. An envelope, drawn flap-down as one filled body with
+   *  the flap as a second filled triangle: the fold is structure, so it may be
+   *  an outline, where an interior detail may not. */
+  envelope: () =>
+    svg(
+      solid('M28 58 h144 v104 h-144 Z') + solid('M28 58 L100 118 L172 58 Z'),
+      8,
+      [100, 110],
+    ),
+
+  /** 7 — the mentor. An owl: ear tufts and two large eyes carry it, and both
+   *  survive 63 mm. Body and tufts are a single path — as separate overlapping
+   *  solids the tufts' lower edges cross the head and read as scars. */
+  owl: () =>
+    svg(
+      solid(
+        'M36 36 L60 70 C70 52 84 44 100 44 C116 44 130 52 140 70 L164 36 ' +
+          'C170 70 174 98 174 122 C174 160 142 184 100 184 ' +
+          'C58 184 26 160 26 122 C26 98 30 70 36 36 Z',
+      ) +
+        solidCircle(73, 96, 27) +
+        solidCircle(127, 96, 27) +
+        dot(73, 96, 12) +
+        dot(127, 96, 12) +
+        `<path d="M100 112 L111 136 L89 136 Z" fill="${LINE}" stroke="none"/>`,
+      8,
+      [100, 110],
+    ),
+
+  /** 8 — constructive feedback: the tick in the margin. Drawn as a filled
+   *  chevron rather than a stroked one, so it carries the same outline as every
+   *  other motif instead of reading as a bare pen stroke. */
+  marginTick: () =>
+    svg(solid('M26 110 L48 86 L80 122 L154 36 L176 56 L80 170 Z') + spark(44, 44, 13), 8, [
+      100, 103,
+    ]),
+
+  /** D — the defence, and the goal of the whole deck. A mortarboard: the cap is
+   *  drawn first and the board over it, so the board's own edges hide the cap's
+   *  top and no interior line appears where the two meet. The cap's top corners
+   *  sit exactly on the board's lower edges at y=100, which is why those numbers
+   *  are not round. */
+  mortarboard: () =>
+    svg(
+      solid('M62 100 L62 134 C62 154 82 164 100 164 C118 164 138 154 138 134 L138 100 Z') +
+        solid('M100 44 L172 82 L100 120 L28 82 Z') +
+        line('M100 82 L146 98 L146 132', 9) +
+        dot(146, 141, 11),
+      8,
+      [100, 104],
+    ),
 };

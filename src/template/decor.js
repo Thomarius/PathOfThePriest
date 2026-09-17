@@ -167,6 +167,55 @@ function starPath(cx, cy, outer, innerRatio = 0.42, points = 5) {
   return `M${pts.join(' L')} Z`;
 }
 
+/*
+ * A laurel wreath, plotted rather than hand-placed — the same lesson the back
+ * star taught, where five outer points spread across radii 42 to 46 and two of
+ * them crossed the ring drawn around them. Every leaf here sits on one circle
+ * and is tilted by its own angle, so the two halves are exact mirrors and the
+ * mark cannot be read as pointing anywhere.
+ */
+function laurelShape() {
+  const cx = 50;
+  const cy = 50;
+  const r = 36;
+  const parts = [];
+
+  /*
+   * The sprigs start almost at the tie and run almost to the top. An earlier
+   * version left equal gaps at both ends, which is not a wreath at all — it
+   * reads as two loose leaves facing each other. Only the top may be open.
+   */
+  for (const side of [-1, 1]) {
+    const from = (Math.PI / 2) + side * 0.07 * Math.PI;
+    const to = (Math.PI / 2) + side * 0.86 * Math.PI;
+    parts.push(
+      `<path d="M${(cx + Math.cos(from) * r).toFixed(1)} ${(cy + Math.sin(from) * r).toFixed(1)} ` +
+        // Sweep follows the direction the angle travels: y grows downward, so an
+        // increasing angle is clockwise and needs sweep 1. Inverted, the arc
+        // takes the far side of the circle and the two stems cross into a lens.
+        `A${r} ${r} 0 0 ${side > 0 ? 1 : 0} ` +
+        `${(cx + Math.cos(to) * r).toFixed(1)} ${(cy + Math.sin(to) * r).toFixed(1)}" ` +
+        `stroke-width="3.5"/>`,
+    );
+    for (let i = 0; i < 9; i += 1) {
+      const a = from + ((to - from) * i) / 8;
+      const x = cx + Math.cos(a) * r;
+      const y = cy + Math.sin(a) * r;
+      // Leaves lean off the tangent, away from the stem, the way a real sprig
+      // does; along it they read as a dashed circle.
+      const deg = (a * 180) / Math.PI + side * 62;
+      parts.push(
+        `<ellipse cx="0" cy="0" rx="8" ry="3.4" fill="currentColor" stroke="none"
+                  transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${deg.toFixed(1)})"/>`,
+      );
+    }
+  }
+
+  // The tie at the foot, where the two sprigs meet.
+  parts.push(`<circle cx="50" cy="${cy + r}" r="4.5" fill="currentColor" stroke="none"/>`);
+  return parts.join('\n      ');
+}
+
 export function emblem(kind = 'lozenge') {
   const shapes = {
     lozenge: `
@@ -199,6 +248,7 @@ export function emblem(kind = 'lozenge') {
       <path d="M50 50 V30" stroke-width="8" stroke-linecap="round"/>
       <path d="M50 50 V21" stroke-width="4.5" stroke-linecap="round"/>
       <circle cx="50" cy="50" r="5.5" fill="currentColor" stroke="none"/>`,
+    laurel: laurelShape(),
   };
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none"

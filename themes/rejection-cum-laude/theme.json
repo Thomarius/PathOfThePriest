@@ -1,0 +1,221 @@
+{
+  "$comment": "A doctoral student walks a manuscript from first draft to a defended thesis, with Reviewer 2 waiting in the middle of the path. Extends dungeon-bright for palette, typography and decor; overrides naming, motifs and the back emblem. German names live under localeOverrides.de because the parent sets German names there too. Ten of the sixteen motifs are reused from the working-day deck — the family resemblance is accepted, not avoided. Two German gender notes: the Path is \"die Promotion\", feminine, so its accusative slots need no separate form, unlike mittagspause's masculine \"Arbeitstag\"; and Hilfe/Huerde are feminine with idiomatic plurals, so the objective prints \"8 Hilfen und 6 Huerden\" where \"8 Unterstuetzungen\" would not read. The Deity must stay feminine: de.json line 45 has \"ans Ende zur {card:D}\".",
+  "extends": "dungeon-bright",
+  "id": "rejection-cum-laude",
+  "title": "Rejection Cum Laude",
+  "subtitle": "A solo science career",
+  "terms": {
+    "path": {
+      "def": "the thesis",
+      "indef": "a thesis",
+      "in": "in the thesis",
+      "of": "of the thesis",
+      "from": "from the thesis"
+    }
+  },
+  "factions": {
+    "true": {
+      "one": "Support",
+      "other": "Supports",
+      "genPl": "Supports",
+      "anyAkk": "any Support",
+      "indefAkk": "a Support",
+      "eachNom": "Each Support",
+      "sameAkk": "the same Support",
+      "negAkk": "any Support",
+      "negNom": "no Support"
+    },
+    "fake": {
+      "one": "Obstacle",
+      "other": "Obstacles",
+      "genPl": "Obstacles",
+      "anyAkk": "any Obstacle",
+      "indefAkk": "an Obstacle",
+      "eachNom": "Each Obstacle",
+      "sameAkk": "the same Obstacle",
+      "negAkk": "any Obstacle",
+      "negNom": "no Obstacle"
+    },
+    "apprentice": {
+      "one": "PhD Student",
+      "other": "PhD Students"
+    },
+    "deity": {
+      "one": "Defence",
+      "other": "Defences"
+    }
+  },
+  "cards": {
+    "0": {
+      "name": "PhD Student",
+      "motif": "scholar",
+      "inline": "the PhD Student"
+    },
+    "1": {
+      "name": "Chaos",
+      "motif": "crossedArrows"
+    },
+    "2": {
+      "name": "Reviewer 2",
+      "motif": "evilEyes",
+      "inline": "Reviewer 2"
+    },
+    "3": {
+      "name": "Hardware Failure",
+      "motif": "cog"
+    },
+    "4": {
+      "name": "Null Results",
+      "motif": "backArrow"
+    },
+    "5": {
+      "name": "Coffee",
+      "motif": "mug"
+    },
+    "6": {
+      "name": "Submission",
+      "motif": "envelope"
+    },
+    "7": {
+      "name": "Mentor",
+      "motif": "owl"
+    },
+    "8": {
+      "name": "Constructive Feedback",
+      "motif": "marginTick"
+    },
+    "9": {
+      "name": "Brilliant Idea",
+      "motif": "bulb"
+    },
+    "10": {
+      "name": "Officemate",
+      "motif": "bubble"
+    },
+    "11": {
+      "name": "Deadline Panic",
+      "motif": "alarm"
+    },
+    "12": {
+      "name": "Clean Data",
+      "motif": "bars"
+    },
+    "13": {
+      "name": "Focus",
+      "motif": "reticle"
+    },
+    "14": {
+      "name": "Conference",
+      "motif": "plane"
+    },
+    "D": {
+      "name": "Defence",
+      "motif": "mortarboard"
+    }
+  },
+  "decor": {
+    "seed": "rejection-cum-laude",
+    "emblem": "laurel"
+  },
+  "localeOverrides": {
+    "de": {
+      "title": "Rejection Cum Laude",
+      "subtitle": "Eine Solo-Wissenschaftskarriere",
+      "terms": {
+        "path": {
+          "def": "die Promotion",
+          "indef": "eine Promotion",
+          "in": "in der Promotion",
+          "of": "der Promotion",
+          "from": "aus der Promotion"
+        }
+      },
+      "factions": {
+        "true": {
+          "one": "Hilfe",
+          "akk": "Hilfe",
+          "other": "Hilfen",
+          "genPl": "Hilfen",
+          "anyAkk": "eine beliebige Hilfe",
+          "indefAkk": "eine Hilfe",
+          "eachNom": "Jede Hilfe",
+          "sameAkk": "dieselbe Hilfe",
+          "negAkk": "keine Hilfe",
+          "negNom": "keine Hilfe"
+        },
+        "fake": {
+          "one": "Hürde",
+          "akk": "Hürde",
+          "other": "Hürden",
+          "genPl": "Hürden",
+          "anyAkk": "eine beliebige Hürde",
+          "indefAkk": "eine Hürde",
+          "eachNom": "Jede Hürde",
+          "sameAkk": "dieselbe Hürde",
+          "negAkk": "keine Hürde",
+          "negNom": "keine Hürde"
+        },
+        "apprentice": {
+          "one": "Doktorandin",
+          "other": "Doktorandinnen"
+        },
+        "deity": {
+          "one": "Verteidigung",
+          "other": "Verteidigungen"
+        }
+      },
+      "cards": {
+        "0": {
+          "name": "Doktorandin",
+          "inline": "Doktorandin"
+        },
+        "1": {
+          "name": "Chaos"
+        },
+        "2": {
+          "name": "Reviewer 2",
+          "inline": "Reviewer 2"
+        },
+        "3": {
+          "name": "Hardwarefehler"
+        },
+        "4": {
+          "name": "Nullresultate"
+        },
+        "5": {
+          "name": "Kaffee"
+        },
+        "6": {
+          "name": "Einreichung"
+        },
+        "7": {
+          "name": "Mentor"
+        },
+        "8": {
+          "name": "Konstruktive Kritik"
+        },
+        "9": {
+          "name": "Geistesblitz"
+        },
+        "10": {
+          "name": "Bürokollege"
+        },
+        "11": {
+          "name": "Deadline Panik"
+        },
+        "12": {
+          "name": "Saubere Daten"
+        },
+        "13": {
+          "name": "Fokus"
+        },
+        "14": {
+          "name": "Konferenz"
+        },
+        "D": {
+          "name": "Verteidigung"
+        }
+      }
+    }
+  }
+}

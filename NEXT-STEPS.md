@@ -1,8 +1,9 @@
 # Next Steps
 
-> A third theme, *Summa Cum Laude*, is agreed but not built — its card names
-> and remaining steps live in **`THEME-SUMMA-CUM-LAUDE.md`**. The milestones
-> below are art direction on the existing decks and are independent of it.
+> A third theme, *Rejection Cum Laude*, is **built** — its naming decisions and
+> the two points still open live in **`THEME-REJECTION-CUM-LAUDE.md`**. The
+> milestones below are art direction on the existing decks and are independent
+> of it, though M13's proofs now cover three decks rather than two.
 
 The pipeline is finished (M0–M7 — see `CLAUDE.md` for architecture and the
 reasoning behind past decisions). What remains is **art direction on the
