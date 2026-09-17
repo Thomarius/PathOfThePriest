@@ -18,10 +18,10 @@ Names are approved. No articles, matching the two existing decks.
 |---|---|---|---|
 | 1 | Swaps the 2 adjacent cards | **Chaos** | Chaos |
 | 2 | **Destroys** the lowest adjacent card | **Reviewer 2** | Reviewer 2 |
-| 3 | Sends lowest adjacent back to the **start** | **Datenverlust** | Data Loss |
-| 4 | Moves lowest adjacent **back 2** | **Schlechte Ergebnisse** | Bad Results |
+| 3 | Sends lowest adjacent back to the **start** | **Hardwarefehler** | Hardware Failure |
+| 4 | Moves lowest adjacent **back 2** | **Nullresultat** | Null Results |
 | 6 | Sends lowest adjacent to the space **before Reviewer 2** | **Einreichung** | Submission |
-| 11 | Drags lowest adjacent **2 spaces toward Reviewer 2** | **Deadline** | Deadline |
+| 11 | Drags lowest adjacent **2 spaces toward Reviewer 2** | **Deadline Panik** | Deadline Panic |
 
 Card 6 is deliberately ironic: submitting is nominally good, and the card's
 effect is to place your work directly in front of Reviewer 2.
@@ -30,12 +30,12 @@ effect is to place your work directly in front of Reviewer 2.
 
 | # | What the card does | German | English |
 |---|---|---|---|
-| 5 | Swap with a card up to 2 away | **Kaffeepause** | Coffee Break |
-| 7 | Three graded options — the most flexible card | **Geistesblitz** | Brilliant Idea |
-| 8 | Back 2 **or** advance 1 | **Feedback** | Feedback |
-| 9 | Swap with a card exactly 3 away | **Neuer Ansatz** | New Approach |
+| 5 | Swap with a card up to 2 away | **Kaffee** | Coffee |
+| 7 | Three graded options — the most flexible card | **Mentor** | Mentor |
+| 8 | Back 2 **or** advance 1 | **KonstruktivesFeedback** | Constructive Feedback |
+| 9 | Swap with a card exactly 3 away | **Geistesblitz** | Brilliant Idea |
 | 10 | Swap with any adjacent card | **Bürokollege** | Officemate |
-| 12 | Move any adjacent card 2 spaces | **Gliederung** | Outline |
+| 12 | Move any adjacent card 2 spaces | **Saubere Daten** | Clean Data |
 | 13 | Back 3 **or** advance 2 — the largest numbers | **Fokus** | Focus |
 | 14 | Swap with a card 4 away — the longest reach | **Konferenz** | Conference |
 
@@ -50,7 +50,10 @@ fact that the whole player turn is "choose an Ally and activate it".
 | 0 | **Doktorandin** | PhD Student |
 | D | **Verteidigung** | Defence |
 
-**Title:** *Summa Cum Laude*, in both languages.
+**Title Ideas:** 
+*Rejection Cum Laude*, in both languages.
+*Doctor When?*, in both languages.
+*Publish or Perish*, in both languages.
 
 ---
 
@@ -129,7 +132,7 @@ Would be a new shape in `emblem()` in `src/template/decor.js`.
 - **Card 0 artwork.** The Michi deck uses a supplied illustration for card 0. This
   theme will use a drawn motif unless one is provided.
 - **Back title.** `mittagspause` breaks its title across two lines with a newline
-  in the theme's own title string. *Summa Cum Laude* is short enough that it may
+  in the theme's own title string. The new title might be short enough that it may
   not need one — check once it renders.
 
 ### 5. What is *not* needed
