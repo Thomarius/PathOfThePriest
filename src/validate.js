@@ -11,6 +11,7 @@ import { buildModel, ROOT } from './model.js';
 import { missingIconFiles } from './icons/index.js';
 import { vendoredFamilies } from './template/fonts.js';
 import { DIAGRAMS } from './template/diagrams.js';
+import { MOTIFS } from './template/motifs.js';
 
 const EXPECTED = {
   true: [5, 7, 8, 9, 10, 12, 13, 14],
@@ -192,6 +193,19 @@ export function validate(overrides = {}) {
   let missingArt = 0;
   let artFiles = 0;
   for (const card of model.cards) {
+    /*
+     * An unknown motif key is silent everywhere else: card.js and decor.js both
+     * test `MOTIFS[card.motif]` and fall through, so a typo yields a blank art
+     * window, a gap in the back tile, and no warning — and the deep audit skips
+     * the card too, because it has no SVG to measure. The key has to be checked
+     * here or not at all.
+     */
+    if (card.motif && !MOTIFS[card.motif]) {
+      errors.push(
+        `card "${card.id}": unknown motif "${card.motif}" — ` +
+          `src/template/motifs.js has no such key`,
+      );
+    }
     // A card with a drawn motif has its art window filled procedurally and
     // needs no file — see decor.js.
     if (!card.art) {

@@ -100,6 +100,32 @@ export async function auditPage(page, model) {
           }
         }
 
+        /*
+         * The name plate is a fixed height — `--plate-box-h` positions the text
+         * frame under it — so a name that wraps to a second line does not grow
+         * the banner, it pushes the faction label out of the bottom of it. That
+         * is the one line the whole player turn depends on, and nothing else
+         * here catches it: a wrapped name overflows no text box and crosses no
+         * safe zone. The usable width is also not the safe width — the banner
+         * decor insets the plate and adds its own border on top of that.
+         */
+        const plateBox = card.querySelector('.card__plate');
+        if (plateBox) {
+          const gap = parseFloat(getComputedStyle(plateBox).rowGap) || 0;
+          const kids = [...plateBox.children];
+          const content =
+            kids.reduce((sum, el) => sum + el.getBoundingClientRect().height, 0) +
+            gap * Math.max(0, kids.length - 1);
+          if (content > plateBox.clientHeight + 0.5) {
+            findings.push({
+              id,
+              kind: 'plate',
+              overflowPx: Math.round((content - plateBox.clientHeight) * 10) / 10,
+              text: (card.querySelector('.card__name')?.textContent ?? '').trim(),
+            });
+          }
+        }
+
         // Where the motif's ink actually lands, against where it should. The
         // target is the field that survives trimming — below the bleed, above
         // the name plate — because that is what a player sees.
@@ -184,6 +210,11 @@ export function classify(findings, model) {
             'a longer translation will not fit',
         );
       }
+    } else if (f.kind === 'plate') {
+      errors.push(
+        `card ${nameOf(f.id)}: the name "${f.text}" overflows its plate by ${f.overflowPx}px — ` +
+          'it wraps to a second line and pushes the faction label out of the banner',
+      );
     } else if (f.kind === 'motif' && Math.max(Math.abs(f.dx), Math.abs(f.dy)) > MOTIF_TOLERANCE_PX) {
       warnings.push(
         `card ${nameOf(f.id)}: motif sits ${f.dx}px across and ${f.dy}px down from the ` +
