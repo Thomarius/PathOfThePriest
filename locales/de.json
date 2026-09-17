@@ -37,6 +37,9 @@
     "13.b": "Rücke {icon:advance} eine beliebige angrenzende Karte 2 Felder vor.",
     "14.a": "Tausche {icon:swap} diese Karte mit einer Karte, die 4 Felder entfernt ist."
   },
+  "titleCard": {
+    "credit": "Eine Fan-Umsetzung des Solo-Mikrospiels „The Path of the Priest“. Regeln unverändert. Nicht für den Verkauf."
+  },
   "rules": {
     "objective": {
       "title": "Ziel",

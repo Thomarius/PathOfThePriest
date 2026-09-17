@@ -189,7 +189,11 @@ export function classify(findings, model) {
   const warnings = [];
   const nameOf = (id) => {
     const card = model.cards.find((c) => c.id === id);
-    return card ? `${card.numberLabel} ${card.name ?? card.ref}` : id;
+    if (card) return `${card.numberLabel} ${card.name ?? card.ref}`;
+    // Non-playing cards are audited on their own page and are not in model.cards.
+    if (model.titleCard?.id === id) return 'title card';
+    const rules = model.rulesCards.find((r) => r.id === id);
+    return rules ? `rules "${rules.title ?? rules.id}"` : id;
   };
 
   for (const f of findings) {

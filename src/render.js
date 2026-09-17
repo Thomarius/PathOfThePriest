@@ -115,9 +115,11 @@ export async function renderAll(model, options) {
       backs.push({ id: back.id, file: name, sha256: front.sha256, copiedFrom: front.file });
     }
 
-    // --- rules cards --------------------------------------------------------
+    // --- title card and rules cards -----------------------------------------
+    // One page: both are non-playing cards, both are audited, and neither has a
+    // back of its own.
     const rules = [];
-    if (model.rulesCards.length) {
+    if (model.rulesCards.length || model.titleCard) {
       const rulesPage = await browser.newPage({
         viewport: { width: g.widthPx, height: g.heightPx },
         deviceScaleFactor: 1,
@@ -133,6 +135,12 @@ export async function renderAll(model, options) {
       audit.warnings.push(...rulesAudit.warnings);
 
       if (!audit.errors.length) {
+        if (model.titleCard) {
+          const name = `${model.titleCard.id}.png`;
+          const file = path.join(outDir, name);
+          await rulesPage.locator(`[data-title-id="${model.titleCard.id}"]`).screenshot({ path: file });
+          rules.push({ id: model.titleCard.id, file: name, sha256: sha256(file) });
+        }
         for (const card of model.rulesCards) {
           const name = `${card.id}.png`;
           const file = path.join(outDir, name);
@@ -158,9 +166,9 @@ export async function renderAll(model, options) {
       // pixel page would place an 816 CSS px card on paper as 8.5 inches.
       const pdfPage = await browser.newPage();
       // The PDF is the whole product: faces then rules cards.
-      const { renderRulesCard } = await import('./template/rules-card.js');
-      const rulesMm = model.rulesCards.map((rc) => renderRulesCard(rc, model, { unit: 'mm' }));
-      await settlePage(pdfPage, buildCardsHtml(model, cards, 'mm', { extras: rulesMm }));
+      const { nonPlayingCards } = await import('./template/document.js');
+      const extrasMm = nonPlayingCards(model, 'mm');
+      await settlePage(pdfPage, buildCardsHtml(model, cards, 'mm', { extras: extrasMm }));
       // Explicit width/height rather than preferCSSPageSize: Chromium quantizes
       // an @page size and landed ~0.09 mm off the printer's spec either way,
       // but this keeps the intent in one place.
@@ -170,7 +178,7 @@ export async function renderAll(model, options) {
         width: `${((g.widthPx / g.dpi) * 25.4).toFixed(4)}mm`,
         height: `${((g.heightPx / g.dpi) * 25.4).toFixed(4)}mm`,
         margin: { top: 0, right: 0, bottom: 0, left: 0 },
-        pageRanges: `1-${cards.length + model.rulesCards.length}`,
+        pageRanges: `1-${cards.length + extrasMm.length}`,
       });
       await pdfPage.close();
     }

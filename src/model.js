@@ -280,6 +280,40 @@ export function buildModel(overrides = {}) {
     };
   });
 
+  /*
+   * The title card. Not a playing card and not a rules card: it carries no
+   * mechanics, so it is declared in deck.json rather than in cards.json, which
+   * the rules fix at 16 faces.
+   *
+   * Its three pieces come from three different layers, which is the whole point
+   * of the split: the title and subtitle are theme data (and language-specific,
+   * so they fold through localeOverrides), the hero motif is a drawing shared by
+   * every theme, and the credit is theme-blind wording and therefore locale.
+   */
+  let titleCard = null;
+  if (deck.titleCard) {
+    const content = resolvePath(locale, deck.titleCard.key);
+    if (content == null) {
+      errors.push(
+        `title card: "${deck.titleCard.key}" missing from locale ${localeName}`,
+      );
+    }
+    const credit = content?.credit
+      ? parse(content.credit, 'title card credit').segments
+      : [];
+    titleCard = {
+      id: deck.titleCard.id,
+      title: theme.title ?? null,
+      subtitle: theme.subtitle ?? null,
+      credit,
+      motif: theme.titleMotif ?? null,
+      // The goal card's palette, not the master back's: a title card in the
+      // back's colours reads as a back, which is the thing this layout exists
+      // to avoid.
+      palette: theme.palette?.title ?? theme.palette?.deity ?? null,
+    };
+  }
+
   const backs = deck.backs.map((back) => ({
     id: back.id,
     design: back.design,
@@ -307,6 +341,7 @@ export function buildModel(overrides = {}) {
       hazardPalette: theme.palette?.fake ?? null,
       ui: locale.ui ?? {},
       cards: cards.filter(Boolean),
+      titleCard,
       rulesCards,
       backs,
     },

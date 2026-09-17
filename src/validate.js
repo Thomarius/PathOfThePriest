@@ -222,6 +222,13 @@ export function validate(overrides = {}) {
     warnings.push(`${missingArt} of ${model.cards.length} cards have no artwork assigned yet (M6)`);
   }
 
+  if (model.titleCard?.motif && !MOTIFS[model.titleCard.motif]) {
+    errors.push(
+      `title card: unknown titleMotif "${model.titleCard.motif}" — ` +
+        `src/template/motifs.js has no such key`,
+    );
+  }
+
   // Required only when actual image files are used. A drawn motif is ours and
   // needs no attribution; counting it as "art in use" wrongly failed a theme
   // that had no image files at all.

@@ -21,6 +21,11 @@
     "14",
     "D"
   ],
+  "titleCard": {
+    "id": "title",
+    "key": "titleCard",
+    "notes": "Not a playing card and not a rules card. It carries no mechanics, so it is declared here rather than in data/cards.json, which the rules fix at 16 faces. Its hero motif is the theme's titleMotif; its wording is the theme's title and subtitle plus locale.titleCard.credit."
+  },
   "rulesCards": [
     {
       "id": "rules-objective",

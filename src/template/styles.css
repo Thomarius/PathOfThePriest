@@ -821,6 +821,97 @@
   --motif-size: calc(560 * var(--u));
 }
 
+/* --- title card ------------------------------------------------------------
+ *
+ * Built on .card--plain, so the art window, the motif centring and the ground
+ * band all come from there. Only three things differ: the plate is taller and
+ * wider because it holds two lines rather than one, the motif is bigger because
+ * nothing competes with it, and there is a credit line below the plate.
+ */
+
+/*
+ * A FIXED plate height, like every other plate in the deck, rather than one that
+ * grows to its content. Letting it grow would move `.card--plain`'s --art-foot,
+ * which is what centres the motif in the field that survives trimming, and the
+ * motif would then sit differently on a theme with a two-line title than on one
+ * with a single line. Fixed and audited is the pattern the rest of the deck
+ * already uses: if a title outgrows this, the plate-overflow check fails.
+ */
+/* Specificity deliberately raised: .decor-plate--banner sets --plate-box-h too
+   and is declared later in this file, so a bare .card--title would lose to it
+   and the plate would silently keep its 126u face-card height. */
+.card--title.decor-plate--banner,
+.card--title {
+  --plate-box-h: calc(248 * var(--u));
+}
+
+.card--title .card__art--motif {
+  --motif-size: calc(620 * var(--u));
+}
+
+/*
+ * The banner plate insets itself 34u a side and adds a 6u border, then pads
+ * --safe-x again *inside* that, which leaves a name 593px of measure instead of
+ * the 673px the safe zone actually allows. A card name is short enough not to
+ * care; a deck title is not. Subtracting the inset and border back out puts the
+ * text edge exactly on the safe line and wins back 80px.
+ *
+ * Scoped to the banner plate because 34u and 6u are that decor style's numbers.
+ * A theme on a different plate style needs its own value here.
+ */
+.decor-plate--banner.card--title .card__plate {
+  padding-left: calc(var(--safe-x) - 40 * var(--u));
+  padding-right: calc(var(--safe-x) - 40 * var(--u));
+}
+
+.card__title {
+  font-size: calc(72 * var(--u));
+  line-height: 1.06;
+  /* A newline in the theme's title breaks the line here, exactly as on the back.
+     Where a long title wraps is a design decision, so the theme makes it rather
+     than the box width. */
+  white-space: pre-line;
+  /*
+   * A guard, not something a current title needs: at 72u all three titles either
+   * fit on one line or carry their own newline. It is here because the theme
+   * cannot always supply the break — the same string is set at 46u on the card
+   * back, where a hard newline would be wrong. The case that put it here was an
+   * earlier title of this deck's, "Rejection Cum Laude", which the box broke
+   * after "Cum", splitting the phrase; balancing moved it to the better point.
+   * This is not the case CLAUDE.md records text-wrap as useless for — that was
+   * card 7's body copy, where the constraint is height, not one break's place.
+   */
+  text-wrap: balance;
+}
+
+.card__subtitle {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: calc(32 * var(--u));
+  font-weight: 600;
+  letter-spacing: calc(2 * var(--u));
+  opacity: 0.85;
+}
+
+/*
+ * Between the plate and the safe line. 26u is ~6.2pt, the floor a physical proof
+ * set for anything a player has to read — a credit is read once, but it is still
+ * read, so it does not go below it.
+ */
+.card__credit {
+  position: absolute;
+  left: var(--safe-x);
+  right: var(--safe-x);
+  bottom: calc(var(--safe-y) + 2 * var(--u));
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: calc(26 * var(--u));
+  line-height: 1.3;
+  color: var(--ink);
+  opacity: 0.75;
+}
+
 /* --- bright / anime decor -------------------------------------------------
  *
  * A second visual register alongside the engraving style: thick outlines, flat

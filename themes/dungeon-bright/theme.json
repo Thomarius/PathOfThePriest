@@ -3,6 +3,7 @@
   "id": "dungeon-bright",
   "title": "Underleveled",
   "subtitle": "A solo dungeon delve",
+  "titleMotif": "chest",
   "terms": {
     "path": {
       "def": "the dungeon",

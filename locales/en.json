@@ -34,6 +34,9 @@
     "13.b": "Advance {icon:advance} any adjacent card 2 spaces.",
     "14.a": "Swap {icon:swap} this card with a card 4 spaces away."
   },
+  "titleCard": {
+    "credit": "A fan re-theme of the solo microgame “The Path of the Priest”. Rules unchanged. Not for sale."
+  },
   "rules": {
     "objective": {
       "title": "Objective",

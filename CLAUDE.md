@@ -8,18 +8,19 @@ design are re-themed.
 ## Status
 
 **The pipeline is complete (M0–M7), as is most of the art direction (M8, M9, M11,
-M12).** Remaining: **M10** (art-window composition) and **M13** (greyscale and
-physical proofs), both tracked in **`NEXT-STEPS.md`**.
+M12).** Remaining: the rest of **M10** (art-window composition) and **M13**
+(greyscale and physical proofs). Both are described under Milestones below, which
+is now the only place open work is tracked.
 
 **`dungeon-bright` is the base theme every other theme extends.** Each theme
-builds **16 cards + 6 rules cards + 3 backs** in `de` and `en`, in one visual
+builds **16 cards + 1 title card + 6 rules cards + 3 backs** in `de` and `en`, in one visual
 register: flat colour, thick outlines, rounded shapes.
 
 | Theme | Setting |
 |---|---|
 | `dungeon-bright` | An underlevelled adventurer delving for treasure. The base. |
 | `mittagspause` | Michi, an accelerator physicist who never stops, walking her working day to lunch. Extends the base. |
-| `rejection-cum-laude` | A doctoral student walking a manuscript to a defence, with Reviewer 2 in the middle of the path. Extends the base. |
+| `doctor-when` | A doctoral student walking a manuscript to a defence, with Reviewer 2 in the middle of the path. Extends the base. |
 
 ```sh
 npm install && npx playwright install chromium
@@ -38,7 +39,7 @@ for exactly this use — which is what makes it safe to print and share.
 `ATTRIBUTION.md`. Note the validator checks only that an attribution file
 exists, never that it is correct.
 
-`rejection-cum-laude` is first-party and fully drawn, like the base. **Ten of
+`doctor-when` is first-party and fully drawn, like the base. **Ten of
 its sixteen motifs are reused** from `mittagspause`, two of them on the same card
 number under the same name (Chaos on 1, Fokus on 13). The family resemblance is a
 decision, not an oversight: motifs live in `motifs.js` rather than in a theme
@@ -104,11 +105,45 @@ Three things to know:
 | True Masters | 8 | numbers 5, 7, 8, 9, 10, 12, 13, 14 — choose-one effects |
 | Fake Masters | 6 | numbers 1, 2, 3, 4, 6, 11 — forced effect + fallback/conditional |
 | **Playing cards total** | **16** | |
+| Title card | 1 | deck title, subtitle and the credit to the original game |
 | Rules cards | 6 | objective+endgame / setup / turn order / glossary / clarifications 1 / clarifications 2 |
 | Card backs | 3 designs | shared back for the **14 Masters**, plus distinct backs for Apprentice and Deity |
 
 The 14 Masters are shuffled during setup, so their back must be identical.
 Apprentice and Deity are separated before shuffling and may be told apart.
+
+### The title card
+
+Declared in `data/deck.json`, **not** in `data/cards.json` — it carries no
+mechanics, and that file is the skeleton the rules fix at 16 faces, which the
+validator checks. Its three pieces come from three different layers, which is the
+split working as intended:
+
+| Piece | Layer |
+|---|---|
+| title, subtitle | theme (`theme.json`, folded through `localeOverrides`) |
+| hero motif (`titleMotif`) | shared drawing in `motifs.js` |
+| credit to the original game | locale — it is theme-blind wording |
+
+It is laid out like the Apprentice and Deity (full-bleed art, plate near the
+foot) rather than like the card back, deliberately: a title card in the back's
+colours and composition reads as a back. Each theme points `titleMotif` at its
+own goal card's subject — `chest`, `mug`, `mortarboard`.
+
+Two things to know:
+
+- **Its plate is a fixed 248u, sized for two lines.** Letting it grow to its
+  content would move `.card--plain`'s `--art-foot`, which is what centres the
+  motif in the field that survives trimming, so the motif would sit differently
+  on a two-line title than on a one-line one. A short title therefore sits with
+  air around it. If a title outgrows the box, the plate-overflow audit fails.
+- **It has no card back**, exactly like the six rules cards. It also shares their
+  render page and their `manifest.rules` key, because both are non-playing cards
+  that are audited, printed and proofed together — the key is named for what was
+  there first.
+
+This is also the first template to print `subtitle`. Every theme has carried one
+from the beginning and nothing had ever rendered it.
 
 ## Core architecture principle
 
@@ -139,7 +174,7 @@ must be achievable by adding one locale file.
 | Cards are monolingual | One language per deck. Two languages = two complete card and rules sets from one theme via `localeOverrides`. |
 | Flavour text | None. The `flavor` field was removed. |
 | Card backs | One neutral shared back for the 14 Masters; Apprentice and Deity reuse their own front as their back. |
-| Themes | `dungeon-bright` is self-contained and the base; every other theme sets `extends: "dungeon-bright"` and overrides only what differs. `mittagspause` and `rejection-cum-laude` are both of those. |
+| Themes | `dungeon-bright` is self-contained and the base; every other theme sets `extends: "dungeon-bright"` and overrides only what differs. `mittagspause` and `doctor-when` are both of those. |
 
 ## Print geometry
 
@@ -251,7 +286,6 @@ because public-domain scans have unpredictable aspect ratios.
 PathOfThePriest/
 ├─ RulesSummary.txt          # source of truth for mechanics
 ├─ CLAUDE.md                 # architecture + past decisions (this file)
-├─ NEXT-STEPS.md             # remaining work: M10 and M13
 ├─ README.md
 ├─ package.json              # dep: playwright
 ├─ config/
@@ -269,7 +303,7 @@ PathOfThePriest/
 │  │  ├─ theme.json
 │  │  ├─ art/                # only card 0; everything else is drawn
 │  │  └─ ATTRIBUTION.md      # hand-written here; generated when art is sourced
-│  └─ rejection-cum-laude/   # extends dungeon-bright; wholly drawn
+│  └─ doctor-when/           # extends dungeon-bright; wholly drawn
 │     └─ theme.json
 ├─ src/
 │  ├─ build.js               # CLI: validate | model | preview | build
@@ -281,6 +315,7 @@ PathOfThePriest/
 │  ├─ icons/                 # 6 movement glyphs, one .svg each
 │  └─ template/
 │     ├─ card.js             # card face
+│     ├─ title-card.js       # deck title, subtitle, credit
 │     ├─ rules-card.js       # the 6 rules cards
 │     ├─ back.js             # shared Masters back
 │     ├─ document.js         # page assembly shared by render + audit
@@ -295,7 +330,7 @@ PathOfThePriest/
 │  └─ fetch-art.mjs          # download + wire in + write ATTRIBUTION.md
 ├─ assets/fonts/             # OFL woff2 + licences + fonts.json manifest
 └─ out/                      # gitignored; everything reproducible
-   ├─ <theme>-<locale>/      # 16 cards + 6 rules + 3 backs + manifest.json
+   ├─ <theme>-<locale>/      # 16 cards + title + 6 rules + 3 backs + manifest.json
    ├─ preview/index.html
    ├─ proof-<theme>-<locale>.png
    └─ <title>-<theme>-<locale>-<profile>.pdf
@@ -404,7 +439,7 @@ drift from the output, and it **writes nothing at all** when a card fails.
   are stroked in `currentColor` and sized in `em`, so they inherit the colour of
   whatever text they sit in, and the glossary rules card is generated from the
   same files so the legend cannot drift from the cards. `adjacent` and `send`
-  were later removed — see the rejected list in NEXT-STEPS.md.
+  were later removed — see the rejected list below.
 - **M4 — Rendering pipeline. DONE.** `npm run build` → 16 PNGs at 816×1110 in
   `out/<theme>-<locale>/` plus a PDF. Fonts are vendored (`npm run fonts`) and
   inlined. Determinism is *verified, not assumed*: the renderer writes SHA-256
@@ -467,19 +502,35 @@ drift from the output, and it **writes nothing at all** when a card fails.
   face card and 115 px on the full-art pair), each motif's own off-centre drift
   is corrected through its viewBox, the two-tone fill carries real contrast, and
   `artBacking: "ground"` puts a horizon behind every motif — below the deepest
-  ink in the set, so it never crosses a drawing. Scaling motifs up, evening out
-  their 4.4× ink spread, and winning back room for a real ground band on the face
-  cards are still open — see `NEXT-STEPS.md`.
+  ink in the set, so it never crosses a drawing. **Still open:** scaling motifs
+  up (they cannot all scale about their centre — `dagger` already bottoms out 5px
+  above the plate, so bottom-anchoring is the mechanism, and cropping reads as
+  deliberate on a staff or a dagger but simply wrong on a creature); evening out
+  a **4.4× spread in motif ink** (`staff` covers 5.9% of the window,
+  `magicCircle` 25.5%, and the four M8 "weighted up afterwards" — `staff`,
+  `dagger`, `trapdoor`, `chalice` — are still the four lightest, so that fix did
+  not land); and winning back room for a real ground band on the face cards,
+  which needs shorter motifs, a shallower art window or a higher plate.
+  Sparkles are also uneven: they sit *inside* 5 of the 16 motifs (`lute`,
+  `wizardHat`, `hound`, `chest`, `magicCircle`), so half the deck is decorated
+  and half is not.
 - **M13 — Pre-print checks. OPEN.** Greyscale proof (does the shape language carry
   the faction distinction without colour?) and a physical proof on stock.
 
 **M0–M9, M11 and M12 are complete**, and M10's placement, contrast and ground
-band with them. Remaining work is the rest of **M10** (scaling motifs up, evening
-out their ink spread) and **M13**, tracked in **`NEXT-STEPS.md`** along with a
-list of ideas already rejected.
+band with them. Remaining work is the rest of **M10** and **M13**.
 
 Still optional and out of scope: a rules simulator to verify the deck stays
 winnable, only needed if the effects themselves are ever altered.
+
+### If artwork is ever added to a theme
+
+A card's `art` file takes precedence over its `motif`, so images can be swapped in
+one at a time while the rest of the deck stays presentable. Minimum sizes:
+**816 × 470** for the 14 Masters, **816 × 1110** for Apprentice and Deity.
+Formats `.png`, `.jpg`, `.jpeg`, `.webp`. Prefer doing it in a **child theme**:
+art is not inherited, so a child can carry images while `dungeon-bright` stays
+wholly first-party, which is its main advantage and the reason it is the base.
 
 ## Rules corrections and rejected features
 
@@ -496,6 +547,16 @@ winnable, only needed if the effects themselves are ever altered.
   being useful. Do not re-add it without new playtest evidence.
 - **Rules go on cards, not a sheet.** The original ships a rulebook sheet; this
   version prints the rules as cards so the whole product is one deck.
+
+Ideas already rejected, kept so they are not re-proposed:
+
+| Idea | Why not |
+|---|---|
+| **Per-card accent colour** (Wizard purple, Cleric gold, …) | Rejected 2026-09-15: all cards should use the same colours. It would also have put the faction coding at risk, which is load-bearing — the whole player turn is "choose any Ally". |
+| **Number track on the Apprentice** | See above: cards leave the Path quickly, so a fixed list stops matching the board. |
+| **Flavour text** | No room on cards 6, 7 and 11; the `flavor` field was removed from the model. |
+| **`{icon:adjacent}` and `{icon:send}`** | `adjacent` appeared on nearly every line and added nothing; `send` was misleading, since a one-way arrow contradicts an effect that can move a card either direction. The glossary keeps both terms without glyphs. |
+| **Bilingual cards** | Each language is a complete, separate deck, built from one theme via `localeOverrides`. |
 
 ## Constraints & gotchas
 
@@ -606,6 +667,19 @@ winnable, only needed if the effects themselves are ever altered.
   smaller badge, which is why it looked like a faction-specific bug and was not.
   Corrected by nudging the span, never the box: the element's own rect is what
   the safe-zone audit measures.
+- **A motif that misreads cannot be argued with, and the fix is rarely the
+  outline.** Three of the six drawn for `doctor-when` came out as the wrong
+  object. The owl read as a cat until its *eyes* grew to discs spanning the head
+  — the silhouette was already right. The pen nib read as a map pin (round top,
+  downward point, dot in the middle) until the top was flattened. The laurel
+  emblem read as two loose leaves until its sprigs ran down to the tie: a wreath
+  may open only at the top. Related: a pair of angry eyes is carried by the
+  *brows*, not the eyes, and needs a gap in the middle or the two halves merge
+  into one moustache-shaped object.
+- **An 8-unit stroke eats a thin shape.** A shallow eye with a large pupil
+  rendered as a solid dark blob with two slivers of fill left in it. Any shape
+  that must show outline, detail *and* fill between them needs roughly 50 viewBox
+  units of depth.
 - **Plot regular shapes, do not hand-write their vertices.** The back emblem's
   star had its five outer points spread across radii 42 to 46, and the two
   bottom ones crossed the ring drawn around them. An off-centre vertex is
@@ -649,17 +723,19 @@ winnable, only needed if the effects themselves are ever altered.
 
 ## Open items
 
-The third theme, **`rejection-cum-laude`**, is **built** and validates in both
-languages. `THEME-REJECTION-CUM-LAUDE.md` records its naming decisions, the
-German gender traps it had to clear, and the two points still awaiting a call —
-the German name for card 8, and the physical proof.
+All three themes are built and validate in both languages. Two things are
+genuinely undecided:
 
-See **`NEXT-STEPS.md`** — **M10** (art-window composition on `dungeon-bright`) and
-**M13** (greyscale and physical proofs), plus a list of ideas already rejected and
-why, so they are not re-proposed.
+- **Card 8's German name in `doctor-when`.** "Konstruktives Feedback" was chosen
+  but does not fit: it measures 607px against the plate's 593px and wraps, which
+  pushes the faction label out of the banner. **"Konstruktive Kritik" (479px) is
+  in place as a stand-in.** Also measured and fitting: "Gutes Feedback" (400),
+  "Faires Feedback" (405), "Hilfreiche Kritik" (400), "Gutes Gutachten" (423),
+  "Feedback" (240). English "Constructive Feedback" (576px) fits unchanged.
+- **The rest of M10, and M13** — see Milestones above.
 
-Nothing in the pipeline is blocked. The setting, both languages and both visual
-styles are settled.
+Nothing in the pipeline is blocked. The setting, both languages and all three
+visual styles are settled.
 
 One observation not yet tracked as a milestone: the text frame is sized for card
 7's worst case, so on the short cards (5, 9, 10, 12, 14) two lines float in a

@@ -466,7 +466,7 @@ export const MOTIFS = {
       [93, 83],
     ),
 
-  /* ---- "Rejection Cum Laude" ----------------------------------------------
+  /* ---- "Doctor When?" -----------------------------------------------------
    * A doctoral student walking a manuscript to a defence. Ten of that deck's
    * sixteen cards reuse motifs drawn above — the overlap with the working-day
    * set is accepted rather than avoided — so only these six are new.

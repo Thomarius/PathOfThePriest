@@ -1,9 +1,10 @@
 {
   "$comment": "A doctoral student walks a manuscript from first draft to a defended thesis, with Reviewer 2 waiting in the middle of the path. Extends dungeon-bright for palette, typography and decor; overrides naming, motifs and the back emblem. German names live under localeOverrides.de because the parent sets German names there too. Ten of the sixteen motifs are reused from the working-day deck — the family resemblance is accepted, not avoided. Two German gender notes: the Path is \"die Promotion\", feminine, so its accusative slots need no separate form, unlike mittagspause's masculine \"Arbeitstag\"; and Hilfe/Huerde are feminine with idiomatic plurals, so the objective prints \"8 Hilfen und 6 Huerden\" where \"8 Unterstuetzungen\" would not read. The Deity must stay feminine: de.json line 45 has \"ans Ende zur {card:D}\".",
   "extends": "dungeon-bright",
-  "id": "rejection-cum-laude",
-  "title": "Rejection Cum Laude",
+  "id": "doctor-when",
+  "title": "Doctor When?",
   "subtitle": "A solo science career",
+  "titleMotif": "mortarboard",
   "terms": {
     "path": {
       "def": "the thesis",
@@ -114,12 +115,12 @@
     }
   },
   "decor": {
-    "seed": "rejection-cum-laude",
+    "seed": "doctor-when",
     "emblem": "laurel"
   },
   "localeOverrides": {
     "de": {
-      "title": "Rejection Cum Laude",
+      "title": "Doctor When?",
       "subtitle": "Eine Solo-Wissenschaftskarriere",
       "terms": {
         "path": {

@@ -11,6 +11,7 @@ import path from 'node:path';
 import { renderCard, escapeHtml } from './card.js';
 import { renderBack } from './back.js';
 import { renderRulesCard } from './rules-card.js';
+import { renderTitleCard } from './title-card.js';
 import { baseStyles } from './page.js';
 import { ROOT } from '../model.js';
 
@@ -63,6 +64,18 @@ ${extras.join('\n')}
 `;
 }
 
+/**
+ * The cards that carry no mechanics: the title card, then the six rules cards.
+ * They share a page because they are audited, printed and proofed together and
+ * neither kind has a card back.
+ */
+export function nonPlayingCards(model, unit) {
+  return [
+    ...(model.titleCard ? [renderTitleCard(model.titleCard, model, { unit })] : []),
+    ...model.rulesCards.map((rules) => renderRulesCard(rules, model, { unit })),
+  ];
+}
+
 /** Backs that are drawn rather than copied from a front render. */
 export function drawnBacks(model) {
   return model.backs.filter((back) => !back.reuseFront);
@@ -96,6 +109,13 @@ ${drawnBacks(model)
  */
 export function buildProofHtml(model, cards, { scale = 0.34, columns = 4 } = {}) {
   const extraFigures = [
+    ...(model.titleCard
+      ? [
+          `<figure>${renderTitleCard(model.titleCard, model, { unit: 'px' })}
+  <figcaption>${escapeHtml(model.titleCard.title ?? 'title')}</figcaption>
+</figure>`,
+        ]
+      : []),
     ...model.rulesCards.map(
       (r) => `<figure>${renderRulesCard(r, model, { unit: 'px' })}
   <figcaption>${escapeHtml(r.title ?? r.id)}</figcaption>
@@ -168,7 +188,7 @@ html, body { margin: 0; padding: 0; background: #fff; }
 </style>
 </head>
 <body>
-${model.rulesCards.map((rules) => renderRulesCard(rules, model, { unit })).join(String.fromCharCode(10))}
+${nonPlayingCards(model, unit).join(String.fromCharCode(10))}
 </body>
 </html>
 `;

@@ -3,10 +3,8 @@
 Generates print-ready card images for a fan re-theme of the solo microgame
 *The Path of the Priest*.
 
-- **`NEXT-STEPS.md`** — open decisions, remaining work, and exactly which files
-  to create where once the setting and language are chosen. **Start here.**
-- **`CLAUDE.md`** — architecture, print geometry, and the reasoning behind past
-  decisions.
+- **`CLAUDE.md`** — architecture, print geometry, open items, and the reasoning
+  behind past decisions. **Start here.**
 
 Mechanics come verbatim from `RulesSummary.txt` and never change. Only naming,
 artwork, language and visual design are re-themed.
@@ -71,8 +69,8 @@ building several themes in turn leaves complete sets side by side.
 
 ## Status
 
-The pipeline is complete (M0–M7), as is the art direction tracked in
-`NEXT-STEPS.md` as M8, M9, M11 and M12, and most of M10. A build emits **16 cards
+The pipeline is complete (M0–M7), as is the art direction tracked in `CLAUDE.md`
+as M8, M9, M11 and M12, and most of M10. A build emits **16 cards + 1 title card
 + 6 rules cards + 3 backs**.
 
 `dungeon-bright` renders finished decks in German and English and is **entirely
@@ -81,4 +79,4 @@ and 0 warnings, and consecutive builds are byte-identical.
 
 Remaining: the rest of **M10** (scaling motifs up, winning back room for a ground
 band on the face cards) and **M13** (greyscale and physical proofs) — see
-`NEXT-STEPS.md`.
+`CLAUDE.md`.
