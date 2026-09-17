@@ -1,4 +1,4 @@
-# Theme plan — *Summa Cum Laude*
+# Theme plan — *Rejection Cum Laude*
 
 A doctoral student walks a manuscript from first draft to a defended thesis,
 with Reviewer 2 waiting in the middle of the path.
@@ -50,10 +50,7 @@ fact that the whole player turn is "choose an Ally and activate it".
 | 0 | **Doktorandin** | PhD Student |
 | D | **Verteidigung** | Defence |
 
-**Title Ideas:** 
-*Rejection Cum Laude*, in both languages.
-*Doctor When?*, in both languages.
-*Publish or Perish*, in both languages.
+**Title Idea:** *Rejection Cum Laude*, in both languages.
 
 ---
 
@@ -73,7 +70,7 @@ Deity name later means re-checking that line.
 
 ## Remaining work
 
-### 1. `themes/summa-cum-laude/theme.json`
+### 1. `themes/rejection-cum-laude/theme.json`
 
 Extends `dungeon-bright`, so palette, typography, fonts and the whole decor
 vocabulary come for free. Needs:
